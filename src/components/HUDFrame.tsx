@@ -190,7 +190,7 @@ export function HUDFrame() {
       </div>
 
       {/* HUD frame remains static */}
-      {/* <img
+      <img
         src={src}
         alt="HUD Frame"
         className="block pointer-events-none z-10"
@@ -199,7 +199,7 @@ export function HUDFrame() {
           height: '100%',
           objectFit: 'contain',
         }}
-      /> */}
+      />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
 const scenes: SceneType[] = ['OpeningScene', 'MainScene'];
@@ -11,6 +11,7 @@ const inventoryStates: Array<'OpeningScene' | 'MainGame'> = ['OpeningScene', 'Ma
 export function DebugSceneSwitcher() {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
   const [inventoryState, setInventoryState] = useAtom(inventoryStateAtom);
+  const [hudTransform] = useAtom(hudTransformAtom);
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -58,6 +59,16 @@ export function DebugSceneSwitcher() {
               </div>
             </div>
             
+            {/* HUD transform information section */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">HUD Transform:</span>
+              <div className="text-[10px]">
+                Zoom: {hudTransform.zoom.toFixed(2)} <br />
+                TranslateX: {hudTransform.translateX.toFixed(2)} <br />
+                TranslateY: {hudTransform.translateY.toFixed(2)}
+              </div>
+            </div>
+
             {/* Hide button */}
             <button
               onClick={() => setIsVisible(false)}

@@ -1,4 +1,5 @@
 import React from 'react';
+import DraggableInventoryFigurine from '../DraggableInventoryFigurine';
 
 type OpeningSceneInventoryProps = {
   breakpoint?: 'mobile' | 'desktop';
@@ -16,7 +17,7 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
     paddingRight: breakpoint === 'mobile' ? '4%' : '0',
   };
 
-  // Define the rectangular box style. Adjust dimensions and styles as needed.
+  // Box style remains as defined, with relative positioning and overflow hidden.
   const boxStyle: React.CSSProperties =
     breakpoint === 'mobile'
       ? {
@@ -25,6 +26,10 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
           border: '2px solid blue',
           padding: '6px',
           boxSizing: 'border-box',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',  // Needed for absolute positioning of the image.
         }
       : {
           width: '85%',      // Wider on desktop
@@ -32,12 +37,44 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
           border: '2px solid blue',
           padding: '6px',
           boxSizing: 'border-box',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
         };
+
+  // Mobile: rotate the image, scale the height, and let it fill the container.
+  const imageStyleMobile: React.CSSProperties = {
+    transform: 'rotate(90deg)',
+    position: 'absolute',
+    height: '200%',
+    objectFit: 'contain',
+  };
+
+  // Desktop: center the image with padding by positioning it absolutely.
+  // Using top/left 50% and translate to center, and subtracting padding via calc().
+  const imageStyleDesktop: React.CSSProperties = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    width: 'calc(100% - 20px)', // adds ~10px padding on left and right
+    height: 'calc(100% - 20px)', // adds ~10px padding on top and bottom
+    objectFit: 'contain',
+    transform: 'translate(-50%, -50%)',
+  };
 
   return (
     <div style={containerStyle}>
       <div style={boxStyle}>
-        {/* Insert additional content or elements here */}
+        <DraggableInventoryFigurine anchorDependency={breakpoint}>
+          <img
+            src="assets/figure/Laila_sprite_cropped.png"
+            alt="Laila Figurine"
+            draggable={false} // Disable default HTML5 dragging.
+            style={breakpoint === 'mobile' ? imageStyleMobile : imageStyleDesktop}
+            className="z-40"
+          />
+        </DraggableInventoryFigurine>
       </div>
     </div>
   );

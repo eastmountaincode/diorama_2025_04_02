@@ -1,18 +1,21 @@
 import React from 'react';
+import { useAtom } from 'jotai';
+import { currentSceneAtom } from '../atoms/gameState';
+import OpeningScene from '../scenes/OpeningScene';
+import MainScene from '../scenes/MainScene';
 
 const SceneManager: React.FC = () => {
-  return (
-    <div 
-      className="w-full h-full flex items-center justify-center z-20"
-      style={{
-        backgroundImage: "url('assets/bg/Diorama_BG.png')",
-        backgroundSize: 'contain',  // Changed from 'cover' to 'contain'
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}
-    >
-    </div>
-  );
+  const [currentScene] = useAtom(currentSceneAtom);
+
+  // Render the active scene based on the atom's value.
+  switch (currentScene) {
+    case 'OpeningScene':
+      return <OpeningScene />;
+    case 'MainScene':
+      return <MainScene />;
+    default:
+      return null;
+  }
 };
 
 export default SceneManager;

@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import SceneManager from './SceneManager';
+import Inventory from './Inventory';
 
 type ViewportStyle = {
   top: string;
@@ -158,7 +159,10 @@ export function HUDFrameWorking() {
             className="relative z-10 block pointer-events-none"
             style={{ display: 'block', width: '100%', height: 'auto' }}
           />
+          <Inventory breakpoint={currentBreakpoint} />
+
         </div>
+        
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { atom } from 'jotai';
 
-export type SceneType = 'main' | 'scene1' | 'scene2' | 'scene3';
+export type SceneType = 'OpeningScene' | 'MainScene';
 
-export const currentSceneAtom = atom<SceneType>('main'); 
+export const currentSceneAtom = atom<SceneType>('OpeningScene');

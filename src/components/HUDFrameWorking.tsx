@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from 'react';
 import SceneManager from './SceneManager';
 import Inventory from './Inventory/Inventory';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, hudTransformAtom, breakpointAtom, BreakpointType } from '../atoms/gameState';
+import { currentSceneAtom, hudTransformAtom, breakpointAtom } from '../atoms/gameState';
 import { defaultHudTransforms } from '../util/utilSettings';
 type ViewportStyle = {
   top: string;

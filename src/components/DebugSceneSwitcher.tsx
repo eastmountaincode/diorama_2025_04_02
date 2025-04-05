@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
 const scenes: SceneType[] = ['OpeningScene', 'MainScene'];
@@ -12,6 +12,7 @@ export function DebugSceneSwitcher() {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
   const [inventoryState, setInventoryState] = useAtom(inventoryStateAtom);
   const [hudTransform] = useAtom(hudTransformAtom);
+  const [isFigurineTouchingDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
   const [isVisible, setIsVisible] = useState(false);
 
   return (
@@ -66,6 +67,14 @@ export function DebugSceneSwitcher() {
                 Zoom: {hudTransform.zoom.toFixed(2)} <br />
                 TranslateX: {hudTransform.translateX.toFixed(2)} <br />
                 TranslateY: {hudTransform.translateY.toFixed(2)}
+              </div>
+            </div>
+
+            {/* Figurine drop zone collision state */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">Figurine Status:</span>
+              <div className={`text-[10px] px-1.5 py-0.5 rounded ${isFigurineTouchingDropZone ? 'bg-green-500' : 'bg-red-500'}`}>
+                {isFigurineTouchingDropZone ? 'Touching Drop Zone' : 'Not Touching Drop Zone'}
               </div>
             </div>
 

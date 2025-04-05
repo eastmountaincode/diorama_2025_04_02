@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from 'react';
 import SceneManager from './SceneManager';
 import Inventory from './Inventory/Inventory';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, hudTransformAtom } from '../atoms/gameState';
+import { currentSceneAtom, hudTransformAtom, breakpointAtom, BreakpointType } from '../atoms/gameState';
 import { defaultHudTransforms } from '../util/utilSettings';
 type ViewportStyle = {
   top: string;
@@ -11,8 +11,6 @@ type ViewportStyle = {
   height: string;
 };
 
-type BreakpointName = 'mobile' | 'desktop';
-
 const MAX_ZOOM = 2.3;
 const MIN_ZOOM = 0.5;
 
@@ -20,6 +18,7 @@ export function HUDFrameWorking() {
   const [currentScene] = useAtom(currentSceneAtom);
   const [src, setSrc] = useState('');
   const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
+  const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   
   const { zoom, translateX, translateY } = hudTransform;
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
@@ -28,7 +27,6 @@ export function HUDFrameWorking() {
     width: '70%',
     height: '60%',
   });
-  const [currentBreakpoint, setCurrentBreakpoint] = useState<BreakpointName>('desktop');
 
   // Pinch state ref
   const pinchStateRef = useRef<{
@@ -65,10 +63,10 @@ export function HUDFrameWorking() {
 
       if (isMobile) {
         setViewportStyle({ top: '42%', left: '50%', width: '90%', height: '80%' });
-        setCurrentBreakpoint('mobile');
+        setBreakpoint('mobile');
       } else {
         setViewportStyle({ top: '50%', left: '43%', width: '82%', height: '96%' });
-        setCurrentBreakpoint('desktop');
+        setBreakpoint('desktop');
       }
     };
 
@@ -79,7 +77,7 @@ export function HUDFrameWorking() {
       window.removeEventListener('resize', updateHUD);
       window.removeEventListener('orientationchange', updateHUD);
     };
-  }, []);
+  }, [setBreakpoint]);
 
   // Touch handlers for pinch-to-zoom and pan
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
@@ -164,7 +162,7 @@ export function HUDFrameWorking() {
       <div className="relative w-full h-full flex items-center justify-center z-20">
         {/* Breakpoint Indicator */}
         <div className="absolute top-2 left-2 z-30 bg-black bg-opacity-50 text-white text-xs p-1 rounded pointer-events-none">
-          Breakpoint: {currentBreakpoint}
+          Breakpoint: {breakpoint}
         </div>
 
         {/* Container wrapping HUD frame image */}
@@ -190,7 +188,7 @@ export function HUDFrameWorking() {
             className="relative z-10 block pointer-events-none"
             style={{ display: 'block', width: '100%', height: 'auto' }}
           />
-          <Inventory breakpoint={currentBreakpoint} />
+          <Inventory breakpoint={breakpoint} />
         </div>
       </div>
     </div>

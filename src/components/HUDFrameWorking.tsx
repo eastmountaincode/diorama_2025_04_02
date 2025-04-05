@@ -1,6 +1,6 @@
 import { CSSProperties, useEffect, useRef, useState } from 'react';
 import SceneManager from './SceneManager';
-import Inventory from './Inventory';
+import Inventory from './Inventory/Inventory';
 
 type ViewportStyle = {
   top: string;
@@ -93,7 +93,7 @@ export function HUDFrameWorking() {
     if (e.touches.length !== 2 || !initialDistance || initialMidX === null || initialMidY === null) return;
     const [touch1, touch2] = [e.touches[0], e.touches[1]];
     const currentDistance = Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
-    const newZoom = Math.min(Math.max(initialZoom * (currentDistance / initialDistance), 0.5), 4);
+    const newZoom = Math.min(Math.max(initialZoom * (currentDistance / initialDistance), 1), 2.3);
     setZoom(newZoom);
 
     const currentMidX = (touch1.clientX + touch2.clientX) / 2;

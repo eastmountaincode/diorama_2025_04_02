@@ -11,7 +11,7 @@ type ViewportStyle = {
   height: string;
 };
 
-const MAX_ZOOM = 2.3;
+const MAX_ZOOM = 3.3;
 const MIN_ZOOM = 0.5;
 
 export function HUDFrameWorking() {
@@ -82,6 +82,9 @@ export function HUDFrameWorking() {
 
   // Touch handlers for pinch-to-zoom and pan
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    // Disable touch interactions during transitions
+    if (isSceneTransitioning) return;
+    
     if (currentScene == 'OpeningScene') return;
     if (e.touches.length !== 2) return;
     const [touch1, touch2] = [e.touches[0], e.touches[1]];
@@ -104,6 +107,9 @@ export function HUDFrameWorking() {
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    // Disable touch interactions during transitions
+    if (isSceneTransitioning) return;
+    
     if (currentScene == 'OpeningScene') return;
     const {
       initialDistance,
@@ -133,6 +139,9 @@ export function HUDFrameWorking() {
   };
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    // Disable touch interactions during transitions
+    if (isSceneTransitioning) return;
+    
     if (currentScene == 'OpeningScene') return;
     if (e.touches.length < 2) {
       pinchStateRef.current.initialDistance = null;
@@ -177,10 +186,54 @@ export function HUDFrameWorking() {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
+              {/* SceneManager viewport */}
               <div className="w-full h-full select-none" style={sceneTransformStyle}>
                 <SceneManager />
               </div>
             </div>
+            
+            {/* HUD Transform Controls - only visible on desktop and MainScene */}
+            {breakpoint === 'desktop' && currentScene === 'MainScene' && !isSceneTransitioning && (
+              <div 
+                className="absolute top-8 z-50 flex flex-col items-center"
+                style={{ right: '19%' }}
+              >
+                {/* Background container for all zoom controls */}
+                <div className="bg-gray-800 bg-opacity-30 p-1.5 rounded border border-gray-600 border-opacity-20 backdrop-blur-sm">
+                  {/* Magnifying glass icon */}
+                  <div className="flex justify-center mb-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 opacity-60">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </div>
+                  
+                  <button 
+                    className="bg-gray-700 bg-opacity-30 text-gray-400 w-6 h-6 rounded-sm flex items-center justify-center hover:bg-opacity-50 hover:text-white hover:border-gray-300 hover:shadow-sm transition-all border border-gray-500 border-opacity-20"
+                    onClick={() => setHudTransform(prev => ({
+                      ...prev,
+                      zoom: Math.min(prev.zoom + 0.3, MAX_ZOOM)
+                    }))}
+                    title="Zoom In"
+                  >
+                    <span className="text-xs leading-none flex items-center justify-center h-full">+</span>
+                  </button>
+                  
+                  <div className="h-1"></div> {/* Small spacer */}
+                  
+                  <button 
+                    className="bg-gray-700 bg-opacity-30 text-gray-400 w-6 h-6 rounded-sm flex items-center justify-center hover:bg-opacity-50 hover:text-white hover:border-gray-300 hover:shadow-sm transition-all border border-gray-500 border-opacity-20"
+                    onClick={() => setHudTransform(prev => ({
+                      ...prev,
+                      zoom: Math.max(prev.zoom - 0.3, MIN_ZOOM)
+                    }))}
+                    title="Zoom Out"
+                  >
+                    <span className="text-xs leading-none flex items-center justify-center h-full">−</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
           {/* HUD Frame Image overlay */}
           <img

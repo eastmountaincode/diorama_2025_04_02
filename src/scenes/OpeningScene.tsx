@@ -16,6 +16,27 @@ const OpeningScene: React.FC = () => {
   const [, setShowOpeningScene] = useAtom(showOpeningSceneAtom);
   const [opacity, setOpacity] = useState(1);
   
+  // Handle fade-out effect when transitioning to MainScene
+  useEffect(() => {
+    // TEMPORARY: Set this to true to disable fade-out while positioning
+    const disableFadeOut = false;
+    
+    if (!disableFadeOut && isSceneTransitioning && opacity === 1) {
+      // Wait for MainScene to fade in before fading out OpeningScene
+      const timer = setTimeout(() => {
+        // Start fading out
+        setOpacity(0);
+        
+        // Wait for fade-out to complete before hiding OpeningScene
+        setTimeout(() => {
+          setShowOpeningScene(false);
+        }, 1500); // Match the fade-out duration
+      }, 3500); // Wait for transform + MainScene fade-in
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isSceneTransitioning, opacity, setShowOpeningScene]);
+  
   // Handle figurine animation when placed
   useEffect(() => {
     if (isFigurinePlaced) {
@@ -213,12 +234,6 @@ const OpeningScene: React.FC = () => {
       setTimeout(() => {
         // Change to MainScene after transform is complete
         setCurrentScene('MainScene');
-        
-        // Keep transition mode active for the MainScene fade-in
-        setTimeout(() => {
-          setIsSceneTransitioning(false);
-          // Do NOT set showOpeningScene to false - keep it visible
-        }, 1500); // Allow time for MainScene to fade in completely
       }, 2000); // Wait for transform to fully complete
     }
   };
@@ -235,7 +250,10 @@ const OpeningScene: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full relative z-30">
+    <div className="w-full h-full relative z-30" style={{
+      opacity,
+      transition: isSceneTransitioning ? 'opacity 1.5s ease-out' : 'none',
+    }}>
       <img 
         src="assets/bg/Grass_alone_demo.png" 
         alt="Grass"

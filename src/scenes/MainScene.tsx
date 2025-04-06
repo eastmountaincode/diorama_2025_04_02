@@ -9,13 +9,13 @@ const MainScene: React.FC = () => {
     const [hudTransform] = useAtom(hudTransformAtom);
     const [opacity, setOpacity] = useState(0);
     
-    // Reference to container for calculating percentages
+    // Reference to container and figurine
     const containerRef = useRef<HTMLDivElement>(null);
+    const figurineRef = useRef<HTMLDivElement>(null);
     
-    // Track position in percentages instead of pixels
-    const [figurinePosition, setFigurinePosition] = useState({ xPercent: 0, yPercent: 0 });
+    // Store current position as x/y pixels from the top-left
+    const [position, setPosition] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
-    const lastPointerPosition = useRef({ x: 0, y: 0 });
     
     // Handle visibility based on current scene and transition state
     useEffect(() => {
@@ -44,54 +44,69 @@ const MainScene: React.FC = () => {
         }
     }, [currentScene, isSceneTransitioning, setIsSceneTransitioning]);
     
-    // Reset position when breakpoint changes
-    useEffect(() => {
-        setFigurinePosition({ xPercent: 0, yPercent: 0 });
-    }, [breakpoint]);
+    // Store the initial click offset from the figurine center
+    const clickOffset = useRef({ x: 0, y: 0 });
     
-    // Add drag handlers
     const handlePointerDown = (e: React.PointerEvent) => {
-        // Don't allow dragging during transitions
-        if (isSceneTransitioning) return;
+        if (isSceneTransitioning || !figurineRef.current) return;
         
         e.preventDefault();
         setIsDragging(true);
-        lastPointerPosition.current = { x: e.clientX, y: e.clientY };
         
-        // Capture the pointer to track movement even outside the element
-        (e.target as HTMLElement).setPointerCapture(e.pointerId);
+        // Calculate offset from click point to figurine center
+        const figurineRect = figurineRef.current.getBoundingClientRect();
+        clickOffset.current = {
+            x: e.clientX - (figurineRect.left + figurineRect.width / 2),
+            y: e.clientY - (figurineRect.top + figurineRect.height / 2)
+        };
+        
+        // Capture pointer
+        figurineRef.current.setPointerCapture(e.pointerId);
     };
     
     const handlePointerMove = (e: React.PointerEvent) => {
         if (!isDragging || !containerRef.current) return;
         
-        // Calculate raw movement
-        const dx = e.clientX - lastPointerPosition.current.x;
-        const dy = e.clientY - lastPointerPosition.current.y;
-        
-        // Adjust for zoom level
-        const zoomFactor = hudTransform.zoom;
-        const scaledDx = dx / zoomFactor;
-        const scaledDy = dy / zoomFactor;
-        
-        // Convert to percentage of container size
         const containerRect = containerRef.current.getBoundingClientRect();
-        const dxPercent = (scaledDx / containerRect.width) * 100;
-        const dyPercent = (scaledDy / containerRect.height) * 100;
+        const zoomFactor = hudTransform.zoom;
         
-        // Update position in percentages
-        setFigurinePosition(prev => ({
-            xPercent: prev.xPercent + dxPercent,
-            yPercent: prev.yPercent - dyPercent // Invert y-axis for intuitive movement (up is positive)
-        }));
+        // Get container dimensions
+        const containerWidth = containerRect.width;
+        const containerHeight = containerRect.height;
         
-        lastPointerPosition.current = { x: e.clientX, y: e.clientY };
+        // Calculate the new center position of the figurine (accounting for click offset)
+        const newCenterX = e.clientX - clickOffset.current.x - containerRect.left;
+        const newCenterY = e.clientY - clickOffset.current.y - containerRect.top;
+        
+        // Set position as percentages of container size
+        setPosition({
+            x: (newCenterX / containerWidth) * 100,
+            y: (newCenterY / containerHeight) * 100
+        });
     };
     
     const handlePointerUp = (e: React.PointerEvent) => {
+        if (figurineRef.current) {
+            figurineRef.current.releasePointerCapture(e.pointerId);
+        }
         setIsDragging(false);
-        (e.target as HTMLElement).releasePointerCapture(e.pointerId);
     };
+    
+    // Set initial position
+    useEffect(() => {
+        if (containerRef.current) {
+            const containerRect = containerRef.current.getBoundingClientRect();
+            
+            // Convert the bottom/left positioning to top/left
+            const bottomPos = breakpoint === 'mobile' ? 41.6 : 35.8;
+            const leftPos = breakpoint === 'mobile' ? 49.3 : 49.1;
+            
+            setPosition({
+                x: leftPos,
+                y: 100 - bottomPos
+            });
+        }
+    }, [breakpoint]);
     
     return (
         <div 
@@ -110,23 +125,20 @@ const MainScene: React.FC = () => {
         >
             {/* Main Figurine */}
             <div 
+                ref={figurineRef}
                 className="absolute" 
                 style={{
-                    // Base positioning
-                    bottom: `calc(${breakpoint === 'mobile' ? '41.6%' : '35.8%'} + ${figurinePosition.yPercent}%)`,
-                    left: `calc(${breakpoint === 'mobile' ? '49.3%' : '49.1%'} + ${figurinePosition.xPercent}%)`,
-                    transform: 'translateX(-50%)',
+                    // Position using top/left rather than bottom/left
+                    top: `${position.y}%`,
+                    left: `${position.x}%`,
+                    transform: 'translate(-50%, -50%)', // Center the figurine
                     
                     // Size control based on breakpoint
                     width: breakpoint === 'mobile' ? '7.3%' : '4.5%',
                     
-                    // Layer control
+                    // Other styles
                     zIndex: 130,
-                    
-                    // Cursor styles
                     cursor: isDragging ? 'grabbing' : 'grab',
-                    
-                    // Smooth transition when releasing
                     transition: isDragging ? 'none' : 'all 0.1s ease-out'
                 }}
                 onPointerDown={handlePointerDown}

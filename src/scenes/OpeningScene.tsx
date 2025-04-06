@@ -255,7 +255,7 @@ const OpeningScene: React.FC = () => {
       transition: isSceneTransitioning ? 'opacity 1.5s ease-out' : 'none',
     }}>
       <img 
-        src="assets/bg/Grass_alone_demo.png" 
+        src="assets/bg/grass_alone_final.png" 
         alt="Grass"
         style={getGrassImageStyle()}
         className="absolute top-0 left-0"

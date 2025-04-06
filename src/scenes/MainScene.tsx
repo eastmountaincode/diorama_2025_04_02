@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, isSceneTransitioningAtom, breakpointAtom, hudTransformAtom } from '../atoms/gameState';
+import { currentSceneAtom, isSceneTransitioningAtom, breakpointAtom } from '../atoms/gameState';
 
 const MainScene: React.FC = () => {
     const [currentScene] = useAtom(currentSceneAtom);
     const [isSceneTransitioning, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
     const [breakpoint] = useAtom(breakpointAtom);
-    const [hudTransform] = useAtom(hudTransformAtom);
     const [opacity, setOpacity] = useState(0);
     
     // Reference to container and figurine
@@ -68,7 +67,6 @@ const MainScene: React.FC = () => {
         if (!isDragging || !containerRef.current) return;
         
         const containerRect = containerRef.current.getBoundingClientRect();
-        const zoomFactor = hudTransform.zoom;
         
         // Get container dimensions
         const containerWidth = containerRect.width;

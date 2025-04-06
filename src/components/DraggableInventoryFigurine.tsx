@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { dropZoneRectAtom, isFigurineTouchingDropZoneAtom } from '../atoms/gameState';
+import { dropZoneRectAtom, isFigurineTouchingDropZoneAtom, isFigurinePlacedAtom } from '../atoms/gameState';
 
 interface DraggableInventoryFigurineProps {
     children: React.ReactNode;
@@ -15,6 +15,9 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
 
     // Use state for dragging to update the cursor style.
     const [isDragging, setIsDragging] = useState(false);
+    
+    // Track hover state for subtle hover effect
+    const [isHovered, setIsHovered] = useState(false);
 
     // Store the relative position as a fraction of the container's dimensions.
     const relativePositionRef = useRef({ x: 0, y: 0 });
@@ -24,7 +27,8 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
 
     // Atoms for drop zone rect and collision status.
     const [dropZoneShape] = useAtom(dropZoneRectAtom);
-    const [, setIsFigurineOverDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
+    const [isFigurineTouchingDropZone, setIsFigurineOverDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
+    const [isFigurinePlaced, setIsFigurinePlaced] = useAtom(isFigurinePlacedAtom);
 
     // Helper function to check if a point is inside an ellipse
     const isPointInsideEllipse = (
@@ -50,18 +54,51 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
         if (containerRef.current && dropZoneShape.active) {
             const figurineRect = containerRef.current.getBoundingClientRect();
             
-            // Use the center point of the figurine for collision detection
-            const figurineCenterX = figurineRect.left + figurineRect.width / 2;
-            const figurineCenterY = figurineRect.top + figurineRect.height / 2;
+            // Get the figurine dimensions
+            const figurineWidth = figurineRect.width;
+            const figurineHeight = figurineRect.height;
             
-            // Check if the center of the figurine is inside the ellipse
-            const collision = isPointInsideEllipse(
-                figurineCenterX,
-                figurineCenterY,
-                dropZoneShape.cx,
-                dropZoneShape.cy,
-                dropZoneShape.rx,
-                dropZoneShape.ry
+            // Check multiple points on the figurine
+            const pointsToCheck = [
+                // Center
+                {
+                    x: figurineRect.left + figurineWidth / 2,
+                    y: figurineRect.top + figurineHeight / 2
+                },
+                // Bottom center (more important for a figurine)
+                {
+                    x: figurineRect.left + figurineWidth / 2,
+                    y: figurineRect.bottom - figurineHeight * 0.1 // 10% from bottom
+                },
+                // Four points around the center
+                {
+                    x: figurineRect.left + figurineWidth * 0.3, // 30% from left
+                    y: figurineRect.top + figurineHeight * 0.5  // center vertically
+                },
+                {
+                    x: figurineRect.left + figurineWidth * 0.7, // 70% from left
+                    y: figurineRect.top + figurineHeight * 0.5  // center vertically
+                },
+                {
+                    x: figurineRect.left + figurineWidth * 0.5, // center horizontally
+                    y: figurineRect.top + figurineHeight * 0.3  // 30% from top
+                },
+                {
+                    x: figurineRect.left + figurineWidth * 0.5, // center horizontally
+                    y: figurineRect.top + figurineHeight * 0.7  // 70% from top
+                }
+            ];
+            
+            // Check if any of the points is inside the ellipse
+            const collision = pointsToCheck.some(point => 
+                isPointInsideEllipse(
+                    point.x,
+                    point.y,
+                    dropZoneShape.cx,
+                    dropZoneShape.cy,
+                    dropZoneShape.rx,
+                    dropZoneShape.ry
+                )
             );
             
             setIsFigurineOverDropZone(collision);
@@ -80,7 +117,20 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
         }
     };
 
+    const handlePointerEnter = () => {
+        if (!isFigurinePlaced) {
+            setIsHovered(true);
+        }
+    };
+
+    const handlePointerLeave = () => {
+        setIsHovered(false);
+    };
+
     const handlePointerDown = (e: React.PointerEvent) => {
+        // If the figurine is already placed, don't allow dragging
+        if (isFigurinePlaced) return;
+        
         e.preventDefault();
         setIsDragging(true);
         lastPointerPosition.current = { x: e.clientX, y: e.clientY };
@@ -104,12 +154,16 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
         setIsDragging(false);
         containerRef.current?.releasePointerCapture(e.pointerId);
         lastPointerPosition.current = null;
-        // Reset position back to the original.
-        setPosition({ x: 0, y: 0 });
-        relativePositionRef.current = { x: 0, y: 0 };
-
-        // Always set to false when releasing
-        setIsFigurineOverDropZone(false);
+        
+        // If the figurine is touching the drop zone, mark it as placed
+        if (isFigurineTouchingDropZone) {
+            setIsFigurinePlaced(true);
+        } else {
+            // Otherwise, reset position back to the original
+            setPosition({ x: 0, y: 0 });
+            relativePositionRef.current = { x: 0, y: 0 };
+            setIsFigurineOverDropZone(false);
+        }
     };
 
     // Update absolute position on window resize.
@@ -134,6 +188,14 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
         relativePositionRef.current = { x: 0, y: 0 };
         setPosition({ x: 0, y: 0 });
     }, [anchorDependency]);
+    
+    // If the figurine has been placed, don't render the draggable component
+    if (isFigurinePlaced) {
+        return null;
+    }
+
+    // Determine scale based on state - very subtle
+    const scale = isDragging ? 1.03 : isHovered ? 1.03 : 1;
 
     return (
         <div
@@ -141,6 +203,8 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
+            onPointerEnter={handlePointerEnter}
+            onPointerLeave={handlePointerLeave}
             onDragStart={(e) => e.preventDefault()} // Disable native drag.
             style={{
                 position: 'absolute',
@@ -151,11 +215,13 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
-                transform: `translate(${position.x}px, ${position.y}px)`,
+                transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 touchAction: 'none',
-                cursor: isDragging ? 'grabbing' : 'grab',
-                // Apply transition only when not dragging.
-                transition: isDragging ? 'none' : 'transform 0.3s ease',
+                cursor: isDragging ? 'grabbing' : isHovered ? 'grab' : 'default',
+                background: 'transparent',
+                transition: isDragging 
+                    ? 'none' 
+                    : 'transform 0.2s ease',
             }}
         >
             {children}

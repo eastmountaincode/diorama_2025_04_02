@@ -50,3 +50,6 @@ export const dropZoneRectAtom = atom<DropZoneShape>({
 
 // Atom to track if the figurine is touching the drop zone
 export const isFigurineTouchingDropZoneAtom = atom<boolean>(false);
+
+// Atom to track if the figurine has been successfully placed in the drop zone
+export const isFigurinePlacedAtom = atom<boolean>(false);

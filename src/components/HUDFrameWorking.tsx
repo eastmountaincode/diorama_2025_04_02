@@ -143,7 +143,6 @@ export function HUDFrameWorking() {
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,
     transformOrigin: 'center center',
-    cursor: 'grab',
   };
 
   const viewportContainerStyle: CSSProperties = {

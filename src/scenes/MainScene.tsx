@@ -93,7 +93,6 @@ const MainScene: React.FC = () => {
     // Set initial position
     useEffect(() => {
         if (containerRef.current) {
-            const containerRect = containerRef.current.getBoundingClientRect();
             
             // Convert the bottom/left positioning to top/left
             const bottomPos = breakpoint === 'mobile' ? 41.6 : 35.8;

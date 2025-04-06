@@ -1,12 +1,10 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, isSceneTransitioningAtom, showOpeningSceneAtom } from '../atoms/gameState';
+import { showOpeningSceneAtom } from '../atoms/gameState';
 import OpeningScene from '../scenes/OpeningScene';
 import MainScene from '../scenes/MainScene';
 
 const SceneManager: React.FC = () => {
-  const [currentScene] = useAtom(currentSceneAtom);
-  const [isTransitioning] = useAtom(isSceneTransitioningAtom);
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
 
   // Always render both scenes, but control visibility

@@ -9,8 +9,11 @@ const MainScene: React.FC = () => {
     const [hudTransform] = useAtom(hudTransformAtom);
     const [opacity, setOpacity] = useState(0);
     
-    // Add state for figurine dragging
-    const [figurinePosition, setFigurinePosition] = useState({ x: 0, y: 0 });
+    // Reference to container for calculating percentages
+    const containerRef = useRef<HTMLDivElement>(null);
+    
+    // Track position in percentages instead of pixels
+    const [figurinePosition, setFigurinePosition] = useState({ xPercent: 0, yPercent: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const lastPointerPosition = useRef({ x: 0, y: 0 });
     
@@ -41,6 +44,11 @@ const MainScene: React.FC = () => {
         }
     }, [currentScene, isSceneTransitioning, setIsSceneTransitioning]);
     
+    // Reset position when breakpoint changes
+    useEffect(() => {
+        setFigurinePosition({ xPercent: 0, yPercent: 0 });
+    }, [breakpoint]);
+    
     // Add drag handlers
     const handlePointerDown = (e: React.PointerEvent) => {
         // Don't allow dragging during transitions
@@ -55,20 +63,26 @@ const MainScene: React.FC = () => {
     };
     
     const handlePointerMove = (e: React.PointerEvent) => {
-        if (!isDragging) return;
+        if (!isDragging || !containerRef.current) return;
         
         // Calculate raw movement
         const dx = e.clientX - lastPointerPosition.current.x;
         const dy = e.clientY - lastPointerPosition.current.y;
         
-        // Adjust for zoom level - divide by zoom to get correct movement
+        // Adjust for zoom level
         const zoomFactor = hudTransform.zoom;
         const scaledDx = dx / zoomFactor;
         const scaledDy = dy / zoomFactor;
         
+        // Convert to percentage of container size
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const dxPercent = (scaledDx / containerRect.width) * 100;
+        const dyPercent = (scaledDy / containerRect.height) * 100;
+        
+        // Update position in percentages
         setFigurinePosition(prev => ({
-            x: prev.x + scaledDx,
-            y: prev.y + scaledDy
+            xPercent: prev.xPercent + dxPercent,
+            yPercent: prev.yPercent - dyPercent // Invert y-axis for intuitive movement (up is positive)
         }));
         
         lastPointerPosition.current = { x: e.clientX, y: e.clientY };
@@ -81,6 +95,7 @@ const MainScene: React.FC = () => {
     
     return (
         <div 
+            ref={containerRef}
             className="w-full h-full flex items-center justify-center z-10"
             style={{
                 backgroundImage: "url('assets/bg/Diorama_BG.png')",
@@ -90,20 +105,17 @@ const MainScene: React.FC = () => {
                 opacity,
                 transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none',
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
+                position: 'relative'
             }}
         >
             {/* Main Figurine */}
             <div 
                 className="absolute" 
                 style={{
-                    // Vertical positioning - use either top or bottom
-                    bottom: breakpoint === 'mobile' ? '41.6%' : '35.8%',     // Moved higher up from the bottom
-                    
-                    // Horizontal positioning - use either left or right
-                    left: breakpoint === 'mobile' ? '49.3%' : '49.1%',       // Moved left of center
-                    
-                    // Add dragging translation to existing transform
-                    transform: `translateX(-50%) translate(${figurinePosition.x}px, ${figurinePosition.y}px)`,
+                    // Base positioning
+                    bottom: `calc(${breakpoint === 'mobile' ? '41.6%' : '35.8%'} + ${figurinePosition.yPercent}%)`,
+                    left: `calc(${breakpoint === 'mobile' ? '49.3%' : '49.1%'} + ${figurinePosition.xPercent}%)`,
+                    transform: 'translateX(-50%)',
                     
                     // Size control based on breakpoint
                     width: breakpoint === 'mobile' ? '7.3%' : '4.5%',
@@ -115,7 +127,7 @@ const MainScene: React.FC = () => {
                     cursor: isDragging ? 'grabbing' : 'grab',
                     
                     // Smooth transition when releasing
-                    transition: isDragging ? 'none' : 'transform 0.1s ease-out'
+                    transition: isDragging ? 'none' : 'all 0.1s ease-out'
                 }}
                 onPointerDown={handlePointerDown}
                 onPointerMove={handlePointerMove}
@@ -128,7 +140,6 @@ const MainScene: React.FC = () => {
                     style={{
                         width: '100%',
                         height: 'auto',
-
                     }}
                     draggable={false}
                     className="pointer-events-none"

@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
-import { dropZoneRectAtom, breakpointAtom, isFigurineTouchingDropZoneAtom, isFigurinePlacedAtom } from '../atoms/gameState';
+import { dropZoneRectAtom, breakpointAtom, isFigurineTouchingDropZoneAtom, isFigurinePlacedAtom, hudTransformAtom, isSceneTransitioningAtom, currentSceneAtom, showOpeningSceneAtom } from '../atoms/gameState';
 
 const OpeningScene: React.FC = () => {
   const dropZoneRef = useRef<SVGEllipseElement>(null);
@@ -10,6 +10,11 @@ const OpeningScene: React.FC = () => {
   const [isFigurinePlaced] = useAtom(isFigurinePlacedAtom);
   const [showFigurineAnimation, setShowFigurineAnimation] = useState(false);
   const [isEllipseHovered, setIsEllipseHovered] = useState(false);
+  const [, setHudTransform] = useAtom(hudTransformAtom);
+  const [isSceneTransitioning, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
+  const [, setCurrentScene] = useAtom(currentSceneAtom);
+  const [, setShowOpeningScene] = useAtom(showOpeningSceneAtom);
+  const [opacity, setOpacity] = useState(1);
   
   // Handle figurine animation when placed
   useEffect(() => {
@@ -193,7 +198,28 @@ const OpeningScene: React.FC = () => {
   const handleEllipseClick = () => {
     if (isFigurinePlaced) {
       console.log('Ellipse clicked with figurine placed! Ready to transition to main scene.');
-      // This is where we'll add the transition to MainScene later
+      
+      // Enable transition animation for the transform
+      setIsSceneTransitioning(true);
+      
+      // Start transition to zoom 1
+      setHudTransform({
+        zoom: 1,
+        translateX: 0,
+        translateY: 0
+      });
+      
+      // First wait for the zoom transform to fully complete
+      setTimeout(() => {
+        // Change to MainScene after transform is complete
+        setCurrentScene('MainScene');
+        
+        // Keep transition mode active for the MainScene fade-in
+        setTimeout(() => {
+          setIsSceneTransitioning(false);
+          // Do NOT set showOpeningScene to false - keep it visible
+        }, 1500); // Allow time for MainScene to fade in completely
+      }, 2000); // Wait for transform to fully complete
     }
   };
   
@@ -209,7 +235,7 @@ const OpeningScene: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full relative z-20">
+    <div className="w-full h-full relative z-30">
       <img 
         src="assets/bg/Grass_alone_demo.png" 
         alt="Grass"

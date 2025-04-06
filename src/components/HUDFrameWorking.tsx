@@ -2,7 +2,7 @@ import { CSSProperties, useEffect, useRef, useState } from 'react';
 import SceneManager from './SceneManager';
 import Inventory from './Inventory/Inventory';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, hudTransformAtom, breakpointAtom } from '../atoms/gameState';
+import { currentSceneAtom, hudTransformAtom, breakpointAtom, isSceneTransitioningAtom } from '../atoms/gameState';
 import { defaultHudTransforms } from '../util/utilSettings';
 type ViewportStyle = {
   top: string;
@@ -19,6 +19,7 @@ export function HUDFrameWorking() {
   const [src, setSrc] = useState('');
   const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
   const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
+  const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   
   const { zoom, translateX, translateY } = hudTransform;
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
@@ -143,6 +144,7 @@ export function HUDFrameWorking() {
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,
     transformOrigin: 'center center',
+    ...(isSceneTransitioning && { transition: 'transform 1.5s ease-in-out' }),
   };
 
   const viewportContainerStyle: CSSProperties = {

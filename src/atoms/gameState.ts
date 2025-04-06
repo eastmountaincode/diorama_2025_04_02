@@ -53,3 +53,9 @@ export const isFigurineTouchingDropZoneAtom = atom<boolean>(false);
 
 // Atom to track if the figurine has been successfully placed in the drop zone
 export const isFigurinePlacedAtom = atom<boolean>(false);
+
+// Atom to control when scene transitions should be animated
+export const isSceneTransitioningAtom = atom<boolean>(false);
+
+// Atom to control OpeningScene visibility independently
+export const showOpeningSceneAtom = atom<boolean>(true);

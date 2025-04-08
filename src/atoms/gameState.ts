@@ -59,3 +59,38 @@ export const isSceneTransitioningAtom = atom<boolean>(false);
 
 // Atom to control OpeningScene visibility independently
 export const showOpeningSceneAtom = atom<boolean>(true);
+
+// Floor boundary definition for the MainScene
+export interface Point {
+  x: number;
+  y: number;
+}
+
+export interface FloorBoundaryShape {
+  topLeft: Point;
+  topRight: Point;
+  bottomRight: Point;
+  bottomLeft: Point;
+}
+
+// Shared definition of floor boundary with exact coordinates
+export const FLOOR_BOUNDARY = {
+  mobile: {
+    topLeft: { x: 19, y: 38.4 },
+    topRight: { x: 53, y: 38.4 },
+    bottomRight: { x: 75, y: 53 },
+    bottomLeft: { x: 6, y: 53 }
+  },
+  desktop: {
+    topLeft: { x: 24, y: 37.2 },
+    topRight: { x: 49, y: 37.2 },
+    bottomRight: { x: 66.3, y: 62 },
+    bottomLeft: { x: 13, y: 62.5 }
+  }
+};
+
+// Offset for the floor boundary
+export const FLOOR_BOUNDARY_OFFSET = {
+  x: 10,
+  y: 10
+};

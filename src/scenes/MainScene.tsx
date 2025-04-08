@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, isSceneTransitioningAtom, breakpointAtom } from '../atoms/gameState';
+import { currentSceneAtom, isSceneTransitioningAtom } from '../atoms/gameState';
+import MainDraggableFigurine from '../components/MainDraggableFigurine';
+import FloorBoundary from '../components/FloorBoundary';
 
 const MainScene: React.FC = () => {
     const [currentScene] = useAtom(currentSceneAtom);
     const [isSceneTransitioning, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
-    const [breakpoint] = useAtom(breakpointAtom);
     const [opacity, setOpacity] = useState(0);
     
-    // Reference to container and figurine
+    // Reference to container - explicitly typed as HTMLDivElement
     const containerRef = useRef<HTMLDivElement>(null);
-    const figurineRef = useRef<HTMLDivElement>(null);
     
-    // Store current position as x/y pixels from the top-left
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [isDragging, setIsDragging] = useState(false);
+    // Control whether the figurine can be dragged
+    const [canDragFigurine, _] = useState(true);
+    
+    // Debug mode for floor boundary
+    const debugBoundary = true;
     
     // Handle visibility based on current scene and transition state
     useEffect(() => {
@@ -22,6 +24,7 @@ const MainScene: React.FC = () => {
             // If we're transitioning to this scene, animate the fade in
             if (isSceneTransitioning) {
                 setOpacity(0);
+
                 const timer = setTimeout(() => {
                     setOpacity(1);
                     
@@ -43,67 +46,6 @@ const MainScene: React.FC = () => {
         }
     }, [currentScene, isSceneTransitioning, setIsSceneTransitioning]);
     
-    // Store the initial click offset from the figurine center
-    const clickOffset = useRef({ x: 0, y: 0 });
-    
-    const handlePointerDown = (e: React.PointerEvent) => {
-        if (isSceneTransitioning || !figurineRef.current) return;
-        
-        e.preventDefault();
-        setIsDragging(true);
-        
-        // Calculate offset from click point to figurine center
-        const figurineRect = figurineRef.current.getBoundingClientRect();
-        clickOffset.current = {
-            x: e.clientX - (figurineRect.left + figurineRect.width / 2),
-            y: e.clientY - (figurineRect.top + figurineRect.height / 2)
-        };
-        
-        // Capture pointer
-        figurineRef.current.setPointerCapture(e.pointerId);
-    };
-    
-    const handlePointerMove = (e: React.PointerEvent) => {
-        if (!isDragging || !containerRef.current) return;
-        
-        const containerRect = containerRef.current.getBoundingClientRect();
-        
-        // Get container dimensions
-        const containerWidth = containerRect.width;
-        const containerHeight = containerRect.height;
-        
-        // Calculate the new center position of the figurine (accounting for click offset)
-        const newCenterX = e.clientX - clickOffset.current.x - containerRect.left;
-        const newCenterY = e.clientY - clickOffset.current.y - containerRect.top;
-        
-        // Set position as percentages of container size
-        setPosition({
-            x: (newCenterX / containerWidth) * 100,
-            y: (newCenterY / containerHeight) * 100
-        });
-    };
-    
-    const handlePointerUp = (e: React.PointerEvent) => {
-        if (figurineRef.current) {
-            figurineRef.current.releasePointerCapture(e.pointerId);
-        }
-        setIsDragging(false);
-    };
-    
-    // Set initial position
-    useEffect(() => {
-        if (containerRef.current) {
-            
-            // Convert the bottom/left positioning to top/left
-            const bottomPos = breakpoint === 'mobile' ? 41.6 : 35.8;
-            const leftPos = breakpoint === 'mobile' ? 49.3 : 49.1;
-            
-            setPosition({
-                x: leftPos,
-                y: 100 - bottomPos
-            });
-        }
-    }, [breakpoint]);
     
     return (
         <div 
@@ -120,40 +62,15 @@ const MainScene: React.FC = () => {
                 position: 'relative'
             }}
         >
+            {/* Floor Boundary */}
+            <FloorBoundary debug={debugBoundary} />
+            
             {/* Main Figurine */}
-            <div 
-                ref={figurineRef}
-                className="absolute" 
-                style={{
-                    // Position using top/left rather than bottom/left
-                    top: `${position.y}%`,
-                    left: `${position.x}%`,
-                    transform: 'translate(-50%, -50%)', // Center the figurine
-                    
-                    // Size control based on breakpoint
-                    width: breakpoint === 'mobile' ? '7.3%' : '4.5%',
-                    
-                    // Other styles
-                    zIndex: 130,
-                    cursor: isDragging ? 'grabbing' : 'grab',
-                    transition: isDragging ? 'none' : 'all 0.1s ease-out'
-                }}
-                onPointerDown={handlePointerDown}
-                onPointerMove={handlePointerMove}
-                onPointerUp={handlePointerUp}
-                onPointerCancel={handlePointerUp}
-            >
-                <img 
-                    src="assets/figure/Laila_sprite_cropped.png"
-                    alt="Laila Figurine"
-                    style={{
-                        width: '100%',
-                        height: 'auto',
-                    }}
-                    draggable={false}
-                    className="pointer-events-none"
-                />
-            </div>
+            <MainDraggableFigurine 
+                containerRef={containerRef}
+                canDragFigurine={canDragFigurine}
+            />
+            
         </div>
     );
 };

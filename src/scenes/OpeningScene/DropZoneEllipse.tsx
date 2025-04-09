@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { dropZoneRectAtom, isFigurinePlacedAtom, hudTransformAtom, isSceneTransitioningAtom, currentSceneAtom } from '../../atoms/gameState';
+import { dropZoneRectAtom, hudTransformAtom, isSceneTransitioningAtom, currentSceneAtom } from '../../atoms/gameState';
 
 interface DropZoneEllipseProps {
   breakpoint: string;

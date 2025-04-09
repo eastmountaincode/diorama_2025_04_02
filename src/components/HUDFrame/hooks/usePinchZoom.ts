@@ -112,7 +112,6 @@ export function usePinchZoom() {
             
             // Scale factor between scene coordinates and screen coordinates
             const startToSceneScale = 1 / startScale;
-            const newToSceneScale = 1 / newScale;
             
             // Convert pinch midpoint to scene coordinates (at start of gesture)
             const sceneMidpointX = (startMidpoint.x - pinchRef.current.startTranslate.x) * startToSceneScale;

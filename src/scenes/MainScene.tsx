@@ -42,14 +42,17 @@ const MainScene: React.FC = () => {
     // Debug mode for floor boundary
     const debugBoundary = true;
 
-    // Proximity distances for each interactive element (in percentage units)
-    const [proximityThresholds] = useState({
-        mirror: breakpoint === 'mobile' ? 7 : 8,    // Distance to be considered "near" the mirror
-        hydrant: breakpoint === 'mobile' ? 7.2 : 9,   // Distance to be considered "near" the hydrant
-        phone: breakpoint === 'mobile' ? 7.5 : 10.5,     // Distance to be considered "near" the phone
-        computer: breakpoint === 'mobile' ? 8.3 : 13,  // Larger proximity for computer on desktop
-        radio: breakpoint === 'mobile' ? 7.5 : 11     // Distance to be considered "near" the radio
+    // Get the proximity thresholds based on current breakpoint
+    const getThresholdsForBreakpoint = () => ({
+        mirror: breakpoint === 'mobile' ? 7 : 8,    
+        hydrant: breakpoint === 'mobile' ? 7.2 : 9,   
+        phone: breakpoint === 'mobile' ? 7.5 : 10.5,     
+        computer: breakpoint === 'mobile' ? 8.3 : 13,  
+        radio: breakpoint === 'mobile' ? 6.5 : 11     
     });
+
+    // Proximity distances for each interactive element (in percentage units)
+    const [proximityThresholds, setProximityThresholds] = useState(getThresholdsForBreakpoint());
 
     // Element positions (percentage coordinates)
     const initialPositions = {
@@ -78,9 +81,10 @@ const MainScene: React.FC = () => {
     // State for element positions that can be adjusted
     const [elementPositions, setElementPositions] = useState(initialPositions);
 
-    // Update initial positions when breakpoint changes
+    // Update positions and thresholds when breakpoint changes
     useEffect(() => {
         setElementPositions(initialPositions);
+        setProximityThresholds(getThresholdsForBreakpoint());
     }, [breakpoint, initialPositions]);
 
     // Calculate distance between figurine and an element
@@ -325,17 +329,6 @@ const MainScene: React.FC = () => {
                         />
                     )}
 
-                    {/* Instructions text */}
-                    <text 
-                        x="2" 
-                        y="5" 
-                        fill="#FFFFFF" 
-                        stroke="#000000" 
-                        strokeWidth="0.2"
-                        fontSize="2"
-                    >
-                        Press 'D' to toggle debug view
-                    </text>
                 </svg>
             )}
 

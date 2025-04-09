@@ -77,8 +77,8 @@ export interface FloorBoundaryShape {
 export const FLOOR_BOUNDARY = {
   mobile: {
     topLeft: { x: 19, y: 38.4 },
-    topRight: { x: 53, y: 38.4 },
-    bottomRight: { x: 75, y: 53 },
+    topRight: { x: 52, y: 38.4 },
+    bottomRight: { x: 74, y: 53 },
     bottomLeft: { x: 6, y: 53 }
   },
   desktop: {
@@ -88,7 +88,6 @@ export const FLOOR_BOUNDARY = {
     bottomLeft: { x: 13, y: 62.5 }
   }
 };
-
 // Offset for the floor boundary
 export const FLOOR_BOUNDARY_OFFSET = {
   x: 10,

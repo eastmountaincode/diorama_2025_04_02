@@ -62,6 +62,138 @@ const MainScene: React.FC = () => {
                 position: 'relative'
             }}
         >
+            {/* TV and Boxes */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_tv_and_boxes.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none', // Allow clicks to pass through to elements below
+                    zIndex: 40,
+                }}
+            />
+            
+            {/* Mirror */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_mirror.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none',
+                    zIndex: 39,
+                    filter: 'drop-shadow(0 0 5px rgba(212, 14, 14, 1)) drop-shadow(0 0 2px rgba(212, 14, 14, 1)) drop-shadow(0 0 1px rgba(212, 14, 14, 1))',
+                }}
+            />
+            
+            {/* Hydrant */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_hydrant.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none',
+                    zIndex: 39,
+                    filter: 'drop-shadow(0 0 5px rgba(212, 14, 14, 1)) drop-shadow(0 0 2px rgba(212, 14, 14, 1)) drop-shadow(0 0 1px rgba(212, 14, 14, 1))',
+                }}
+            />
+
+            {/* Stairs */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_stairs.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',  
+                    pointerEvents: 'none',
+                    zIndex: 40,
+                }}
+            />
+
+            {/* Phone */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_phone.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none',
+                    zIndex: 39,
+                    filter: 'drop-shadow(0 0 5px rgba(212, 14, 14, 1)) drop-shadow(0 0 2px rgba(212, 14, 14, 1)) drop-shadow(0 0 1px rgba(212, 14, 14, 1))',
+                }}
+            />
+
+            {/* Stuff in front of computer */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_stuff_in_front_of_computer.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none',
+                    zIndex: 40,
+                }}
+            />
+
+            {/* Computer */}
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundImage: "url('assets/bg/just_computer.png')",
+                    backgroundSize: 'contain',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    pointerEvents: 'none',
+                    zIndex: 39,
+                    filter: 'drop-shadow(0 0 5px rgba(212, 14, 14, 1)) drop-shadow(0 0 2px rgba(212, 14, 14, 1)) drop-shadow(0 0 1px rgba(212, 14, 14, 1))',
+                }}
+            />
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             {/* Floor Boundary */}
             <FloorBoundary debug={debugBoundary} />
             

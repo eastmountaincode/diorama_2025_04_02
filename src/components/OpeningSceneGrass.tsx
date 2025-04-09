@@ -64,7 +64,7 @@ const OpeningSceneGrass: React.FC<OpeningSceneGrassProps> = ({
       position: 'absolute' as const,
       left: ovalProps.cx,
       top: ovalProps.cy,
-      width: breakpoint === 'mobile' ? '7%' : '4.5%',
+      width: breakpoint === 'mobile' ? '7%' : '4.7%',
       height: 'auto',
       zIndex: 40,
       transform: getTransform()

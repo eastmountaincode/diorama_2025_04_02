@@ -166,9 +166,9 @@ const MainScene: React.FC = () => {
                 alt="Computer"
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '34.2%' : '32%',
-                    left: breakpoint === 'mobile' ? '50.4%' : '54%',
-                    width: breakpoint === 'mobile' ? '16%' : '7.7%',
+                    top: breakpoint === 'mobile' ? '39.4%' : '32%',
+                    left: breakpoint === 'mobile' ? '55.1%' : '54%',
+                    width: breakpoint === 'mobile' ? '9.1%' : '7.7%',
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,

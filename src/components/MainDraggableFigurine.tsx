@@ -5,7 +5,8 @@ import {
   isSceneTransitioningAtom, 
   FLOOR_BOUNDARY, 
   FLOOR_BOUNDARY_OFFSET,
-  FloorBoundaryShape 
+  FloorBoundaryShape,
+  figurinePositionAtom
 } from '../atoms/gameState';
 
 interface MainDraggableFigurineProps {
@@ -54,6 +55,8 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   
   // Store current position as x/y percentages from the top-left (0-100 scale)
   const [position, setPosition] = useState({ x: 0, y: 0 });
+  // Share position with MainScene for proximity detection
+  const [_, setFigurinePosition] = useAtom(figurinePositionAtom);
   const [isDragging, setIsDragging] = useState(false);
   
   // Store the initial click offset from the figurine center
@@ -89,6 +92,11 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
       });
     }
   }, [breakpoint, containerRef]);
+  
+  // Update figurine position atom whenever position changes
+  useEffect(() => {
+    setFigurinePosition(position);
+  }, [position, setFigurinePosition]);
   
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isSceneTransitioning || !figurineRef.current || !canDragFigurine) return;

@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom, currentSceneAtom, isSceneTransitioningAtom } from '../atoms/gameState';
+import { 
+    breakpointAtom, 
+    currentSceneAtom, 
+    isSceneTransitioningAtom,
+    figurinePositionAtom,
+    isNearMirrorAtom,
+    isNearHydrantAtom,
+    isNearPhoneAtom,
+    isNearComputerAtom,
+    isNearRadioAtom
+} from '../atoms/gameState';
 import MainDraggableFigurine from '../components/MainDraggableFigurine';
 import FloorBoundary from '../components/FloorBoundary';
 
@@ -10,6 +20,18 @@ const MainScene: React.FC = () => {
     const [opacity, setOpacity] = useState(0);
     const [breakpoint] = useAtom(breakpointAtom);
 
+    // Get figurine position
+    const [figurinePosition] = useAtom(figurinePositionAtom);
+
+    // Proximity states for interactive elements
+    const [isNearMirror, setIsNearMirror] = useAtom(isNearMirrorAtom);
+    const [isNearHydrant, setIsNearHydrant] = useAtom(isNearHydrantAtom);
+    const [isNearPhone, setIsNearPhone] = useAtom(isNearPhoneAtom);
+    const [isNearComputer, setIsNearComputer] = useAtom(isNearComputerAtom);
+    const [isNearRadio, setIsNearRadio] = useAtom(isNearRadioAtom);
+
+    // Debug state for proximity visualization
+    const [showProximityDebug, setShowProximityDebug] = useState(true);
 
     // Reference to container - explicitly typed as HTMLDivElement
     const containerRef = useRef<HTMLDivElement>(null);
@@ -19,6 +41,96 @@ const MainScene: React.FC = () => {
 
     // Debug mode for floor boundary
     const debugBoundary = true;
+
+    // Proximity distances for each interactive element (in percentage units)
+    const [proximityThresholds] = useState({
+        mirror: breakpoint === 'mobile' ? 7 : 8,    // Distance to be considered "near" the mirror
+        hydrant: breakpoint === 'mobile' ? 7.2 : 9,   // Distance to be considered "near" the hydrant
+        phone: breakpoint === 'mobile' ? 7.5 : 10.5,     // Distance to be considered "near" the phone
+        computer: breakpoint === 'mobile' ? 8.3 : 13,  // Larger proximity for computer on desktop
+        radio: breakpoint === 'mobile' ? 7.5 : 11     // Distance to be considered "near" the radio
+    });
+
+    // Element positions (percentage coordinates)
+    const initialPositions = {
+        mirror: {
+            x: breakpoint === 'mobile' ? 25.1 + 5.3 : 29.5 + 4.5,   // Left + half width
+            y: breakpoint === 'mobile' ? 49 + 5.3 : 53.4 + 4.5      // Top + half height
+        },
+        hydrant: {
+            x: breakpoint === 'mobile' ? 33 + 3.15 : 34.4 + 2.6,    // Left + half width
+            y: breakpoint === 'mobile' ? 41 + 3.15 : 41.9 + 2.6     // Top + half height
+        },
+        phone: {
+            x: breakpoint === 'mobile' ? 41.7 + 6.5 : 43.2 + 5.2,   // Left + half width
+            y: breakpoint === 'mobile' ? 37.9 + 6.5 : 34.6 + 5.2    // Top + half height
+        },
+        computer: {
+            x: breakpoint === 'mobile' ? 55.1 + 4.55 : 56 + 3.85,   // Left + half width
+            y: breakpoint === 'mobile' ? 41.4 + 4.55 : 35 + 3.85    // Top + half height
+        },
+        radio: {
+            x: breakpoint === 'mobile' ? 68.5 + 2.9 : 66.8 + 2.25,  // Left + half width
+            y: breakpoint === 'mobile' ? 51 + 2.9 : 52.5 + 2.25     // Top + half height
+        }
+    };
+
+    // State for element positions that can be adjusted
+    const [elementPositions, setElementPositions] = useState(initialPositions);
+
+    // Update initial positions when breakpoint changes
+    useEffect(() => {
+        setElementPositions(initialPositions);
+    }, [breakpoint, initialPositions]);
+
+    // Calculate distance between figurine and an element
+    const calculateDistance = (elementPosition: {x: number, y: number}) => {
+        const dx = figurinePosition.x - elementPosition.x;
+        const dy = figurinePosition.y - elementPosition.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    };
+
+    // Toggle debug visualization with 'D' key
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'd' || event.key === 'D') {
+                setShowProximityDebug(prev => !prev);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+
+    // Update proximity states based on figurine position
+    useEffect(() => {
+        if (figurinePosition) {
+            setIsNearMirror(calculateDistance(elementPositions.mirror) < proximityThresholds.mirror);
+            setIsNearHydrant(calculateDistance(elementPositions.hydrant) < proximityThresholds.hydrant);
+            setIsNearPhone(calculateDistance(elementPositions.phone) < proximityThresholds.phone);
+            setIsNearComputer(calculateDistance(elementPositions.computer) < proximityThresholds.computer);
+            setIsNearRadio(calculateDistance(elementPositions.radio) < proximityThresholds.radio);
+        }
+    }, [
+        figurinePosition, 
+        elementPositions.mirror, 
+        elementPositions.hydrant,
+        elementPositions.phone,
+        elementPositions.computer,
+        elementPositions.radio,
+        proximityThresholds.mirror,
+        proximityThresholds.hydrant,
+        proximityThresholds.phone,
+        proximityThresholds.computer,
+        proximityThresholds.radio,
+        setIsNearMirror,
+        setIsNearHydrant,
+        setIsNearPhone,
+        setIsNearComputer,
+        setIsNearRadio
+    ]);
 
     // Handle visibility based on current scene and transition state
     useEffect(() => {
@@ -59,11 +171,174 @@ const MainScene: React.FC = () => {
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 opacity,
-                transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none',
+                transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none', 
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
                 position: 'relative'
             }}
         >
+            {/* Debug visualization SVG */}
+            {showProximityDebug && (
+                <svg 
+                    className="absolute inset-0 w-full h-full pointer-events-none" 
+                    viewBox="0 0 100 100"
+                    preserveAspectRatio="none"
+                    style={{ zIndex: 9999 }}
+                >
+                    {/* Mirror proximity visualization */}
+                    <circle 
+                        cx={elementPositions.mirror.x} 
+                        cy={elementPositions.mirror.y} 
+                        r={0.8} 
+                        fill="#0066FF" 
+                        opacity={0.8} 
+                    />
+                    <circle 
+                        cx={elementPositions.mirror.x} 
+                        cy={elementPositions.mirror.y} 
+                        r={proximityThresholds.mirror} 
+                        fill={isNearMirror ? "rgba(0,102,255,0.2)" : "none"} 
+                        stroke="#0066FF" 
+                        strokeWidth="0.2" 
+                        opacity={0.5}
+                    />
+                    <text 
+                        x={elementPositions.mirror.x + 1} 
+                        y={elementPositions.mirror.y - 1} 
+                        fill="#0066FF" 
+                        fontSize="1.5"
+                    >
+                        Mirror
+                    </text>
+
+                    {/* Hydrant proximity visualization */}
+                    <circle 
+                        cx={elementPositions.hydrant.x} 
+                        cy={elementPositions.hydrant.y} 
+                        r={0.8} 
+                        fill="#0066FF" 
+                        opacity={0.8} 
+                    />
+                    <circle 
+                        cx={elementPositions.hydrant.x} 
+                        cy={elementPositions.hydrant.y} 
+                        r={proximityThresholds.hydrant} 
+                        fill={isNearHydrant ? "rgba(0,102,255,0.2)" : "none"} 
+                        stroke="#0066FF" 
+                        strokeWidth="0.2" 
+                        opacity={0.5}
+                    />
+                    <text 
+                        x={elementPositions.hydrant.x + 1} 
+                        y={elementPositions.hydrant.y - 1} 
+                        fill="#0066FF" 
+                        fontSize="1.5"
+                    >
+                        Hydrant
+                    </text>
+
+                    {/* Phone proximity visualization */}
+                    <circle 
+                        cx={elementPositions.phone.x} 
+                        cy={elementPositions.phone.y} 
+                        r={0.8} 
+                        fill="#0066FF" 
+                        opacity={0.8} 
+                    />
+                    <circle 
+                        cx={elementPositions.phone.x} 
+                        cy={elementPositions.phone.y} 
+                        r={proximityThresholds.phone} 
+                        fill={isNearPhone ? "rgba(0,102,255,0.2)" : "none"} 
+                        stroke="#0066FF" 
+                        strokeWidth="0.2" 
+                        opacity={0.5}
+                    />
+                    <text 
+                        x={elementPositions.phone.x + 1} 
+                        y={elementPositions.phone.y - 1} 
+                        fill="#0066FF" 
+                        fontSize="1.5"
+                    >
+                        Phone
+                    </text>
+
+                    {/* Computer proximity visualization */}
+                    <circle 
+                        cx={elementPositions.computer.x} 
+                        cy={elementPositions.computer.y} 
+                        r={0.8} 
+                        fill="#0066FF" 
+                        opacity={0.8} 
+                    />
+                    <circle 
+                        cx={elementPositions.computer.x} 
+                        cy={elementPositions.computer.y} 
+                        r={proximityThresholds.computer} 
+                        fill={isNearComputer ? "rgba(0,102,255,0.2)" : "none"} 
+                        stroke="#0066FF" 
+                        strokeWidth="0.2" 
+                        opacity={0.5}
+                    />
+                    <text 
+                        x={elementPositions.computer.x + 1} 
+                        y={elementPositions.computer.y - 1} 
+                        fill="#0066FF" 
+                        fontSize="1.5"
+                    >
+                        Computer
+                    </text>
+
+                    {/* Radio proximity visualization */}
+                    <circle 
+                        cx={elementPositions.radio.x} 
+                        cy={elementPositions.radio.y} 
+                        r={0.8} 
+                        fill="#0066FF" 
+                        opacity={0.8} 
+                    />
+                    <circle 
+                        cx={elementPositions.radio.x} 
+                        cy={elementPositions.radio.y} 
+                        r={proximityThresholds.radio} 
+                        fill={isNearRadio ? "rgba(0,102,255,0.2)" : "none"} 
+                        stroke="#0066FF" 
+                        strokeWidth="0.2" 
+                        opacity={0.5}
+                    />
+                    <text 
+                        x={elementPositions.radio.x + 1} 
+                        y={elementPositions.radio.y - 1} 
+                        fill="#0066FF" 
+                        fontSize="1.5"
+                    >
+                        Radio
+                    </text>
+
+                    {/* Figurine position dot */}
+                    {figurinePosition && (
+                        <circle 
+                            cx={figurinePosition.x} 
+                            cy={figurinePosition.y} 
+                            r={0.8} 
+                            fill="#FF3333" 
+                            opacity={0.8} 
+                        />
+                    )}
+
+                    {/* Instructions text */}
+                    <text 
+                        x="2" 
+                        y="5" 
+                        fill="#FFFFFF" 
+                        stroke="#000000" 
+                        strokeWidth="0.2"
+                        fontSize="2"
+                    >
+                        Press 'D' to toggle debug view
+                    </text>
+                </svg>
+            )}
+
             {/* TV and Boxes */}
             <img
                 src="assets/bg/bg_compressed_pngquant/just_tv_and_boxes-fs8.png"
@@ -91,7 +366,10 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,
-                    filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+                    filter: isNearMirror 
+                        ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
+                        : 'none',
+                    transition: 'filter 0.3s ease-in-out'
                 }}
             />
 
@@ -107,7 +385,10 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,
-                    filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+                    filter: isNearHydrant 
+                        ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
+                        : 'none',
+                    transition: 'filter 0.3s ease-in-out'
                 }}
             />
 
@@ -139,7 +420,10 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,
-                    filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+                    filter: isNearPhone 
+                        ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
+                        : 'none',
+                    transition: 'filter 0.3s ease-in-out'
                 }}
             />
 
@@ -172,7 +456,10 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,
-                    filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+                    filter: isNearComputer 
+                        ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
+                        : 'none',
+                    transition: 'filter 0.3s ease-in-out'
                 }}
             />
 
@@ -188,7 +475,10 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 39,
-                    filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+                    filter: isNearRadio 
+                        ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
+                        : 'none',
+                    transition: 'filter 0.3s ease-in-out'
                 }}
             />
 

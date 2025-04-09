@@ -93,3 +93,16 @@ export const FLOOR_BOUNDARY_OFFSET = {
   x: 10,
   y: 10
 };
+
+// Atom to track the figurine's position in MainScene
+export const figurinePositionAtom = atom<{x: number, y: number}>({
+  x: 0,
+  y: 0
+});
+
+// Atoms to track if figurine is near interactive elements
+export const isNearMirrorAtom = atom<boolean>(false);
+export const isNearHydrantAtom = atom<boolean>(false);
+export const isNearPhoneAtom = atom<boolean>(false);
+export const isNearComputerAtom = atom<boolean>(false);
+export const isNearRadioAtom = atom<boolean>(false);

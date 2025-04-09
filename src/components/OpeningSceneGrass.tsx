@@ -85,7 +85,7 @@ const OpeningSceneGrass: React.FC<OpeningSceneGrassProps> = ({
   return (
     <>
       <img 
-        src="assets/bg/grass_alone_final.png" 
+        src="assets/bg/bg_compressed_pngquant/grass_alone_final-fs8.png" 
         alt="Grass"
         style={getGrassImageStyle()}
         className="absolute top-0 left-0"

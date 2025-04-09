@@ -31,7 +31,7 @@ const MainScene: React.FC = () => {
     const [isNearRadio, setIsNearRadio] = useAtom(isNearRadioAtom);
 
     // Debug state for proximity visualization
-    const [showProximityDebug, setShowProximityDebug] = useState(true);
+    const [showProximityDebug, setShowProximityDebug] = useState(false);
 
     // Reference to container - explicitly typed as HTMLDivElement
     const containerRef = useRef<HTMLDivElement>(null);
@@ -44,11 +44,11 @@ const MainScene: React.FC = () => {
 
     // Get the proximity thresholds based on current breakpoint
     const getThresholdsForBreakpoint = () => ({
-        mirror: breakpoint === 'mobile' ? 7 : 8,    
-        hydrant: breakpoint === 'mobile' ? 7.2 : 9,   
+        mirror: breakpoint === 'mobile' ? 7.5 : 8,    
+        hydrant: breakpoint === 'mobile' ? 7.7 : 9,   
         phone: breakpoint === 'mobile' ? 7.5 : 10.5,     
         computer: breakpoint === 'mobile' ? 8.3 : 13,  
-        radio: breakpoint === 'mobile' ? 6.5 : 11     
+        radio: breakpoint === 'mobile' ? 7 : 11     
     });
 
     // Proximity distances for each interactive element (in percentage units)

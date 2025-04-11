@@ -8,6 +8,7 @@ import {
   FloorBoundaryShape,
   figurinePositionAtom
 } from '../atoms/gameState';
+import { useCursor } from '../context/CursorContext';
 
 interface MainDraggableFigurineProps {
   containerRef: any; // Using any to bypass type check issues temporarily
@@ -49,6 +50,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
 }) => {
   const [breakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
+  const { setCursorType } = useCursor();
   
   // Reference to the figurine element
   const figurineRef = useRef<HTMLDivElement>(null);
@@ -98,11 +100,19 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     setFigurinePosition(position);
   }, [position, setFigurinePosition]);
   
+  // Set cursor based on dragging state
+  useEffect(() => {
+    if (canDragFigurine) {
+      setCursorType(isDragging ? 'grabbing' : 'grab');
+    }
+  }, [isDragging, canDragFigurine, setCursorType]);
+  
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isSceneTransitioning || !figurineRef.current || !canDragFigurine) return;
     
     e.preventDefault();
     setIsDragging(true);
+    setCursorType('grabbing');
   
     const figurineRect = figurineRef.current.getBoundingClientRect();
   
@@ -153,12 +163,15 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
       figurineRef.current.releasePointerCapture(e.pointerId);
     }
     setIsDragging(false);
+    if (canDragFigurine) {
+      setCursorType('grab');
+    }
   };
   
   return (
     <div 
       ref={figurineRef}
-      className="absolute" 
+      className="absolute"
       style={{
         // Position using top/left with the same coordinate system as the SVG viewBox
         top: `${position.y}%`,
@@ -170,7 +183,6 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
         
         // Other styles
         zIndex: 11130,
-        cursor: !canDragFigurine ? 'default' : isDragging ? 'grabbing' : 'grab',
         transition: isDragging ? 'none' : 'all 0.1s ease-out'
       }}
       onPointerDown={handlePointerDown}

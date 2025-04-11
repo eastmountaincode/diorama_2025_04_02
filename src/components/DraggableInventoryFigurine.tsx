@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { dropZoneRectAtom, isFigurineTouchingDropZoneAtom, isFigurinePlacedAtom } from '../atoms/gameState';
+import { useCursor } from '../context/CursorContext';
 
 interface DraggableInventoryFigurineProps {
     children: React.ReactNode;
@@ -9,6 +10,7 @@ interface DraggableInventoryFigurineProps {
 
 const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({ children, anchorDependency }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const { setCursorType } = useCursor();
 
     // Absolute position in pixels.
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -29,6 +31,17 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
     const [dropZoneShape] = useAtom(dropZoneRectAtom);
     const [isFigurineTouchingDropZone, setIsFigurineOverDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
     const [isFigurinePlaced, setIsFigurinePlaced] = useAtom(isFigurinePlacedAtom);
+
+    // Update cursor type based on hover and drag state
+    useEffect(() => {
+        if (isDragging) {
+            setCursorType('grabbing');
+        } else if (isHovered && !isFigurinePlaced) {
+            setCursorType('pointer');
+        } else {
+            setCursorType('default');
+        }
+    }, [isDragging, isHovered, isFigurinePlaced, setCursorType]);
 
     // Helper function to check if a point is inside an ellipse
     const isPointInsideEllipse = (
@@ -217,8 +230,6 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
                 alignItems: 'center',
                 transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 touchAction: 'none',
-                cursor: isDragging ? 'grabbing' : isHovered ? 'grab' : 'default',
-                background: 'transparent',
                 transition: isDragging 
                     ? 'none' 
                     : 'transform 0.2s ease',

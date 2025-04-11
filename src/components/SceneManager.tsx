@@ -2,7 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { showOpeningSceneAtom } from '../atoms/gameState';
 import OpeningScene from '../scenes/OpeningScene/OpeningScene';
-import MainScene from '../scenes/MainScene';
+import MainScene from '../scenes/MainScene/MainScene';
 
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);

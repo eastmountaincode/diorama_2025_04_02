@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction } from 'react';
 import { HudTransform } from '../../atoms/gameState'; // Assuming path is correct
 import { MAX_ZOOM, MIN_ZOOM } from '../../util/utilSettings';
+import { useCursor } from '../../context/CursorContext';
 
 interface HUDZoomControlsProps {
   setHudTransform: Dispatch<SetStateAction<HudTransform>>;
@@ -9,10 +10,23 @@ interface HUDZoomControlsProps {
 const HUD_ZOOM_STEP = 0.5;
 
 export const HUDZoomControls: React.FC<HUDZoomControlsProps> = ({ setHudTransform }) => {
+  const { setCursorType } = useCursor();
+
+  // Handler functions for cursor changes
+  const handleMouseEnter = () => {
+    setCursorType('pointer');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorType('default');
+  };
+
   return (
     <div 
       className="absolute top-8 z-50 flex flex-col items-center"
-      style={{ right: '19%' }} // Note: This positioning might need adjustment or be passed as a prop
+      style={{ right: '19%', pointerEvents: 'auto' }} // Note: This positioning might need adjustment or be passed as a prop
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {/* Background container for all zoom controls */}
       <div className="bg-gray-800 bg-opacity-30 p-1.5 rounded border border-gray-600 border-opacity-20 backdrop-blur-sm">
@@ -30,7 +44,10 @@ export const HUDZoomControls: React.FC<HUDZoomControlsProps> = ({ setHudTransfor
             ...prev,
             zoom: Math.min(prev.zoom + 0.3, MAX_ZOOM)
           }))}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           title="Zoom In"
+          style={{ pointerEvents: 'auto' }}
         >
           <span className="text-xs leading-none flex items-center justify-center h-full">+</span>
         </button>
@@ -43,7 +60,10 @@ export const HUDZoomControls: React.FC<HUDZoomControlsProps> = ({ setHudTransfor
             ...prev,
             zoom: Math.max(prev.zoom - HUD_ZOOM_STEP, MIN_ZOOM)
           }))}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
           title="Zoom Out"
+          style={{ pointerEvents: 'auto' }}
         >
           <span className="text-xs leading-none flex items-center justify-center h-full">−</span>
         </button>

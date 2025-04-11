@@ -1,12 +1,16 @@
 import './App.css'
 import { GameSpace } from './components/GameSpace'
+import { CursorProvider } from './context/CursorContext'
+import CustomCursor from './components/CustomCursor'
 
 function App() {
-
   return (
-    <div className="w-full h-full">
-      <GameSpace />
-    </div>
+    <CursorProvider>
+      <div className="w-full h-full" style={{ cursor: 'none' }}>
+        <CustomCursor />
+        <GameSpace />
+      </div>
+    </CursorProvider>
   )
 }
 

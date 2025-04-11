@@ -94,9 +94,9 @@ export function HUDFrame() {
       {/* Main content container */}
       <div className="relative w-full h-full flex items-center justify-center z-20">
         {/* Breakpoint Indicator */}
-        <div className="absolute top-2 left-2 z-30 bg-black bg-opacity-50 text-white text-xs p-1 rounded pointer-events-none">
+        {/* <div className="absolute top-2 left-2 z-30 bg-black bg-opacity-50 text-white text-xs p-1 rounded pointer-events-none">
           Breakpoint: {breakpoint}
-        </div>
+        </div> */}
 
         {/* Container wrapping HUD frame image */}
         <div className="inline-block relative p-2">

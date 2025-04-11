@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { dropZoneRectAtom, hudTransformAtom, isSceneTransitioningAtom, currentSceneAtom } from '../../atoms/gameState';
+import { useCursor } from '../../context/CursorContext';
 
 interface DropZoneEllipseProps {
   breakpoint: string;
@@ -18,6 +19,7 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
   const [, setHudTransform] = useAtom(hudTransformAtom);
   const [, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [, setCurrentScene] = useAtom(currentSceneAtom);
+  const { setCursorType } = useCursor();
 
   // Set oval position based on breakpoint
   const getOvalProps = () => {
@@ -119,7 +121,6 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
       fill: "rgba(255, 255, 0, 0)",
       stroke: "rgba(255, 255, 0, 0)",
       strokeWidth: 0,
-      cursor: isFigurinePlaced ? 'pointer' : 'default',
       pointerEvents: isFigurinePlaced ? 'auto' as const : 'none' as const
     };
   };
@@ -151,11 +152,13 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
   const handleEllipseMouseEnter = () => {
     if (isFigurinePlaced) {
       setIsEllipseHovered(true);
+      setCursorType('pointer');
     }
   };
   
   const handleEllipseMouseLeave = () => {
     setIsEllipseHovered(false);
+    setCursorType('default');
   };
 
   return (

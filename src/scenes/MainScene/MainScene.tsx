@@ -17,7 +17,7 @@ import MainSceneProximityManager from './MainSceneProximityManager';
 import { useCursor } from '../../context/CursorContext';
 
 const MainScene: React.FC = () => {
-    const [currentScene] = useAtom(currentSceneAtom);
+    const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
     const [isSceneTransitioning, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
     const [opacity, setOpacity] = useState(0);
     const [breakpoint] = useAtom(breakpointAtom);
@@ -64,6 +64,7 @@ const MainScene: React.FC = () => {
     const handleHydrantClick = () => {
         if (isNearHydrant) {
             console.log('Hydrant clicked!');
+            setCurrentScene('HydrantScene');
         }
     };
 
@@ -102,7 +103,7 @@ const MainScene: React.FC = () => {
     // Handle visibility based on current scene and transition state
     useEffect(() => {
         if (currentScene === 'MainScene') {
-            // If we're transitioning to this scene, animate the fade in
+            // Only handle transitions from OpeningScene
             if (isSceneTransitioning) {
                 setOpacity(0);
 
@@ -121,6 +122,9 @@ const MainScene: React.FC = () => {
                 // When not in transition mode but this is the current scene, ensure scene is fully visible
                 setOpacity(1);
             }
+        } else if (currentScene === 'HydrantScene') {
+            // Keep opacity when switching between MainScene and HydrantScene
+            // This ensures figure position is preserved
         } else {
             // If this is not the current scene, keep it invisible
             setOpacity(0);
@@ -137,7 +141,7 @@ const MainScene: React.FC = () => {
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                opacity,
+                opacity: currentScene === 'HydrantScene' ? 1 : opacity,
                 transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none', 
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
                 position: 'relative'

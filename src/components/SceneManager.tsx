@@ -1,21 +1,32 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { showOpeningSceneAtom } from '../atoms/gameState';
+import { showOpeningSceneAtom, currentSceneAtom, isSceneTransitioningAtom } from '../atoms/gameState';
 import OpeningScene from '../scenes/OpeningScene/OpeningScene';
 import MainScene from '../scenes/MainScene/MainScene';
+import HydrantScene from '../scenes/HydrantScene/HydrantScene';
 
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
-
-  // Always render both scenes, but control visibility
+  const [currentScene] = useAtom(currentSceneAtom);
+  const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
+  
   return (
     <div className="relative w-full h-full">
       {/* MainScene is always rendered beneath */}
-      <div className="absolute inset-0">
+      <div className="absolute inset-0" style={{
+        visibility: (currentScene === 'MainScene' || showOpeningScene) ? 'visible' : 'hidden'
+      }}>
         <MainScene />
       </div>
       
-      {/* OpeningScene stays visible based on the showOpeningScene atom */}
+      {/* HydrantScene - Only rendered when active */}
+      {currentScene === 'HydrantScene' && (
+        <div className="absolute inset-0">
+          <HydrantScene />
+        </div>
+      )}
+      
+      {/* OpeningScene - Special transition handling */}
       {showOpeningScene && (
         <div className="absolute inset-0">
           <OpeningScene />

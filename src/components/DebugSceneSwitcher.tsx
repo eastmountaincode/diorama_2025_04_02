@@ -1,19 +1,34 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
-const scenes: SceneType[] = ['OpeningScene', 'MainScene'];
+const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene'];
 
 // Define possible states for the Inventory (adjust as needed)
 const inventoryStates: Array<'OpeningScene' | 'MainGame'> = ['OpeningScene', 'MainGame'];
 
 export function DebugSceneSwitcher() {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
+  const [, setIsSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [inventoryState, setInventoryState] = useAtom(inventoryStateAtom);
   const [hudTransform] = useAtom(hudTransformAtom);
   const [isFigurineTouchingDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
+  const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [isVisible, setIsVisible] = useState(false);
+  
+  const handleSceneChange = (scene: SceneType) => {
+    // Only use transition for OpeningScene to MainScene
+    if (currentScene === 'OpeningScene' && scene === 'MainScene') {
+      setIsSceneTransitioning(true);
+      setTimeout(() => {
+        setCurrentScene(scene);
+      }, 500);
+    } else {
+      // Direct scene change without transition
+      setCurrentScene(scene);
+    }
+  };
 
   return (
     <div className="absolute top-4 right-4 z-50">
@@ -27,7 +42,7 @@ export function DebugSceneSwitcher() {
                 {scenes.map((scene) => (
                   <button
                     key={scene}
-                    onClick={() => setCurrentScene(scene)}
+                    onClick={() => handleSceneChange(scene)}
                     className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
                       currentScene === scene
                         ? 'bg-blue-500'
@@ -58,6 +73,21 @@ export function DebugSceneSwitcher() {
                   </button>
                 ))}
               </div>
+            </div>
+            
+            {/* Hydrant Task Completed toggle */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">Hydrant Task:</span>
+              <button
+                onClick={() => setHydrantTaskCompleted(!hydrantTaskCompleted)}
+                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                  hydrantTaskCompleted
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {hydrantTaskCompleted ? 'Completed' : 'Not Completed'}
+              </button>
             </div>
             
             {/* HUD transform information section */}

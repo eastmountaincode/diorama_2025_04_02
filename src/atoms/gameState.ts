@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export type SceneType = 'OpeningScene' | 'MainScene';
+export type SceneType = 'OpeningScene' | 'MainScene' | 'HydrantScene';
 export const currentSceneAtom = atom<SceneType>('OpeningScene');
 
 export type InventoryState = 'OpeningScene' | 'MainGame';
@@ -106,3 +106,6 @@ export const isNearHydrantAtom = atom<boolean>(false);
 export const isNearPhoneAtom = atom<boolean>(false);
 export const isNearComputerAtom = atom<boolean>(false);
 export const isNearRadioAtom = atom<boolean>(false);
+
+
+export const hydrantTaskCompletedAtom = atom<boolean>(false);

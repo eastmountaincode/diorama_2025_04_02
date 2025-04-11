@@ -1,9 +1,17 @@
-import { SceneType } from "../atoms/gameState";
+import { SceneType, BreakpointType } from "../atoms/gameState";
 
-// Default HUD transform values for each scene.
-export const defaultHudTransforms: Record<SceneType, { zoom: number; translateX: number; translateY: number }> = {
-    OpeningScene: { zoom: 2.5, translateX: 0, translateY: -30 }, // Higher zoom for opening scene.
+// Default HUD transform values for each scene, separated by breakpoint
+export const defaultHudTransforms: Record<BreakpointType, Record<SceneType, { zoom: number; translateX: number; translateY: number }>> = {
+  desktop: {
+    OpeningScene: { zoom: 2.5, translateX: 0, translateY: -30 }, // Higher zoom for opening scene
     MainScene: { zoom: 1, translateX: 0, translateY: 0 },
+    HydrantScene: { zoom: 1.4, translateX: 0, translateY: 0 },
+  },
+  mobile: {
+    OpeningScene: { zoom: 2.5, translateX: 0, translateY: -30 }, // Even higher zoom for mobile
+    MainScene: { zoom: 1, translateX: 0, translateY: 0 },
+    HydrantScene: { zoom: 2.3, translateX: 0, translateY: 0 },
+  }
 };
 
 export const MAX_ZOOM = 3.5;

@@ -6,6 +6,7 @@ import { currentSceneAtom, hudTransformAtom, breakpointAtom, isSceneTransitionin
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
 import { HUDZoomControls } from './HUDZoomControls';
+import { useCursor } from '../../context/CursorContext';
 
 type ViewportStyle = {
   top: string;
@@ -15,12 +16,13 @@ type ViewportStyle = {
 };
 
 export function HUDFrame() {
-  const [currentScene] = useAtom(currentSceneAtom);
+  const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
   const [src, setSrc] = useState('');
   const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
   const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const { zoom, translateX, translateY } = hudTransform;
+  const { setCursorType } = useCursor();
 
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
     top: '50%',
@@ -29,11 +31,11 @@ export function HUDFrame() {
     height: '60%',
   });
 
-  // Update the HUD transform defaults when the scene changes.
+  // Update the HUD transform defaults when the scene or breakpoint changes.
   useEffect(() => {
-    const defaults = defaultHudTransforms[currentScene];
+    const defaults = defaultHudTransforms[breakpoint][currentScene];
     setHudTransform(defaults);
-  }, [currentScene, setHudTransform]);
+  }, [currentScene, breakpoint, setHudTransform]);
 
   // Update HUD source and viewport style based on screen size
   useEffect(() => {
@@ -71,6 +73,10 @@ export function HUDFrame() {
     viewportRef
   } = usePinchZoom();
 
+  // Handle back button for object scenes
+  const handleBackToMainScene = () => {
+    setCurrentScene('MainScene');
+  };
 
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,
@@ -116,9 +122,23 @@ export function HUDFrame() {
               </div>
             </div>
             
-            {/* HUD Transform Controls - only visible on desktop and MainScene */}
-            {breakpoint === 'desktop' && currentScene === 'MainScene' && !isSceneTransitioning && (
+            {/* HUD Transform Controls - visible on desktop for MainScene and HydrantScene */}
+            {breakpoint === 'desktop' && (currentScene === 'MainScene' || currentScene === 'HydrantScene') && !isSceneTransitioning && (
               <HUDZoomControls setHudTransform={setHudTransform} />
+            )}
+            
+            {/* Back Button - only visible in object scenes */}
+            {(currentScene === 'HydrantScene') && (
+              <button
+                className={`absolute z-50 bg-red-500 bg-opacity-70 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors ${
+                  breakpoint === 'mobile' ? 'top-2 left-2 text-sm' : 'top-4 left-4'
+                }`}
+                onClick={handleBackToMainScene}
+                onMouseEnter={() => setCursorType('pointer')}
+                onMouseLeave={() => setCursorType('default')}
+              >
+                Back
+              </button>
             )}
           </div>
           {/* HUD Frame Image overlay */}

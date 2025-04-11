@@ -4,7 +4,21 @@ import { useCursor } from '../context/CursorContext';
 const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
   const { cursorType } = useCursor();
+
+  // Detect iOS/iPadOS devices
+  useEffect(() => {
+    // Check if device is iOS/iPadOS
+    const isIOSDevice = () => {
+      return (
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+      );
+    };
+    
+    setIsIOS(isIOSDevice());
+  }, []);
 
   // Map cursor types to image paths
   const cursorImages = {
@@ -15,6 +29,9 @@ const CustomCursor: React.FC = () => {
   };
 
   useEffect(() => {
+    // Only add event listeners if not iOS/iPadOS
+    if (isIOS) return;
+
     // Update cursor position on both pointer move and touch events
     const updatePosition = (e: PointerEvent | TouchEvent) => {
       // Get coordinates based on event type
@@ -83,7 +100,10 @@ const CustomCursor: React.FC = () => {
       document.removeEventListener('touchmove', updatePosition as EventListener);
       document.removeEventListener('touchend', handleTouchEnd);
     };
-  }, []);
+  }, [isIOS]);
+
+  // Don't render the cursor on iOS/iPadOS devices
+  if (isIOS) return null;
 
   return (
     <div

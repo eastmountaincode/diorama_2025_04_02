@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { showOpeningSceneAtom, currentSceneAtom, isSceneTransitioningAtom } from '../atoms/gameState';
+import { showOpeningSceneAtom, currentSceneAtom } from '../atoms/gameState';
 import OpeningScene from '../scenes/OpeningScene/OpeningScene';
 import MainScene from '../scenes/MainScene/MainScene';
 import HydrantScene from '../scenes/HydrantScene/HydrantScene';
@@ -8,7 +8,6 @@ import HydrantScene from '../scenes/HydrantScene/HydrantScene';
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
   const [currentScene] = useAtom(currentSceneAtom);
-  const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   
   return (
     <div className="relative w-full h-full">

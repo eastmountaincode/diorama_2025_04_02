@@ -4,7 +4,6 @@ import {
     breakpointAtom, 
     currentSceneAtom, 
     isSceneTransitioningAtom,
-    figurinePositionAtom,
     isNearMirrorAtom,
     isNearHydrantAtom,
     isNearPhoneAtom,
@@ -22,9 +21,6 @@ const MainScene: React.FC = () => {
     const [opacity, setOpacity] = useState(0);
     const [breakpoint] = useAtom(breakpointAtom);
     const { setCursorType } = useCursor();
-
-    // Get figurine position
-    const [figurinePosition] = useAtom(figurinePositionAtom);
 
     // Proximity states for interactive elements
     const [isNearMirror] = useAtom(isNearMirrorAtom);

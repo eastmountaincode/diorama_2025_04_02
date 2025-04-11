@@ -66,7 +66,7 @@ const CustomCursor: React.FC = () => {
     };
 
     // For touch end events
-    const handleTouchEnd = (e: TouchEvent) => {
+    const handleTouchEnd = () => {
       // Keep the cursor visible at the last position
       // We don't change position here since there are no coordinates on touchend
     };

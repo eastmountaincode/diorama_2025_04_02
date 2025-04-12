@@ -111,3 +111,10 @@ export const isNearRadioAtom = atom<boolean>(false);
 export const hydrantTaskCompletedAtom = atom<boolean>(false);
 export const radioTaskCompletedAtom = atom<boolean>(false);
 export const mirrorTaskCompletedAtom = atom<boolean>(false);
+
+// Camera permission states: 'not-requested', 'granted', 'denied', 'dismissed'
+export type CameraPermissionStatus = 'not-requested' | 'granted' | 'denied' | 'dismissed';
+export const cameraPermissionStatusAtom = atom<CameraPermissionStatus>('not-requested');
+
+// Control visibility of the camera permission modal
+export const showCameraPermissionModalAtom = atom<boolean>(true);

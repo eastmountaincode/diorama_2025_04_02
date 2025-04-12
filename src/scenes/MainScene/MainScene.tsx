@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { 
-    breakpointAtom, 
-    currentSceneAtom, 
+import {
+    breakpointAtom,
+    currentSceneAtom,
     isSceneTransitioningAtom,
     isNearMirrorAtom,
     isNearHydrantAtom,
@@ -140,7 +140,7 @@ const MainScene: React.FC = () => {
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
                 opacity: currentScene === 'HydrantScene' ? 1 : opacity,
-                transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none', 
+                transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none',
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
                 position: 'relative'
             }}
@@ -160,7 +160,7 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
-           
+
                 }}
             />
 
@@ -177,12 +177,12 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearMirror ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearMirror 
+                    filter: isNearMirror
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out',
-                    opacity: 1
+                    transition: 'filter 0.3s ease-in-out'
                 }}
+                draggable={false}
             />
 
             {/* Hydrant */}
@@ -198,11 +198,12 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearHydrant ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearHydrant 
+                    filter: isNearHydrant
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
                     transition: 'filter 0.3s ease-in-out'
                 }}
+                draggable={false}
             />
 
             {/* Stairs */}
@@ -218,6 +219,7 @@ const MainScene: React.FC = () => {
                     pointerEvents: 'none',
                     zIndex: 40,
                 }}
+                draggable={false}
             />
 
 
@@ -234,11 +236,12 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearPhone ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearPhone 
+                    filter: isNearPhone
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
                     transition: 'filter 0.3s ease-in-out'
                 }}
+                draggable={false}
             />
 
 
@@ -255,6 +258,7 @@ const MainScene: React.FC = () => {
                     pointerEvents: 'none',
                     zIndex: 40,
                 }}
+                draggable={false}
             />
 
 
@@ -271,11 +275,12 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearComputer ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearComputer 
+                    filter: isNearComputer
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
                     transition: 'filter 0.3s ease-in-out'
                 }}
+                draggable={false}
             />
 
             {/* Radio */}
@@ -291,11 +296,12 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearRadio ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearRadio 
+                    filter: isNearRadio
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
                     transition: 'filter 0.3s ease-in-out'
-                }}
+                    }}
+                draggable={false}
             />
 
 

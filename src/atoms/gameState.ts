@@ -117,4 +117,4 @@ export type CameraPermissionStatus = 'not-requested' | 'granted' | 'denied' | 'd
 export const cameraPermissionStatusAtom = atom<CameraPermissionStatus>('not-requested');
 
 // Control visibility of the camera permission modal
-export const showCameraPermissionModalAtom = atom<boolean>(true);
+export const showCameraPermissionModalAtom = atom<boolean>(false);

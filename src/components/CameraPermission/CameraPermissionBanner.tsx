@@ -1,29 +1,45 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { cameraPermissionStatusAtom, showCameraPermissionModalAtom } from '../../atoms/gameState';
+import { cameraPermissionStatusAtom, currentSceneAtom, breakpointAtom } from '../../atoms/gameState';
 
 export const CameraPermissionBanner: React.FC = () => {
   const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
-  const [_, setShowCameraPermissionModal] = useAtom(showCameraPermissionModalAtom);
+  const [currentScene] = useAtom(currentSceneAtom);
+  const [breakpoint] = useAtom(breakpointAtom);
 
-  // Only show for denied state
-  if (cameraPermissionStatus !== 'denied') {
+  // Only show in mirror scene and when we have a meaningful status
+  if (currentScene !== 'MirrorScene' || cameraPermissionStatus === 'not-requested') {
     return null;
   }
 
-  const handleRetry = () => {
-    setShowCameraPermissionModal(true);
-  };
+  // Determine if mobile
+  const isMobile = breakpoint === 'mobile';
+  
+  // Determine banner style based on permission state
+  let bgColor = 'bg-blue-600';
+  let message = 'Camera access required';
+
+  if (cameraPermissionStatus === 'granted') {
+    bgColor = 'bg-green-700';
+    message = 'Camera access granted';
+  } else if (cameraPermissionStatus === 'denied') {
+    bgColor = 'bg-red-700';
+    message = 'Camera access denied';
+  } else if (cameraPermissionStatus === 'dismissed') {
+    bgColor = 'bg-gray-700';
+    message = 'No camera access';
+  }
+
+  // Adjust styling based on breakpoint
+  const bannerClasses = `
+    fixed top-2 left-1/2 transform -translate-x-1/2 
+    ${bgColor} text-white rounded-lg z-40 bg-opacity-80 
+    ${isMobile ? 'text-[10px] px-2 py-0.5 whitespace-nowrap' : 'text-xs px-3 py-1'}
+  `;
 
   return (
-    <div className="fixed top-0 left-0 right-0 bg-red-900 text-white p-2 flex justify-between items-center z-40">
-      <p className="text-sm">Camera access denied. Some features may not work properly.</p>
-      <button 
-        onClick={handleRetry}
-        className="bg-white text-red-900 px-3 py-1 text-xs rounded hover:bg-gray-200 transition-colors"
-      >
-        Retry
-      </button>
+    <div className={bannerClasses.trim()}>
+      {message}
     </div>
   );
 }; 

@@ -19,6 +19,12 @@ const MirrorScene: React.FC = () => {
   // Reference to video element
   const videoRef = useRef<HTMLVideoElement>(null);
   const [streamActive, setStreamActive] = useState(false);
+  
+  // Add state for background transition
+  const [showSecondBackground, setShowSecondBackground] = useState(false);
+  const [overlayOpacity, setOverlayOpacity] = useState(0);
+  const [sceneEntered, setSceneEntered] = useState(false);
+  const [showCamera, setShowCamera] = useState(false);
 
   // Request camera access when component mounts
   useEffect(() => {
@@ -29,19 +35,65 @@ const MirrorScene: React.FC = () => {
     }
   }, [currentScene, hasRequestedCamera, cameraPermissionStatus]);
 
+  // Track when we enter and leave the scene
+  useEffect(() => {
+    if (currentScene === 'MirrorScene') {
+      // Reset animation states when entering the scene
+      setShowSecondBackground(false);
+      setOverlayOpacity(0);
+      setSceneEntered(true);
+      setShowCamera(false);
+    } else {
+      setSceneEntered(false);
+    }
+  }, [currentScene]);
+  
+  // Trigger background transition after camera permission interaction or scene re-enter
+  useEffect(() => {
+    // Trigger transition when entering scene (with permission already handled)
+    if (sceneEntered && cameraPermissionStatus !== 'not-requested') {
+      // Short delay before starting transition
+      const timer = setTimeout(() => {
+        setShowSecondBackground(true);
+        
+        // Fade in the overlay
+        setTimeout(() => {
+          setOverlayOpacity(1);
+          
+          // Only show camera after overlay is fully visible
+          setTimeout(() => {
+            if (cameraPermissionStatus === 'granted') {
+              setShowCamera(true);
+            }
+          }, 1000); // Delay after overlay starts fading in
+          
+        }, 100);
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [sceneEntered, cameraPermissionStatus]);
+
+  // Track when we leave the scene to reset camera visibility
+  useEffect(() => {
+    if (currentScene !== 'MirrorScene') {
+      setShowCamera(false);
+    }
+  }, [currentScene]);
+
   // Start camera stream when permission is granted
   useEffect(() => {
-    if (currentScene === 'MirrorScene' && cameraPermissionStatus === 'granted' && !streamActive) {
+    if (currentScene === 'MirrorScene' && cameraPermissionStatus === 'granted') {
       startCameraStream();
     }
     
-    // Clean up stream when leaving scene or losing permission
+    // Clean up stream when leaving scene
     return () => {
       if (streamActive) {
         stopCameraStream();
       }
     };
-  }, [currentScene, cameraPermissionStatus, streamActive]);
+  }, [currentScene, cameraPermissionStatus]);
 
   // Start camera stream
   const startCameraStream = async () => {
@@ -52,11 +104,7 @@ const MirrorScene: React.FC = () => {
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
-          facingMode: 'user'
-        } 
+        video: true
       });
       
       if (videoRef.current) {
@@ -112,57 +160,11 @@ const MirrorScene: React.FC = () => {
     }
   };
 
-  // Show content based on camera permission status
-  const renderContent = () => {
-    // Camera granted - show the video feed
-    if (cameraPermissionStatus === 'granted') {
-      return (
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-          {/* Mirror-like frame container */}
-          <div 
-            className={`relative rounded-lg overflow-hidden border-4 border-gray-800 shadow-lg ${
-              isMobile ? 'w-[70vw] h-[60vh]' : 'w-[500px] h-[400px]'
-            }`}
-          >
-            {/* Camera feed */}
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="absolute w-full h-full object-cover"
-              style={{ 
-                transform: 'scaleX(-1)' // Mirror the video horizontally
-              }}
-            />
-            
-            {/* Subtle overlay to make it look more like a mirror */}
-            <div className="absolute inset-0 bg-white opacity-10 pointer-events-none"></div>
-          </div>
-        </div>
-      );
-    }
-    
-    // Denied state - show a retry button
-    if (cameraPermissionStatus === 'denied') {
-      return (
-        <button 
-          onClick={requestCameraAccess}
-          className={`absolute bg-blue-600 text-white rounded ${
-            isMobile 
-              ? 'bottom-2 right-2 px-2 py-0.5 text-[10px]' 
-              : 'bottom-4 right-4 px-3 py-1 text-xs'
-          }`}
-        >
-          Enable Camera
-        </button>
-      );
-    }
-    
-    // Only show message for errors, not for standard permission states
+  // Show UI elements based on camera permission status
+  const renderUI = () => {
     if (errorMessage) {
       return (
-        <div className={`absolute bg-black bg-opacity-70 rounded-lg ${
+        <div className={`absolute bg-black bg-opacity-70 rounded-lg z-30 ${
           isMobile 
             ? 'bottom-2 right-2 p-1 max-w-[150px]' 
             : 'bottom-4 right-4 p-2'
@@ -179,9 +181,39 @@ const MirrorScene: React.FC = () => {
     return null;
   };
 
+  // Render camera feed with percentage-based positioning
+  const renderCameraFeed = () => {
+    // Calculate size based on device type
+    const cameraStyles = {
+      width: isMobile ? '40%' : '28%',
+      height: isMobile ? '35%' : '48%',
+      top: isMobile ? '50%' : '52%', 
+      left: '67%',
+      transform: 'translate(-50%, -50%)',
+      position: 'absolute' as const,
+      zIndex: 1, // Always behind overlays
+      opacity: showCamera ? 1 : 0, // Only visible when showCamera is true
+      transition: 'opacity 0.5s ease-in-out' // Smooth fade in
+    };
+
+    // Always render the feed, but control visibility with opacity
+    return (
+      <div style={cameraStyles}>
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="w-full h-full object-cover"
+          style={{ transform: isMobile ? 'scale(0.75) scaleX(-1)' : 'scaleX(-1)' }}
+        />
+      </div>
+    );
+  };
+
   return (
     <div
-      className="w-full h-full flex items-center justify-center z-20"
+      className="w-full h-full flex items-center justify-center relative"
       style={{
         backgroundImage: "url('assets/bg/mirror/mirror_close_up.png')",
         backgroundSize: 'contain',
@@ -192,7 +224,27 @@ const MirrorScene: React.FC = () => {
         display: currentScene === 'MirrorScene' ? 'flex' : 'none',
       }}
     >
-      {renderContent()}
+      {/* Camera feed with percentage-based positioning */}
+      {cameraPermissionStatus === 'granted' && renderCameraFeed()}
+      
+      {/* Overlay cutout image that fades in */}
+      {showSecondBackground && (
+        <div 
+          className="absolute inset-0 transition-opacity duration-1500 ease-in-out"
+          style={{
+            backgroundImage: "url('assets/bg/mirror/mirror_close_up_cut_out.png')",
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            opacity: overlayOpacity,
+            pointerEvents: 'none',
+            zIndex: 10
+          }}
+        />
+      )}
+      
+      {/* UI elements (error messages) */}
+      {renderUI()}
     </div>
   );
 };

@@ -1,27 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom, currentSceneAtom, mirrorTaskCompletedAtom } from '../../atoms/gameState';
+import { currentSceneAtom } from '../../atoms/gameState';
 
 const MirrorScene: React.FC = () => {
-  const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
-  const [breakpoint] = useAtom(breakpointAtom);
-  const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
-  const [reflectionVisible, setReflectionVisible] = useState(false);
+  const [currentScene, _] = useAtom(currentSceneAtom);
 
-  // Handle back button click to return to main scene
-  const handleBackClick = () => {
-    setCurrentScene('MainScene');
-  };
-
-  // Handle mirror interaction
-  const handleMirrorClick = () => {
-    setReflectionVisible(!reflectionVisible);
-    
-    if (!mirrorTaskCompleted) {
-      setMirrorTaskCompleted(true);
-      console.log("Mirror task completed!");
-    }
-  };
 
   return (
     <div

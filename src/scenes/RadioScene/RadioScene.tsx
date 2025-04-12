@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom, currentSceneAtom, radioTaskCompletedAtom } from '../../atoms/gameState';
+import {currentSceneAtom } from '../../atoms/gameState';
 
 const RadioScene: React.FC = () => {
-  const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
-  const [breakpoint] = useAtom(breakpointAtom);
-  const [radioTaskCompleted, setRadioTaskCompleted] = useAtom(radioTaskCompletedAtom);
-  
+  const [currentScene, _] = useAtom(currentSceneAtom);
+
 
   return (
     <div
@@ -21,21 +19,7 @@ const RadioScene: React.FC = () => {
         display: currentScene === 'RadioScene' ? 'flex' : 'none',
       }}
     >
-      {/* Radio controls panel */}
-      <div style={{
-        position: 'absolute',
-        top: breakpoint === 'mobile' ? '45%' : '45%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: breakpoint === 'mobile' ? '80%' : '60%',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        gap: '20px'
-      }}>
 
-
-      </div>
     </div>
   );
 };

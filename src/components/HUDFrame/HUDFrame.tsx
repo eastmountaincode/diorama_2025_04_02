@@ -23,7 +23,7 @@ export function HUDFrame() {
   const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const { zoom, translateX, translateY } = hudTransform;
-  const { setCursorType } = useCursor();
+  const {  } = useCursor();
 
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
     top: '50%',

@@ -7,6 +7,7 @@ import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
 import { HUDZoomControls } from './HUDZoomControls';
 import { useCursor } from '../../context/CursorContext';
+import BackButton from './BackButton';
 
 type ViewportStyle = {
   top: string;
@@ -44,14 +45,14 @@ export function HUDFrame() {
       setSrc(
         isMobile
           ? 'assets/hud/hud_frame_mobile_demo.png'
-          : 'assets/hud/hud_frame_desktop_demo.png'
+          : 'assets/hud/hud_frame_desktop_v1.png'
       );
 
       if (isMobile) {
         setViewportStyle({ top: '42%', left: '50%', width: '90%', height: '80%' });
         setBreakpoint('mobile');
       } else {
-        setViewportStyle({ top: '50%', left: '43%', width: '82%', height: '96%' });
+        setViewportStyle({ top: '49%', left: '41.5%', width: '75%', height: '92%' });
         setBreakpoint('desktop');
       }
     };
@@ -105,7 +106,7 @@ export function HUDFrame() {
         </div> */}
 
         {/* Container wrapping HUD frame image */}
-        <div className="inline-block relative p-2">
+        <div className="inline-block relative p-2 max-h-[98vh] flex items-center justify-center mt-2">
           {/* Interactive SceneManager viewport */}
           <div className="absolute top-0 left-0 w-full h-full">
             <div
@@ -123,30 +124,25 @@ export function HUDFrame() {
             </div>
             
             {/* HUD Transform Controls - visible on desktop for MainScene and HydrantScene */}
-            {breakpoint === 'desktop' && (currentScene === 'MainScene' || currentScene === 'HydrantScene') && !isSceneTransitioning && (
+            {breakpoint === 'desktop' && (currentScene === 'MainScene') && !isSceneTransitioning && (
               <HUDZoomControls setHudTransform={setHudTransform} />
             )}
             
             {/* Back Button - only visible in object scenes */}
-            {(currentScene === 'HydrantScene') && (
-              <button
-                className={`absolute z-50 bg-red-500 bg-opacity-70 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors ${
-                  breakpoint === 'mobile' ? 'top-2 left-2 text-sm' : 'top-4 left-4'
-                }`}
+            {(currentScene === 'HydrantScene' || currentScene === 'RadioScene' || currentScene === 'MirrorScene') && (
+              <BackButton
                 onClick={handleBackToMainScene}
-                onMouseEnter={() => setCursorType('pointer')}
-                onMouseLeave={() => setCursorType('default')}
-              >
-                Back
-              </button>
+                style={breakpoint === 'mobile' ? { top: '5.9%', left: '9.1%' } : { top: '5.9%', left: '5.9%' }}
+                className={breakpoint === 'mobile' ? 'text-sm' : 'text-lg'}
+              />
             )}
           </div>
           {/* HUD Frame Image overlay */}
           <img
             src={src}
             alt="HUD Frame"
-            className="relative z-10 block pointer-events-none"
-            style={{ display: 'block', width: '100%', height: 'auto' }}
+            className="relative z-10 block pointer-events-none object-contain max-h-[90vh]"
+            style={{ display: 'block', width: 'auto', height: 'auto', maxWidth: '100%' }}
           />
           <Inventory breakpoint={breakpoint} />
         </div>

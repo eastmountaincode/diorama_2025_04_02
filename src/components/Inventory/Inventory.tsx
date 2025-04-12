@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { inventoryStateAtom } from '../../atoms/gameState';
 import OpeningSceneInventory from './OpeningSceneInventory';
@@ -10,6 +10,7 @@ type InventoryProps = {
 const Inventory: React.FC<InventoryProps> = ({ breakpoint }) => {
   // Use the inventoryStateAtom to get the current state.
   const [inventoryState] = useAtom(inventoryStateAtom);
+  const [borderIsVisible, _] = useState(false);
 
   // Define styles based on breakpoint.
   const style: React.CSSProperties =
@@ -20,16 +21,16 @@ const Inventory: React.FC<InventoryProps> = ({ breakpoint }) => {
           left: '3.5%',
           width: '93%',
           height: '14.5%',
-          border: '4px solid blue',
+          border: borderIsVisible ? '4px solid blue' : 'none',
           zIndex: 20,
         }
       : {
           position: 'absolute',
-          top: '2%',              // Desktop positioning
-          bottom: '2%',
-          right: '1.5%',
-          width: '14.5%',
-          border: '4px solid blue',
+          top: '6%',              // Desktop positioning
+          bottom: '11%',
+          right: '3.2%',
+          width: '17.7%',
+          border: borderIsVisible ? '4px solid blue' : 'none',
           zIndex: 20,
         };
 

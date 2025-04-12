@@ -54,6 +54,7 @@ const MainScene: React.FC = () => {
     const handleMirrorClick = () => {
         if (isNearMirror) {
             console.log('Mirror clicked!');
+            setCurrentScene('MirrorScene');
         }
     };
 
@@ -79,6 +80,7 @@ const MainScene: React.FC = () => {
     const handleRadioClick = () => {
         if (isNearRadio) {
             console.log('Radio clicked!');
+            setCurrentScene('RadioScene');
         }
     };
 
@@ -152,12 +154,13 @@ const MainScene: React.FC = () => {
                 alt="TV and Boxes"
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '46.6%' : '45%',
-                    left: breakpoint === 'mobile' ? '16.5%' : '23.1%',
-                    width: breakpoint === 'mobile' ? '22%' : '17.5%',
+                    top: breakpoint === 'mobile' ? '46.6%' : '44.7%',
+                    left: breakpoint === 'mobile' ? '16.5%' : '21.7%',
+                    width: breakpoint === 'mobile' ? '22%' : '18.6%',
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
+           
                 }}
             />
 
@@ -168,8 +171,8 @@ const MainScene: React.FC = () => {
                 onClick={handleMirrorClick}
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '44%' : '40.4%',
-                    left: breakpoint === 'mobile' ? '25.1%' : '29.5%',
+                    top: breakpoint === 'mobile' ? '44%' : '40.5%',
+                    left: breakpoint === 'mobile' ? '25.1%' : '28.8%',
                     width: breakpoint === 'mobile' ? '10.6%' : '9%',
                     height: 'auto',
                     pointerEvents: isNearMirror ? 'auto' : 'none',
@@ -177,7 +180,8 @@ const MainScene: React.FC = () => {
                     filter: isNearMirror 
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    transition: 'filter 0.3s ease-in-out',
+                    opacity: 1
                 }}
             />
 
@@ -188,9 +192,9 @@ const MainScene: React.FC = () => {
                 onClick={handleHydrantClick}
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '44%' : '39.9%',
-                    left: breakpoint === 'mobile' ? '32%' : '35.4%',
-                    width: breakpoint === 'mobile' ? '6.3%' : '5.2%',
+                    top: breakpoint === 'mobile' ? '44%' : '40.7%',
+                    left: breakpoint === 'mobile' ? '32%' : '34.8%',
+                    width: breakpoint === 'mobile' ? '6.3%' : '4.9%',
                     height: 'auto',
                     pointerEvents: isNearHydrant ? 'auto' : 'none',
                     zIndex: 39,
@@ -207,9 +211,9 @@ const MainScene: React.FC = () => {
                 alt="Stairs"
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '27.5%' : '13.3%',
-                    left: breakpoint === 'mobile' ? '31%' : '34.5%',
-                    width: breakpoint === 'mobile' ? '29%' : '24%',
+                    top: breakpoint === 'mobile' ? '27.5%' : '13.5%',
+                    left: breakpoint === 'mobile' ? '31%' : '33.9%',
+                    width: breakpoint === 'mobile' ? '29%' : '24.2%',
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
@@ -225,8 +229,8 @@ const MainScene: React.FC = () => {
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '34.9%' : '25.6%',
-                    left: breakpoint === 'mobile' ? '41.7%' : '43.2%',
-                    width: breakpoint === 'mobile' ? '13%' : '10.4%',
+                    left: breakpoint === 'mobile' ? '41.7%' : '43.0%',
+                    width: breakpoint === 'mobile' ? '13%' : '10.6%',
                     height: 'auto',
                     pointerEvents: isNearPhone ? 'auto' : 'none',
                     zIndex: 39,
@@ -244,9 +248,9 @@ const MainScene: React.FC = () => {
                 alt="Stuff In Front of Computer"
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '40.9%' : '35.4%',
-                    left: breakpoint === 'mobile' ? '51.2%' : '51.2%',
-                    width: breakpoint === 'mobile' ? '15.5%' : '12%',
+                    top: breakpoint === 'mobile' ? '40.9%' : '35.2%',
+                    left: breakpoint === 'mobile' ? '51.2%' : '51.0%',
+                    width: breakpoint === 'mobile' ? '15.5%' : '13%',
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
@@ -261,8 +265,8 @@ const MainScene: React.FC = () => {
                 onClick={handleComputerClick}
                 style={{
                     position: 'absolute',
-                    top: breakpoint === 'mobile' ? '39.4%' : '32%',
-                    left: breakpoint === 'mobile' ? '55.1%' : '54%',
+                    top: breakpoint === 'mobile' ? '39.4%' : '32.45%',
+                    left: breakpoint === 'mobile' ? '55.1%' : '54.3%',
                     width: breakpoint === 'mobile' ? '9.1%' : '7.7%',
                     height: 'auto',
                     pointerEvents: isNearComputer ? 'auto' : 'none',
@@ -282,8 +286,8 @@ const MainScene: React.FC = () => {
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '49%' : '48.5%',
-                    left: breakpoint === 'mobile' ? '70.5%' : '66.8%',
-                    width: breakpoint === 'mobile' ? '5.8%' : '4.5%',
+                    left: breakpoint === 'mobile' ? '70.5%' : '67.6%',
+                    width: breakpoint === 'mobile' ? '5.8%' : '4.7%',
                     height: 'auto',
                     pointerEvents: isNearRadio ? 'auto' : 'none',
                     zIndex: 39,

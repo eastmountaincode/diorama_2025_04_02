@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DraggableInventoryFigurine from '../DraggableInventoryFigurine';
 
 type OpeningSceneInventoryProps = {
@@ -6,6 +6,7 @@ type OpeningSceneInventoryProps = {
 };
 
 const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoint = 'desktop' }) => {
+  const [borderIsVisible, _] = useState(false);
   // Container takes up the full width of its parent.
   const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -23,7 +24,7 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
       ? {
           width: '50%',      // Less wide on mobile
           height: '75%',     // Taller for mobile
-          border: '2px solid blue',
+          border: borderIsVisible ? '2px solid blue' : 'none',
           padding: '6px',
           boxSizing: 'border-box',
           display: 'flex',
@@ -34,7 +35,7 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
       : {
           width: '85%',      // Wider on desktop
           height: '40%',     // Reduced height
-          border: '2px solid blue',
+          border: borderIsVisible ? '2px solid blue' : 'none',
           padding: '6px',
           boxSizing: 'border-box',
           display: 'flex',

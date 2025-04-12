@@ -41,7 +41,7 @@ export function usePinchZoom() {
 
     const handleTouchStart = useCallback(
         (e: React.TouchEvent<HTMLDivElement>) => {
-            if (isSceneTransitioning || currentScene === 'OpeningScene' || e.touches.length !== 2) return;
+            if (isSceneTransitioning || currentScene === 'OpeningScene' || currentScene === 'RadioScene' || currentScene === 'HydrantScene' || currentScene === 'MirrorScene' || e.touches.length !== 2) return;
             e.preventDefault();
             
             const touch1 = e.touches[0];

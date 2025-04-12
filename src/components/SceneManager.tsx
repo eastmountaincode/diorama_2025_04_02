@@ -4,6 +4,8 @@ import { showOpeningSceneAtom, currentSceneAtom } from '../atoms/gameState';
 import OpeningScene from '../scenes/OpeningScene/OpeningScene';
 import MainScene from '../scenes/MainScene/MainScene';
 import HydrantScene from '../scenes/HydrantScene/HydrantScene';
+import RadioScene from '../scenes/RadioScene/RadioScene';
+import MirrorScene from '../scenes/MirrorScene/MirrorScene';
 
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
@@ -22,6 +24,20 @@ const SceneManager: React.FC = () => {
       {currentScene === 'HydrantScene' && (
         <div className="absolute inset-0">
           <HydrantScene />
+        </div>
+      )}
+      
+      {/* RadioScene - Only rendered when active */}
+      {currentScene === 'RadioScene' && (
+        <div className="absolute inset-0">
+          <RadioScene />
+        </div>
+      )}
+      
+      {/* MirrorScene - Only rendered when active */}
+      {currentScene === 'MirrorScene' && (
+        <div className="absolute inset-0">
+          <MirrorScene />
         </div>
       )}
       

@@ -9,6 +9,8 @@ const HydrantScene: React.FC = () => {
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLImageElement>(null);
 
+  const MAX_ROTATION = 1080;
+
   // Refs to track rotation state
   const isDragging = useRef(false);
   const prevAngle = useRef(0);
@@ -58,10 +60,10 @@ const HydrantScene: React.FC = () => {
     
     // Reset the max rotation logs when starting a new drag
     // but only if we're not at the max anymore
-    if (totalRotation.current < 720) {
+    if (totalRotation.current < MAX_ROTATION) {
       hasLoggedMaxClockwise.current = false;
     }
-    if (totalRotation.current > -720) {
+    if (totalRotation.current > -MAX_ROTATION) {
       hasLoggedMaxCounterclockwise.current = false;
     }
   };
@@ -82,24 +84,24 @@ const HydrantScene: React.FC = () => {
     const newTotalRotation = totalRotation.current + deltaAngle;
     
     // Limit rotation to +/- 720 degrees (2 full rotations)
-    if (newTotalRotation > 720) {
+    if (newTotalRotation > MAX_ROTATION) {
       // Log max clockwise only once
       if (!hasLoggedMaxClockwise.current) {
-        console.log("Reached maximum clockwise rotation (720°)");
+        console.log("Reached maximum clockwise rotation (1080°)");
         hasLoggedMaxClockwise.current = true;
       }
-      deltaAngle = 720 - totalRotation.current;
-    } else if (newTotalRotation < -720) {
+      deltaAngle = MAX_ROTATION - totalRotation.current;
+    } else if (newTotalRotation < -MAX_ROTATION) {
       // Log max counterclockwise only once
       if (!hasLoggedMaxCounterclockwise.current) {
-        console.log("Reached maximum counterclockwise rotation (-720°)");
+        console.log("Reached maximum counterclockwise rotation (-1080°)");
         hasLoggedMaxCounterclockwise.current = true;
         
         // Complete the hydrant task when reaching full left rotation
         setHydrantTaskCompleted(true);
         console.log("Hydrant task completed!");
       }
-      deltaAngle = -720 - totalRotation.current;
+      deltaAngle = -MAX_ROTATION - totalRotation.current;
     }
     
     // Apply the rotation

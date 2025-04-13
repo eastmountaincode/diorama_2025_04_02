@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAtom } from 'jotai';
 import { 
   currentSceneAtom, 
@@ -7,7 +7,6 @@ import {
   mirrorTransitionCompleteAtom
 } from '../../atoms/gameState';
 import CameraVideoFeed from '../../components/CameraVideoFeed';
-import PhotoFrame from './PhotoFrame';
 import PhotoFrameDummy from './PhotoFrameDummy';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
 
@@ -17,7 +16,7 @@ const MirrorScene: React.FC = () => {
   const [hasRequestedCamera, setHasRequestedCamera] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [breakpoint] = useAtom(breakpointAtom);
-  const [mirrorTransitionComplete, setMirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
+  const [_, setMirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
   const isMobile = breakpoint === 'mobile';
   
   // State for background transition.
@@ -29,7 +28,6 @@ const MirrorScene: React.FC = () => {
   
   // Add states for photo capturing
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
-  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   // Listen for photo capture trigger from HUDFrame
   const [capturePhotoTrigger] = useAtom(capturePhotoTriggerAtom);

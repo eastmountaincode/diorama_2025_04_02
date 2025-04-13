@@ -11,7 +11,7 @@ import {
     isNearRadioAtom
 } from '../../atoms/gameState';
 import MainDraggableFigurine from '../../components/MainDraggableFigurine';
-import FloorBoundary from '../../components/FloorBoundary';
+import FloorBoundary from './FloorBoundary';
 import MainSceneProximityManager from './MainSceneProximityManager';
 import { useCursor } from '../../context/CursorContext';
 

@@ -26,8 +26,9 @@ const BackButton: React.FC<BackButtonProps> = ({
       <img
         src="assets/hud/back_button.png"  // Update path as necessary
         alt="Back Button"
-        className="drop-shadow" // Tailwind drop shadow for extra pop
+        className="drop-shadow hover:opacity-80" // Tailwind drop shadow for extra pop
         style={{ width: '64px', height: 'auto' }}  // Adjust size as needed
+        draggable={false}
       />
     </button>
   );

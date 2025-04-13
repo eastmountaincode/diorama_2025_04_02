@@ -118,3 +118,9 @@ export const cameraPermissionStatusAtom = atom<CameraPermissionStatus>('not-requ
 
 // Control visibility of the camera permission modal
 export const showCameraPermissionModalAtom = atom<boolean>(false);
+
+// Track when the mirror transition is complete and ready to show the button
+export const mirrorTransitionCompleteAtom = atom<boolean>(false);
+
+// Track if a photo is currently being displayed in the MirrorScene
+export const isPhotoDisplayedAtom = atom<boolean>(false);

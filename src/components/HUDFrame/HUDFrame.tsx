@@ -2,12 +2,24 @@ import { CSSProperties, useEffect, useState } from 'react';
 import SceneManager from '../SceneManager';
 import Inventory from '../Inventory/Inventory';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, hudTransformAtom, breakpointAtom, isSceneTransitioningAtom } from '../../atoms/gameState';
+import { 
+  currentSceneAtom, 
+  hudTransformAtom, 
+  breakpointAtom, 
+  isSceneTransitioningAtom,
+  mirrorTransitionCompleteAtom,
+  isPhotoDisplayedAtom
+} from '../../atoms/gameState';
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
 import { HUDZoomControls } from './HUDZoomControls';
 import { useCursor } from '../../context/CursorContext';
 import BackButton from './BackButton';
+import ReaffirmButton from './ReaffirmButton';
+import { atom } from 'jotai';
+
+// Create a new atom for triggering photo capture
+export const capturePhotoTriggerAtom = atom<boolean>(false);
 
 type ViewportStyle = {
   top: string;
@@ -18,12 +30,15 @@ type ViewportStyle = {
 
 export function HUDFrame() {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
+  const [mirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
   const [src, setSrc] = useState('');
   const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
   const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
+  const [showReaffirmButton, setShowReaffirmButton] = useState(false);
   const { zoom, translateX, translateY } = hudTransform;
   const {} = useCursor();
+  const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
 
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
     top: '50%',
@@ -78,6 +93,40 @@ export function HUDFrame() {
   const handleBackToMainScene = () => {
     setCurrentScene('MainScene');
   };
+  
+  // Handle reaffirm button in mirror scene
+  const handleReaffirmExistence = () => {
+    // Trigger photo capture in MirrorScene
+    setCapturePhotoTrigger(true);
+  };
+
+  const [capturePhotoTrigger, setCapturePhotoTrigger] = useAtom(capturePhotoTriggerAtom);
+
+  // Reset trigger after it's been set
+  useEffect(() => {
+    if (capturePhotoTrigger) {
+      // Reset the trigger after a short delay to ensure it's picked up
+      const timer = setTimeout(() => {
+        setCapturePhotoTrigger(false);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [capturePhotoTrigger, setCapturePhotoTrigger]);
+
+  // Update visibility of the reaffirm button based on mirror transition
+  useEffect(() => {
+    if (currentScene === 'MirrorScene' && mirrorTransitionComplete && !isPhotoDisplayed) {
+      setShowReaffirmButton(true);
+    } else {
+      setShowReaffirmButton(false);
+    }
+  }, [currentScene, mirrorTransitionComplete, isPhotoDisplayed]);
+  
+  // Additional effect to reset button state when scene changes
+  useEffect(() => {
+    setShowReaffirmButton(false);
+  }, [currentScene]);
 
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,
@@ -134,6 +183,19 @@ export function HUDFrame() {
                 onClick={handleBackToMainScene}
                 style={breakpoint === 'mobile' ? { top: '5.9%', left: '9.1%' } : { top: '5.9%', left: '5.9%' }}
                 className={breakpoint === 'mobile' ? 'text-sm' : 'text-lg'}
+              />
+            )}
+            
+            {/* Reaffirm Existence Button - only visible in MirrorScene after transition and when no photo is displayed */}
+            {currentScene === 'MirrorScene' && !isPhotoDisplayed && (
+              <ReaffirmButton
+                onClick={handleReaffirmExistence}
+                isVisible={showReaffirmButton}
+                style={breakpoint === 'mobile' 
+                  ? { bottom: '22%', left: '51%', transform: 'translateX(-50%)' } 
+                  : { bottom: '11%', left: '43%', transform: 'translateX(-50%)' }
+                }
+                className={breakpoint === 'mobile' ? 'text-xs' : 'text-sm'}
               />
             )}
           </div>

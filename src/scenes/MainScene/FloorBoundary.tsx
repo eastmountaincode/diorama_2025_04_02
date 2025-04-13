@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom, FLOOR_BOUNDARY, FLOOR_BOUNDARY_OFFSET } from '../atoms/gameState';
+import { breakpointAtom, FLOOR_BOUNDARY, FLOOR_BOUNDARY_OFFSET } from '../../atoms/gameState';
 
 interface FloorBoundaryProps {
   debug?: boolean; // Show debug visualization

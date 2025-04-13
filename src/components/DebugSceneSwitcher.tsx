@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
-const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene'];
+const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene'];
 
 // Define possible states for the Inventory (adjust as needed)
 const inventoryStates: Array<'OpeningScene' | 'MainGame'> = ['OpeningScene', 'MainGame'];
@@ -15,6 +15,7 @@ export function DebugSceneSwitcher() {
   const [hudTransform] = useAtom(hudTransformAtom);
   const [isFigurineTouchingDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
   const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
+  const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
   const [isVisible, setIsVisible] = useState(false);
   
   const handleSceneChange = (scene: SceneType) => {
@@ -27,6 +28,16 @@ export function DebugSceneSwitcher() {
     } else {
       // Direct scene change without transition
       setCurrentScene(scene);
+    }
+  };
+
+  // Get display color based on permission status
+  const getStatusColor = (status: string) => {
+    switch(status) {
+      case 'granted': return 'bg-green-500';
+      case 'denied': return 'bg-red-500';
+      case 'dismissed': return 'bg-yellow-500';
+      default: return 'bg-gray-500';
     }
   };
 
@@ -72,6 +83,14 @@ export function DebugSceneSwitcher() {
                     {state}
                   </button>
                 ))}
+              </div>
+            </div>
+            
+            {/* Camera Permission Status section (read-only) */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">Camera Permission:</span>
+              <div className={`text-[10px] px-1.5 py-0.5 rounded w-full text-center ${getStatusColor(cameraPermissionStatus)}`}>
+                {cameraPermissionStatus}
               </div>
             </div>
             

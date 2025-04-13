@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
 const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene'];
@@ -15,6 +15,7 @@ export function DebugSceneSwitcher() {
   const [hudTransform] = useAtom(hudTransformAtom);
   const [isFigurineTouchingDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
   const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
+  const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -106,6 +107,21 @@ export function DebugSceneSwitcher() {
                 }`}
               >
                 {hydrantTaskCompleted ? 'Completed' : 'Not Completed'}
+              </button>
+            </div>
+            
+            {/* Mirror Task Completed toggle */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">Mirror Task:</span>
+              <button
+                onClick={() => setMirrorTaskCompleted(!mirrorTaskCompleted)}
+                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                  mirrorTaskCompleted
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {mirrorTaskCompleted ? 'Completed' : 'Not Completed'}
               </button>
             </div>
             

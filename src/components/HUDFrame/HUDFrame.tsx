@@ -178,7 +178,7 @@ export function HUDFrame() {
             )}
             
             {/* Back Button - only visible in object scenes */}
-            {(currentScene === 'HydrantScene' || currentScene === 'RadioScene' || currentScene === 'MirrorScene') && (
+            {(currentScene === 'HydrantScene' || currentScene === 'RadioScene' || (currentScene === 'MirrorScene' && !isPhotoDisplayed)) && (
               <BackButton
                 onClick={handleBackToMainScene}
                 style={breakpoint === 'mobile' ? { top: '5.9%', left: '9.1%' } : { top: '5.9%', left: '5.9%' }}

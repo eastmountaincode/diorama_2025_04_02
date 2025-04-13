@@ -1,6 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { useAtom } from 'jotai';
-import { mirrorTaskCompletedAtom } from '../atoms/gameState';
 
 interface CameraVideoFeedProps {
   isActive: boolean;
@@ -19,7 +17,6 @@ const CameraVideoFeed: React.FC<CameraVideoFeedProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [streamActive, setStreamActive] = useState(false);
-  const [_, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
 
   // Start camera stream when permission is granted and component is active
   useEffect(() => {
@@ -50,7 +47,6 @@ const CameraVideoFeed: React.FC<CameraVideoFeedProps> = ({
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         setStreamActive(true);
-        setMirrorTaskCompleted(true);
       }
     } catch (error) {
       console.error('Error starting camera stream:', error);
@@ -80,7 +76,8 @@ const CameraVideoFeed: React.FC<CameraVideoFeedProps> = ({
     position: 'absolute' as const,
     zIndex: 5, // Below the cut-out layer (z-index 10) but above any background layers
     opacity: showCamera ? 1 : 0, // Only visible when showCamera is true
-    transition: 'opacity 0.5s ease-in-out' // Smooth fade in
+    transition: 'opacity 0.5s ease-in-out', // Smooth fade in
+    filter: 'blur(1px) brightness(0.7) contrast(0.8)', // Slight blur and adjustments for water effect
   };
 
   // Always render the feed, but control visibility with opacity

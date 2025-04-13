@@ -14,9 +14,11 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const isMobile = breakpoint === 'mobile';
   const photoRef = useRef<HTMLImageElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const [frameLoaded, setFrameLoaded] = useState(false);
   const [photoLoaded, setPhotoLoaded] = useState(false);
+
+  // Check if the image is from camera (data URL) or a fallback image (file path)
+  const isFromCamera = imageData?.startsWith('data:');
 
   // Update the photo display status when component mounts/unmounts
   useEffect(() => {
@@ -55,15 +57,31 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
 
   if (!imageData) return null;
 
+  // Style for the container - using the transform offset that worked
+  const containerStyle = {
+    position: 'absolute' as const,
+    left: isMobile ? '50%' : '50%',
+    top: isMobile ? '50%' : '49%',
+    transform: isMobile ? 'translate(-25%, -50%)' : 'translate(-50%, -50%)',
+    width: isMobile ? '105px' : '230px',
+    backgroundColor: 'transparent',
+  };
+
+  // Style for download button
+  const buttonStyle = {
+    fontSize: isMobile ? '8px' : '14px',
+    padding: isMobile ? '2px 6px' : '6px 12px',
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    borderRadius: '4px',
+    marginTop: isMobile ? '4px' : '8px',
+    border: 'none',
+    cursor: 'pointer'
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black" >
-      <div 
-        ref={containerRef}
-        style={{ 
-          width: isMobile ? '33%' : '40%',
-        }}
-        className="relative border-2 border-white"
-      >
+    <div className="fixed inset-0 bg-black z-50">
+      <div style={containerStyle}>
         {/* Frame Container */}
         <div className="relative">
           {/* Photo inside frame */}
@@ -82,8 +100,14 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
               ref={photoRef}
               src={imageData} 
               alt="Your selfie" 
-              className="w-full h-full object-cover"
-              style={{ transform: 'scaleX(-1)' }} // Mirror the image
+              className={`${isFromCamera ? 'w-full h-full object-cover' : 'object-contain'}`}
+              style={{ 
+                transform: isFromCamera ? 'scaleX(-1)' : 'none', // Only mirror camera images
+                width: isFromCamera ? '100%' : '90%',
+                height: isFromCamera ? '100%' : '80%',
+                objectPosition: isFromCamera ? 'center' : 'center 35%',
+                margin: isFromCamera ? '0' : '5% auto 0'
+              }} 
               onLoad={handlePhotoLoad}
             />
           </div>
@@ -105,8 +129,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
             style={{ 
               top: '5%', 
               right: '5%',
-              width: isMobile ? '12px' : '24px',
-              height: isMobile ? '12px' : '24px',
+              width: isMobile ? '10px' : '24px',
+              height: isMobile ? '10px' : '24px',
               backgroundColor: '#e53e3e', // red-600 equivalent
               display: 'flex',
               alignItems: 'center',
@@ -115,11 +139,11 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
             }}
           >
             <span 
-              className={`text-white font-bold ${isMobile ? 'text-[9px]' : 'text-sm'}`}
               style={{ 
-                marginTop: isMobile ? '-0.5px' : '-2px',
-                marginLeft: isMobile ? '0.5px' : '-0px',
-                display: 'block',
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: isMobile ? '8px' : '14px',
+                marginTop: isMobile ? '-1px' : '-2px',
                 textAlign: 'center'
               }}
             >
@@ -128,16 +152,22 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           </button>
         </div>
         
-        {/* Download button */}
-        <button 
-          onClick={handleDownload}
-          disabled={!frameLoaded || !photoLoaded}
-          className={`mt-2 mx-auto block bg-blue-600 text-white rounded-lg z-30 ${
-            isMobile ? 'text-xs px-3 py-1' : 'text-sm px-4 py-1'
-          } ${(!frameLoaded || !photoLoaded) ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-          Download Photo
-        </button>
+        {/* Download button - only show for camera images */}
+        {isFromCamera && (
+          <div className="flex justify-center">
+            <button 
+              onClick={handleDownload}
+              disabled={!frameLoaded || !photoLoaded}
+              style={{
+                ...buttonStyle,
+                opacity: (!frameLoaded || !photoLoaded) ? 0.5 : 1,
+                cursor: (!frameLoaded || !photoLoaded) ? 'not-allowed' : 'pointer'
+              }}
+            >
+              Download
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

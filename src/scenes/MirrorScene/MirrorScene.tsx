@@ -4,10 +4,11 @@ import {
   currentSceneAtom, 
   cameraPermissionStatusAtom,
   breakpointAtom,
-  mirrorTransitionCompleteAtom
+  mirrorTransitionCompleteAtom,
+  mirrorTaskCompletedAtom
 } from '../../atoms/gameState';
 import CameraVideoFeed from '../../components/CameraVideoFeed';
-import PhotoFrameDummy from './PhotoFrameDummy';
+import PhotoFrame from './PhotoFrame';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
 
 const MirrorScene: React.FC = () => {
@@ -17,6 +18,7 @@ const MirrorScene: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [breakpoint] = useAtom(breakpointAtom);
   const [_, setMirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
+  const [__, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const isMobile = breakpoint === 'mobile';
   
   // State for background transition.
@@ -67,6 +69,7 @@ const MirrorScene: React.FC = () => {
       setMirrorTransitionComplete(false);
       // Reset captured photo when re-entering the scene
       setCapturedPhoto(null);
+      // We don't reset mirrorTaskCompleted here - once completed, it stays completed
     } else {
       // If we're not in the mirror scene, reset entered state
       setSceneEntered(false);
@@ -152,8 +155,15 @@ const MirrorScene: React.FC = () => {
     }
   };
 
-  // Function to capture photo from video stream
+  // Function to capture photo from video stream or use fallback image
   const capturePhoto = () => {
+    // If camera permission is not granted, use the fallback image
+    if (cameraPermissionStatus !== 'granted') {
+      setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
+      setMirrorTaskCompleted(true); // Mark task as completed
+      return;
+    }
+
     // Use the CameraVideoFeed's video element to capture the photo
     const videoElement = document.querySelector('video');
     if (!videoElement) {
@@ -179,6 +189,7 @@ const MirrorScene: React.FC = () => {
     // Get the data URL from the canvas
     const dataUrl = canvas.toDataURL('image/png');
     setCapturedPhoto(dataUrl);
+    setMirrorTaskCompleted(true); // Mark task as completed
   };
 
   // Function to close the photo view
@@ -225,10 +236,10 @@ const MirrorScene: React.FC = () => {
   };
 
   useEffect(() => {
-    if (capturePhotoTrigger && !capturedPhoto && showCamera && cameraPermissionStatus === 'granted') {
+    if (capturePhotoTrigger && !capturedPhoto) {
       capturePhoto();
     }
-  }, [capturePhotoTrigger, capturedPhoto, showCamera, cameraPermissionStatus]);
+  }, [capturePhotoTrigger, capturedPhoto]);
 
   return (
     <div
@@ -283,9 +294,9 @@ const MirrorScene: React.FC = () => {
       {/* UI elements such as error messages */}
       {renderUI()}
 
-      {/* Use PhotoFrameDummy with the captured photo */}
+      {/* Use PhotoFrame with the captured photo */}
       {capturedPhoto && (
-        <PhotoFrameDummy
+        <PhotoFrame
           imageData={capturedPhoto}
           onClose={closePhotoView}
         />

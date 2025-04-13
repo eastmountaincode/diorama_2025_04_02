@@ -59,8 +59,8 @@ const PhotoFrameDummy: React.FC<PhotoFrameDummyProps> = ({ imageData, onClose })
     position: 'absolute' as const,
     left: isMobile ? '50%' : '50%',
     top: isMobile ? '50%' : '49%',
-    transform: isMobile ? 'translate(-24%, -50%)' : 'translate(-50%, -50%)',
-    width: isMobile ? '100px' : '230px',
+    transform: isMobile ? 'translate(-25%, -50%)' : 'translate(-50%, -50%)',
+    width: isMobile ? '105px' : '230px',
     backgroundColor: 'transparent',
   };
 

@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export type SceneType = 'OpeningScene' | 'MainScene' | 'HydrantScene' | 'RadioScene' | 'MirrorScene';
+export type SceneType = 'OpeningScene' | 'MainScene' | 'HydrantScene' | 'RadioScene' | 'MirrorScene' | 'ComputerScene';
 export const currentSceneAtom = atom<SceneType>('OpeningScene');
 
 export type InventoryState = 'OpeningScene' | 'MainGame';

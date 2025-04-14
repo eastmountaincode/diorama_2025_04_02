@@ -74,6 +74,7 @@ const MainScene: React.FC = () => {
     const handleComputerClick = () => {
         if (isNearComputer) {
             console.log('Computer clicked!');
+            setCurrentScene('ComputerScene');
         }
     };
 

@@ -3,6 +3,9 @@ import { useAtom } from 'jotai';
 import { hudTransformAtom, isSceneTransitioningAtom, currentSceneAtom } from '../../../atoms/gameState';
 import { MAX_ZOOM, MIN_ZOOM } from '../../../util/utilSettings';
 
+// Define which scenes allow zoom functionality
+const ZOOMABLE_SCENES = ['MainScene', 'ComputerScene'];
+
 export function usePinchZoom() {
     const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
     const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
@@ -20,6 +23,11 @@ export function usePinchZoom() {
         startMidpoint: { x: 0, y: 0 },
         startTranslate: { x: 0, y: 0 }
     });
+
+    // Helper function to check if current scene allows zooming
+    const isZoomAllowed = useCallback(() => {
+        return ZOOMABLE_SCENES.includes(currentScene) && !isSceneTransitioning;
+    }, [currentScene, isSceneTransitioning]);
 
     const getRelativePosition = useCallback((clientX: number, clientY: number) => {
         // Get viewport rectangle
@@ -41,7 +49,7 @@ export function usePinchZoom() {
 
     const handleTouchStart = useCallback(
         (e: React.TouchEvent<HTMLDivElement>) => {
-            if (isSceneTransitioning || currentScene === 'OpeningScene' || currentScene === 'RadioScene' || currentScene === 'HydrantScene' || currentScene === 'MirrorScene' || e.touches.length !== 2) return;
+            if (!isZoomAllowed() || e.touches.length !== 2) return;
             e.preventDefault();
             
             const touch1 = e.touches[0];
@@ -74,7 +82,7 @@ export function usePinchZoom() {
                 }
             };
         },
-        [hudTransform, isSceneTransitioning, currentScene, getRelativePosition]
+        [hudTransform, isZoomAllowed, getRelativePosition]
     );
 
     const handleTouchMove = useCallback(

@@ -6,6 +6,7 @@ import MainScene from '../scenes/MainScene/MainScene';
 import HydrantScene from '../scenes/HydrantScene/HydrantScene';
 import RadioScene from '../scenes/RadioScene/RadioScene';
 import MirrorScene from '../scenes/MirrorScene/MirrorScene';
+import ComputerScene from '../scenes/ComputerScene/ComputerScene';
 
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
@@ -38,6 +39,13 @@ const SceneManager: React.FC = () => {
       {currentScene === 'MirrorScene' && (
         <div className="absolute inset-0">
           <MirrorScene />
+        </div>
+      )}
+      
+      {/* ComputerScene - Only rendered when active */}
+      {currentScene === 'ComputerScene' && (
+        <div className="absolute inset-0">
+          <ComputerScene />
         </div>
       )}
       

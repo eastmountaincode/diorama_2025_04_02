@@ -7,14 +7,7 @@ const ComputerScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
 
-  const handleFileClick = () => {
-    console.log('File clicked!');
-  };
-
-  // Using a public domain folder icon URL as placeholder
-  // This should be replaced with your local asset once available
   const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
-
 
   return (
     <div

@@ -8,7 +8,8 @@ import {
   breakpointAtom, 
   isSceneTransitioningAtom,
   mirrorTransitionCompleteAtom,
-  isPhotoDisplayedAtom
+  isPhotoDisplayedAtom,
+  inventoryStateAtom
 } from '../../atoms/gameState';
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
@@ -36,6 +37,7 @@ export function HUDFrame() {
   const [breakpoint, setBreakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [showReaffirmButton, setShowReaffirmButton] = useState(false);
+  const [, setInventoryState] = useAtom(inventoryStateAtom);
   const { zoom, translateX, translateY } = hudTransform;
   const {} = useCursor();
   const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
@@ -127,6 +129,15 @@ export function HUDFrame() {
   useEffect(() => {
     setShowReaffirmButton(false);
   }, [currentScene]);
+
+  // Update inventory state when scene changes
+  useEffect(() => {
+    if (currentScene === 'MainScene') {
+      setInventoryState('MainGame');
+    } else if (currentScene === 'OpeningScene') {
+      setInventoryState('OpeningScene');
+    }
+  }, [currentScene, setInventoryState]);
 
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,

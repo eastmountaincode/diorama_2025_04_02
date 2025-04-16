@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAtom } from 'jotai';
 import { inventoryStateAtom } from '../../atoms/gameState';
 import OpeningSceneInventory from './OpeningSceneInventory';
+import MainSceneInventory from './MainSceneInventory';
 
 type InventoryProps = {
   breakpoint: 'mobile' | 'desktop';
@@ -39,7 +40,7 @@ const Inventory: React.FC<InventoryProps> = ({ breakpoint }) => {
       {inventoryState === 'OpeningScene' ? (
         <OpeningSceneInventory breakpoint={breakpoint} />
       ) : (
-        <p>Inventory: MainGame</p>
+        <MainSceneInventory breakpoint={breakpoint} />
       )}
     </div>
   );

@@ -10,6 +10,7 @@ import {
 import CameraVideoFeed from '../../components/CameraVideoFeed';
 import PhotoFrame from './PhotoFrame';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
+import { playGetRingSound } from '../../utils/sound';
 
 const MirrorScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -161,6 +162,7 @@ const MirrorScene: React.FC = () => {
     if (cameraPermissionStatus !== 'granted') {
       setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
       setMirrorTaskCompleted(true); // Mark task as completed
+      playGetRingSound(0.2, 1000); 
       return;
     }
 
@@ -190,6 +192,7 @@ const MirrorScene: React.FC = () => {
     const dataUrl = canvas.toDataURL('image/png');
     setCapturedPhoto(dataUrl);
     setMirrorTaskCompleted(true); // Mark task as completed
+    playGetRingSound(0.2, 1000);
   };
 
   // Function to close the photo view

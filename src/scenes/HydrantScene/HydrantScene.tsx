@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, hydrantTaskCompletedAtom } from '../../atoms/gameState';
+import { playGetRingSound } from '../../utils/sound';
 
 const HydrantScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -36,8 +37,9 @@ const HydrantScene: React.FC = () => {
   const computedWheelStyle = {
     ...styles.base,
     ...styles.wheel,
-    transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+    transform: `translate(-50%, -50%) rotateY(-15deg) rotateX(10deg) rotate(${rotation}deg)`,
     cursor: hydrantTaskCompleted ? 'default' : (isDragging.current ? 'grabbing' : 'grab'),
+    transformStyle: 'preserve-3d' as const,
   };
 
   // Get angle from pointer position
@@ -99,6 +101,7 @@ const HydrantScene: React.FC = () => {
         
         // Complete the hydrant task when reaching full left rotation
         setHydrantTaskCompleted(true);
+        playGetRingSound(0.2, 1000);
         console.log("Hydrant task completed!");
       }
       deltaAngle = -MAX_ROTATION - totalRotation.current;

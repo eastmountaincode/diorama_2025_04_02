@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, computerTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
-const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene'];
+const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene', 'ComputerScene', 'RadioScene'];
 
 // Define possible states for the Inventory (adjust as needed)
 const inventoryStates: Array<'OpeningScene' | 'MainGame'> = ['OpeningScene', 'MainGame'];
@@ -16,6 +16,7 @@ export function DebugSceneSwitcher() {
   const [isFigurineTouchingDropZone] = useAtom(isFigurineTouchingDropZoneAtom);
   const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
+  const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
   const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -122,6 +123,21 @@ export function DebugSceneSwitcher() {
                 }`}
               >
                 {mirrorTaskCompleted ? 'Completed' : 'Not Completed'}
+              </button>
+            </div>
+            
+            {/* Computer Task Completed toggle */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">Computer Task:</span>
+              <button
+                onClick={() => setComputerTaskCompleted(!computerTaskCompleted)}
+                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                  computerTaskCompleted
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {computerTaskCompleted ? 'Completed' : 'Not Completed'}
               </button>
             </div>
             

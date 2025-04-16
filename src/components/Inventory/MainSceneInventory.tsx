@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, radioTaskCompletedAtom } from '../../atoms/gameState';
+import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
 import MainInventorySlot from './MainInventorySlot';
 
 type MainSceneInventoryProps = {
@@ -12,7 +12,7 @@ interface InventoryItem {
   id: string;
   name: string;
   image: string;
-  taskAtom: 'mirror' | 'hydrant' | 'radio';
+  taskAtom: 'mirror' | 'hydrant' | 'computer';
 }
 
 // Ring items with associated tasks
@@ -33,7 +33,7 @@ const INVENTORY_ITEMS: InventoryItem[] = [
     id: "ring3", 
     name: "Clay Ring 3", 
     image: "assets/rings/clay_ring_3_demo-min.png", 
-    taskAtom: 'radio'
+    taskAtom: 'computer'
   }
 ];
 
@@ -43,19 +43,19 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   // Get task completion status from atoms
   const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const [hydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
-  const [radioTaskCompleted] = useAtom(radioTaskCompletedAtom);
+  const [computerTaskCompleted] = useAtom(computerTaskCompletedAtom);
   
   // State to track animation states for each ring
   const [ringStates, setRingStates] = useState({
     mirror: { glowing: false, opacity: 0 },
     hydrant: { glowing: false, opacity: 0 },
-    radio: { glowing: false, opacity: 0 }
+    computer: { glowing: false, opacity: 0 }
   });
   
   // Refs to track previous completion state
   const prevMirrorCompleted = useRef(false);
   const prevHydrantCompleted = useRef(false);
-  const prevRadioCompleted = useRef(false);
+  const prevComputerCompleted = useRef(false);
   
   // Handle mirror task completion
   useEffect(() => {
@@ -129,13 +129,13 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     prevHydrantCompleted.current = hydrantTaskCompleted;
   }, [hydrantTaskCompleted]);
   
-  // Handle radio task completion
+  // Handle computer task completion
   useEffect(() => {
-    if (radioTaskCompleted && !prevRadioCompleted.current) {
+    if (computerTaskCompleted && !prevComputerCompleted.current) {
       // First, make sure the ring is at opacity 0
       setRingStates(prev => ({
         ...prev,
-        radio: { glowing: true, opacity: 0 }
+        computer: { glowing: true, opacity: 0 }
       }));
       
       // Start fading in the image slowly (over 3 seconds)
@@ -149,7 +149,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         
         setRingStates(prev => ({
           ...prev,
-          radio: { ...prev.radio, opacity }
+          computer: { ...prev.computer, opacity }
         }));
       }, 150); // Slower fade-in
       
@@ -157,20 +157,20 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       setTimeout(() => {
         setRingStates(prev => ({
           ...prev,
-          radio: { ...prev.radio, glowing: false }
+          computer: { ...prev.computer, glowing: false }
         }));
       }, 5000);
     }
     
-    prevRadioCompleted.current = radioTaskCompleted;
-  }, [radioTaskCompleted]);
+    prevComputerCompleted.current = computerTaskCompleted;
+  }, [computerTaskCompleted]);
   
   // Helper function to get properties for each slot
-  const getSlotProps = (taskAtom: 'mirror' | 'hydrant' | 'radio') => {
+  const getSlotProps = (taskAtom: 'mirror' | 'hydrant' | 'computer') => {
     const taskCompletedMap = {
       'mirror': mirrorTaskCompleted,
       'hydrant': hydrantTaskCompleted,
-      'radio': radioTaskCompleted
+      'computer': computerTaskCompleted
     };
     
     return {

@@ -1,4 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useCursor } from '../../context/CursorContext';
+import { useAtom } from 'jotai';
+import { breakpointAtom } from '../../atoms/gameState';
 
 interface ComputerFileProps {
   name: string;
@@ -6,6 +9,7 @@ interface ComputerFileProps {
   positionX: string;
   positionY: string;
   scale?: number;
+  onClick?: () => void;
 }
 
 const ComputerFile: React.FC<ComputerFileProps> = ({ 
@@ -14,17 +18,34 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
   positionX, 
   positionY,
   scale = 1,
+  onClick,
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const { setCursorType } = useCursor();
+  const [breakpoint] = useAtom(breakpointAtom);
+  const isMobile = breakpoint === 'mobile';
 
-
-
-  // Base sizes for the icon
+  // Base sizes for the icon - adjusted for mobile
   const baseWidth = 70;
-  const baseIconSize = 40;
+  const baseIconSize = isMobile ? 30 : 40;
+  
+  // Adjust highlight size to be slightly larger than the icon
+  const highlightSize = baseIconSize * scale * 1.2;
+
+  // Handle mouse events for hover effects and cursor changes
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    setCursorType('pointer');
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    setCursorType('default');
+  };
 
   return (
     <div 
-      className={`flex flex-col items-center justify-center cursor-pointer select-none `}
+      className="flex items-center justify-center cursor-pointer select-none"
       style={{
         position: 'absolute',
         left: positionX,
@@ -32,19 +53,35 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
         width: `${baseWidth * scale}px`,
         height: `${baseWidth * scale}px`,
         textAlign: 'center',
-        padding: '4px',
-        borderRadius: '3px',
       }}
+      onClick={onClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <img 
-        src={iconSrc} 
-        alt={name}
+      <div
         style={{
-          width: `${baseIconSize * scale}px`,
-          height: `${baseIconSize * scale}px`,
+          width: `${highlightSize}px`,
+          height: `${highlightSize}px`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: isHovered ? 'rgba(173, 216, 230, 0.2)' : 'transparent',
+          margin: 0,
+          padding: 0,
         }}
-        draggable={false}
-      />
+      >
+        <img 
+          src={iconSrc} 
+          alt={name}
+          style={{
+            width: `${baseIconSize * scale}px`,
+            height: `${baseIconSize * scale}px`,
+            display: 'block',
+            margin: 'auto',
+          }}
+          draggable={false}
+        />
+      </div>
     </div>
   );
 };

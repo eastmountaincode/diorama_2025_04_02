@@ -1,13 +1,41 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom, currentSceneAtom } from '../../atoms/gameState';
+import { breakpointAtom, currentSceneAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
 import ComputerFile from './ComputerFile';
+import PhotoViewer from './PhotoViewer';
+import { playGetRingSound } from '../../utils/sound';
 
 const ComputerScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
+  const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+  const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
 
   const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
+
+  // Define photo paths for each folder
+  const photos = {
+    'hydrant_photo': 'assets/bg/computer/photos_demo/direct_lease-min.png',
+    'archive_photo': 'assets/bg/computer/photos_demo/sb_in_dark-min.png',
+    'studio_photo': 'assets/bg/computer/photos_demo/studio_2-min.png',
+  };
+
+  // Handler for opening a photo
+  const handleOpenPhoto = (folderName: string) => {
+    const photoPath = photos[folderName as keyof typeof photos];
+    setCurrentPhoto(photoPath);
+
+    // If opening the archive photo and task not completed yet, mark it as completed
+    if (folderName === 'archive_photo' && !computerTaskCompleted) {
+      setComputerTaskCompleted(true);
+      playGetRingSound(0.2, 1000);
+    }
+  };
+
+  // Handler for closing the photo
+  const handleClosePhoto = () => {
+    setCurrentPhoto(null);
+  };
 
   return (
     <div
@@ -27,27 +55,38 @@ const ComputerScene: React.FC = () => {
       {/* Desktop files with absolute positioning */}
       <div className="absolute inset-0 overflow-hidden">
         <ComputerFile 
-          name="Folder 1"
+          name="Hydrant"
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '34.4%' : '35%'}
           positionY={breakpoint === 'mobile' ? '42.3%' : '36.3%'}
           scale={breakpoint === 'mobile' ? 0.2 : 0.28}
+          onClick={() => handleOpenPhoto('hydrant_photo')}
         />
         <ComputerFile 
-          name="Folder 2"
+          name="Archive"
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '39%' : '39%'}
           positionY={breakpoint === 'mobile' ? '42.6%' : '36.78%'}    
           scale={breakpoint === 'mobile' ? 0.2 : 0.28}
+          onClick={() => handleOpenPhoto('archive_photo')}
         />
         <ComputerFile 
-          name="Folder 3"
+          name="Studio"
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '35.5%' : '36.5%'}
           positionY={breakpoint === 'mobile' ? '44%' : '39.5%'}    
           scale={breakpoint === 'mobile' ? 0.2 : 0.28}
+          onClick={() => handleOpenPhoto('studio_photo')}
         />
       </div>
+
+      {/* Photo Viewer */}
+      {currentPhoto && (
+        <PhotoViewer 
+          imageSrc={currentPhoto} 
+          onClose={handleClosePhoto} 
+        />
+      )}
     </div>
   );
 };

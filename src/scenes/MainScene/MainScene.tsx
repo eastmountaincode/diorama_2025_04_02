@@ -8,7 +8,10 @@ import {
     isNearHydrantAtom,
     isNearPhoneAtom,
     isNearComputerAtom,
-    isNearRadioAtom
+    isNearRadioAtom,
+    mirrorTaskCompletedAtom,
+    hydrantTaskCompletedAtom,
+    computerTaskCompletedAtom
 } from '../../atoms/gameState';
 import MainDraggableFigurine from '../../components/MainDraggableFigurine';
 import FloorBoundary from './FloorBoundary';
@@ -21,6 +24,14 @@ const MainScene: React.FC = () => {
     const [opacity, setOpacity] = useState(0);
     const [breakpoint] = useAtom(breakpointAtom);
     const { setCursorType } = useCursor();
+    
+    // Task completion states
+    const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
+    const [hydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
+    const [computerTaskCompleted] = useAtom(computerTaskCompletedAtom);
+    
+    // Check if all tasks are completed
+    const allTasksCompleted = mirrorTaskCompleted && hydrantTaskCompleted && computerTaskCompleted;
 
     // Proximity states for interactive elements
     const [isNearMirror] = useAtom(isNearMirrorAtom);
@@ -297,7 +308,7 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearRadio ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearRadio
+                    filter: isNearRadio || allTasksCompleted
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
                     transition: 'filter 0.3s ease-in-out'

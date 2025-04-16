@@ -311,7 +311,8 @@ const MainScene: React.FC = () => {
                     filter: isNearRadio || allTasksCompleted
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    transition: 'filter 0.3s ease-in-out',
+                    animation: allTasksCompleted ? 'pulse 2s infinite' : 'none'
                     }}
                 draggable={false}
             />

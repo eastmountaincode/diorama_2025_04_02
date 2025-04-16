@@ -48,9 +48,28 @@ const RadioScene: React.FC = () => {
             transform: 'translate(-50%, -50%)',
             cursor: 'pointer',
             zIndex: 10,
+            filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
+            animation: 'pulse 2s infinite'
           }}
         />
       )}
+
+      {/* Add CSS animation for the pulsing effect */}
+      <style>
+        {`
+          @keyframes pulse {
+            0% {
+              filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1));
+            }
+            50% {
+              filter: drop-shadow(0 0 10px rgba(212,14,14,1)) drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1));
+            }
+            100% {
+              filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1));
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };

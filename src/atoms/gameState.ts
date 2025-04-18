@@ -1,6 +1,6 @@
 import { atom } from 'jotai';
 
-export type SceneType = 'OpeningScene' | 'MainScene' | 'HydrantScene' | 'RadioScene' | 'MirrorScene' | 'ComputerScene';
+export type SceneType = 'OpeningScene' | 'MainScene' | 'HydrantScene' | 'RadioScene' | 'MirrorScene' | 'ComputerScene' | 'EndGameScene';
 export const currentSceneAtom = atom<SceneType>('OpeningScene');
 
 export type InventoryState = 'OpeningScene' | 'MainGame';
@@ -125,3 +125,6 @@ export const mirrorTransitionCompleteAtom = atom<boolean>(false);
 
 // Track if a photo is currently being displayed in the MirrorScene
 export const isPhotoDisplayedAtom = atom<boolean>(false);
+
+// Track when we've reached the end game state
+export const isEndSceneAtom = atom<boolean>(false);

@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, computerTaskCompletedAtom, cameraPermissionStatusAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, computerTaskCompletedAtom, cameraPermissionStatusAtom, isEndSceneAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
-const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene', 'ComputerScene', 'RadioScene'];
+const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene', 'ComputerScene', 'RadioScene', 'EndGameScene'];
 
 // Define possible states for the Inventory (adjust as needed)
 const inventoryStates: Array<'OpeningScene' | 'MainGame'> = ['OpeningScene', 'MainGame'];
@@ -17,6 +17,7 @@ export function DebugSceneSwitcher() {
   const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
+  const [isEndScene, setIsEndScene] = useAtom(isEndSceneAtom);
   const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
   const [isVisible, setIsVisible] = useState(false);
   
@@ -138,6 +139,21 @@ export function DebugSceneSwitcher() {
                 }`}
               >
                 {computerTaskCompleted ? 'Completed' : 'Not Completed'}
+              </button>
+            </div>
+            
+            {/* End Scene State toggle */}
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-[10px]">End Scene State:</span>
+              <button
+                onClick={() => setIsEndScene(!isEndScene)}
+                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                  isEndScene
+                    ? 'bg-green-500 hover:bg-green-600'
+                    : 'bg-red-500 hover:bg-red-600'
+                }`}
+              >
+                {isEndScene ? 'Enabled' : 'Disabled'}
               </button>
             </div>
             

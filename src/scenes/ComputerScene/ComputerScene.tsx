@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
 import ComputerFile from './ComputerFile';
 import PhotoViewer from './PhotoViewer';
-import { playGetRingSound } from '../../utils/sound';
+import { playGetRingSound } from '../../util/sound';
 
 const ComputerScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);

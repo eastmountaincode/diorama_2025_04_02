@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, hydrantTaskCompletedAtom } from '../../atoms/gameState';
-import { playGetRingSound } from '../../utils/sound';
+import { playGetRingSound } from '../../util/sound';
 
 const HydrantScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);

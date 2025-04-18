@@ -10,7 +10,7 @@ import {
 import CameraVideoFeed from '../../components/CameraVideoFeed';
 import PhotoFrame from './PhotoFrame';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
-import { playGetRingSound } from '../../utils/sound';
+import { playGetRingSound } from '../../util/sound';
 
 const MirrorScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);

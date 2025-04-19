@@ -63,7 +63,6 @@ const RadioScene: React.FC = () => {
             cursor: 'pointer',
             zIndex: 10,
             filter: 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))',
-            animation: 'pulse 2s infinite'
           }}
         />
       )}

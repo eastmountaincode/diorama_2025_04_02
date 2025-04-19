@@ -7,6 +7,7 @@ import HydrantScene from '../scenes/HydrantScene/HydrantScene';
 import RadioScene from '../scenes/RadioScene/RadioScene';
 import MirrorScene from '../scenes/MirrorScene/MirrorScene';
 import ComputerScene from '../scenes/ComputerScene/ComputerScene';
+import EndGameScene from '../scenes/EndGameScene/EndGameScene';
 
 const SceneManager: React.FC = () => {
   const [showOpeningScene] = useAtom(showOpeningSceneAtom);
@@ -46,6 +47,13 @@ const SceneManager: React.FC = () => {
       {currentScene === 'ComputerScene' && (
         <div className="absolute inset-0">
           <ComputerScene />
+        </div>
+      )}
+      
+      {/* EndGameScene - Only rendered when active */}
+      {currentScene === 'EndGameScene' && (
+        <div className="absolute inset-0">
+          <EndGameScene />
         </div>
       )}
       

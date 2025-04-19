@@ -5,12 +5,14 @@ import {
   mirrorTaskCompletedAtom, 
   hydrantTaskCompletedAtom, 
   computerTaskCompletedAtom,
-  breakpointAtom
+  breakpointAtom,
+  isEndSceneAtom
 } from '../../atoms/gameState';
 
 const RadioScene: React.FC = () => {
-  const [currentScene] = useAtom(currentSceneAtom);
+  const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
+  const [, setIsEndScene] = useAtom(isEndSceneAtom);
   const isMobile = breakpoint === 'mobile';
   
   // Get task completion states
@@ -20,6 +22,17 @@ const RadioScene: React.FC = () => {
   
   // Check if all tasks are completed
   const allTasksCompleted = mirrorTaskCompleted && hydrantTaskCompleted && computerTaskCompleted;
+
+  // Handle the radio button click
+  const handleRadioButtonClick = () => {
+    if (!allTasksCompleted) return;
+    
+    // Wait 400ms then return to main scene and set to end scene mode
+    setTimeout(() => {
+      setCurrentScene('MainScene');
+      setIsEndScene(true);
+    }, 400);
+  };
 
   return (
     <div
@@ -39,6 +52,7 @@ const RadioScene: React.FC = () => {
         <img
           src="assets/bg/radio/radio_button_object.PNG"
           alt="Radio Button"
+          onClick={handleRadioButtonClick}
           style={{
             position: 'absolute',
             top: isMobile ? '49.0%' : '48%',
@@ -53,23 +67,6 @@ const RadioScene: React.FC = () => {
           }}
         />
       )}
-
-      {/* Add CSS animation for the pulsing effect */}
-      <style>
-        {`
-          @keyframes pulse {
-            0% {
-              filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1));
-            }
-            50% {
-              filter: drop-shadow(0 0 10px rgba(212,14,14,1)) drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1));
-            }
-            100% {
-              filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1));
-            }
-          }
-        `}
-      </style>
     </div>
   );
 };

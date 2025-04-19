@@ -38,7 +38,7 @@ export function HUDFrame() {
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [showReaffirmButton, setShowReaffirmButton] = useState(false);
   const [, setInventoryState] = useAtom(inventoryStateAtom);
-  const { zoom, translateX, translateY } = hudTransform;
+  const { zoom = 1, translateX = 0, translateY = 0 } = hudTransform || { zoom: 1, translateX: 0, translateY: 0 };
   const {} = useCursor();
   const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
 

@@ -11,7 +11,8 @@ import {
     isNearRadioAtom,
     mirrorTaskCompletedAtom,
     hydrantTaskCompletedAtom,
-    computerTaskCompletedAtom
+    computerTaskCompletedAtom,
+    isEndSceneAtom
 } from '../../atoms/gameState';
 import MainDraggableFigurine from '../../components/MainDraggableFigurine';
 import FloorBoundary from './FloorBoundary';
@@ -24,12 +25,13 @@ const MainScene: React.FC = () => {
     const [opacity, setOpacity] = useState(0);
     const [breakpoint] = useAtom(breakpointAtom);
     const { setCursorType } = useCursor();
-    
+    const [isEndScene] = useAtom(isEndSceneAtom);
+
     // Task completion states
     const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
     const [hydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
     const [computerTaskCompleted] = useAtom(computerTaskCompletedAtom);
-    
+
     // Check if all tasks are completed
     const allTasksCompleted = mirrorTaskCompleted && hydrantTaskCompleted && computerTaskCompleted;
 
@@ -40,14 +42,37 @@ const MainScene: React.FC = () => {
     const [isNearComputer] = useAtom(isNearComputerAtom);
     const [isNearRadio] = useAtom(isNearRadioAtom);
 
+    // Helper function to compute element opacity based on end scene state
+    const getElementOpacity = (elementType: 'phone' | 'radio' | 'background' | 'other') => {
+        if (!isEndScene) return 1;
+
+        // In end scene mode, only phone stays visible
+        switch (elementType) {
+            case 'phone':
+                return 1;
+            case 'radio':
+                return 0.2; // slightly visible
+            case 'background':
+                return 0;
+            case 'other':
+                return 0;
+            default:
+                return 0;
+        }
+    };
+
     // Update cursor type based on proximity
     useEffect(() => {
-        if (isNearMirror || isNearHydrant || isNearPhone || isNearComputer || isNearRadio) {
+        if ((isNearPhone && isEndScene) || 
+            (isNearMirror && !isEndScene) || 
+            (isNearHydrant && !isEndScene) || 
+            (isNearComputer && !isEndScene) || 
+            (isNearRadio && !isEndScene)) {
             setCursorType('pointer');
         } else {
             setCursorType('default');
         }
-    }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType]);
+    }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType, isEndScene]);
 
     // Debug state for proximity visualization
     const [showProximityDebug, setShowProximityDebug] = useState(false);
@@ -63,34 +88,37 @@ const MainScene: React.FC = () => {
 
     // Handle interactive element clicks
     const handleMirrorClick = () => {
-        if (isNearMirror) {
+        if (isNearMirror && !isEndScene) {
             console.log('Mirror clicked!');
             setCurrentScene('MirrorScene');
         }
     };
 
     const handleHydrantClick = () => {
-        if (isNearHydrant) {
+        if (isNearHydrant && !isEndScene) {
             console.log('Hydrant clicked!');
             setCurrentScene('HydrantScene');
         }
     };
 
     const handlePhoneClick = () => {
-        if (isNearPhone) {
-            console.log('Phone clicked!');
+        if (isNearPhone && isEndScene) {
+            console.log('Phone clicked in end scene!');
+            setCurrentScene('EndGameScene');
+        } else if (isNearPhone && !isEndScene) {
+            console.log('Phone clicked in normal scene - no action');
         }
     };
 
     const handleComputerClick = () => {
-        if (isNearComputer) {
+        if (isNearComputer && !isEndScene) {
             console.log('Computer clicked!');
             setCurrentScene('ComputerScene');
         }
     };
 
     const handleRadioClick = () => {
-        if (isNearRadio) {
+        if (isNearRadio && !isEndScene) {
             console.log('Radio clicked!');
             setCurrentScene('RadioScene');
         }
@@ -147,16 +175,28 @@ const MainScene: React.FC = () => {
             ref={containerRef}
             className="w-full h-full flex items-center justify-center z-10 cursor-default"
             style={{
-                backgroundImage: "url('assets/bg/bg_compressed_pngquant/Diorama_BG-fs8.png')",
+                backgroundImage: isEndScene ? "none" : "url('assets/bg/bg_compressed_pngquant/Diorama_BG-fs8.png')",
+                backgroundColor: isEndScene ? "black" : "transparent",
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
-                opacity: currentScene === 'HydrantScene' ? 1 : opacity,
+                opacity: isEndScene ? 1 : opacity,
                 transition: isSceneTransitioning ? 'opacity 1.5s ease-in' : 'none',
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
                 position: 'relative'
             }}
         >
+            {/* Background for end scene - completely black */}
+            {isEndScene && (
+                <div
+                    className="absolute inset-0"
+                    style={{
+                        backgroundColor: 'black',
+                        zIndex: 1
+                    }}
+                />
+            )}
+
             {/* ProximityManager handles all proximity detection and visualization */}
             <MainSceneProximityManager showDebug={showProximityDebug} />
 
@@ -172,7 +212,7 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
-
+                    display: isEndScene ? 'none' : 'block'
                 }}
             />
 
@@ -187,12 +227,12 @@ const MainScene: React.FC = () => {
                     left: breakpoint === 'mobile' ? '25.1%' : '28.8%',
                     width: breakpoint === 'mobile' ? '10.6%' : '9%',
                     height: 'auto',
-                    pointerEvents: isNearMirror ? 'auto' : 'none',
+                    pointerEvents: isNearMirror && !isEndScene ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearMirror
+                    filter: isNearMirror && !isEndScene
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    display: isEndScene ? 'none' : 'block'
                 }}
                 draggable={false}
             />
@@ -208,12 +248,12 @@ const MainScene: React.FC = () => {
                     left: breakpoint === 'mobile' ? '32%' : '34.8%',
                     width: breakpoint === 'mobile' ? '6.3%' : '4.9%',
                     height: 'auto',
-                    pointerEvents: isNearHydrant ? 'auto' : 'none',
+                    pointerEvents: isNearHydrant && !isEndScene ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearHydrant
+                    filter: isNearHydrant && !isEndScene
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    display: isEndScene ? 'none' : 'block'
                 }}
                 draggable={false}
             />
@@ -230,6 +270,7 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
+                    display: isEndScene ? 'none' : 'block'
                 }}
                 draggable={false}
             />
@@ -248,10 +289,11 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: isNearPhone ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearPhone
+                    filter: isNearPhone && isEndScene
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    opacity: isEndScene ? 0 : 1,
+                    animation: isEndScene ? 'fadeIn 4s forwards 1s' : 'none'
                 }}
                 draggable={false}
             />
@@ -269,6 +311,7 @@ const MainScene: React.FC = () => {
                     height: 'auto',
                     pointerEvents: 'none',
                     zIndex: 40,
+                    display: isEndScene ? 'none' : 'block'
                 }}
                 draggable={false}
             />
@@ -285,12 +328,12 @@ const MainScene: React.FC = () => {
                     left: breakpoint === 'mobile' ? '55.1%' : '54.3%',
                     width: breakpoint === 'mobile' ? '9.1%' : '7.7%',
                     height: 'auto',
-                    pointerEvents: isNearComputer ? 'auto' : 'none',
+                    pointerEvents: isNearComputer && !isEndScene ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearComputer
+                    filter: isNearComputer && !isEndScene
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out'
+                    display: isEndScene ? 'none' : 'block'
                 }}
                 draggable={false}
             />
@@ -306,14 +349,14 @@ const MainScene: React.FC = () => {
                     left: breakpoint === 'mobile' ? '70.5%' : '67.6%',
                     width: breakpoint === 'mobile' ? '5.8%' : '4.7%',
                     height: 'auto',
-                    pointerEvents: isNearRadio ? 'auto' : 'none',
+                    pointerEvents: isNearRadio && !isEndScene ? 'auto' : 'none',
                     zIndex: 39,
-                    filter: isNearRadio || allTasksCompleted
+                    filter: (isNearRadio || allTasksCompleted) && !isEndScene
                         ? 'drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1))'
                         : 'none',
-                    transition: 'filter 0.3s ease-in-out',
-                    animation: allTasksCompleted ? 'pulse 2s infinite' : 'none'
-                    }}
+                    display: isEndScene ? 'none' : 'block',
+                    animation: allTasksCompleted && !isEndScene ? 'pulse 2s infinite' : 'none'
+                }}
                 draggable={false}
             />
 
@@ -322,10 +365,22 @@ const MainScene: React.FC = () => {
             <FloorBoundary debug={debugBoundary} />
 
             {/* Main Figurine */}
+
             <MainDraggableFigurine
                 containerRef={containerRef}
                 canDragFigurine={canDragFigurine}
             />
+
+
+            {/* Add animation keyframes */}
+            <style>
+                {`
+                    @keyframes fadeIn {
+                        from { opacity: 0; }
+                        to { opacity: 1; }
+                    }
+                `}
+            </style>
 
         </div>
     );

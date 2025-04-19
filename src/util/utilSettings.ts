@@ -9,6 +9,7 @@ export const defaultHudTransforms: Record<BreakpointType, Record<SceneType, { zo
     RadioScene: { zoom: 1.2, translateX: 0, translateY: 0 },
     MirrorScene: { zoom: 1.2, translateX: 0, translateY: 0 },
     ComputerScene: { zoom: 3.5, translateX: 0, translateY: 0 },
+    EndGameScene: { zoom: 1.0, translateX: 0, translateY: 0 },
   },
   mobile: {
     OpeningScene: { zoom: 2.5, translateX: 0, translateY: -30 }, // Even higher zoom for mobile
@@ -17,6 +18,7 @@ export const defaultHudTransforms: Record<BreakpointType, Record<SceneType, { zo
     RadioScene: { zoom: 2.3, translateX: 0, translateY: 0 },
     MirrorScene: { zoom: 2.3, translateX: -60, translateY: 0 },
     ComputerScene: { zoom: 6, translateX: 0, translateY: 0 },
+    EndGameScene: { zoom: 1.0, translateX: 0, translateY: 0 },
   }
 };
 

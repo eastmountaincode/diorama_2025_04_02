@@ -42,25 +42,6 @@ const MainScene: React.FC = () => {
     const [isNearComputer] = useAtom(isNearComputerAtom);
     const [isNearRadio] = useAtom(isNearRadioAtom);
 
-    // Helper function to compute element opacity based on end scene state
-    const getElementOpacity = (elementType: 'phone' | 'radio' | 'background' | 'other') => {
-        if (!isEndScene) return 1;
-
-        // In end scene mode, only phone stays visible
-        switch (elementType) {
-            case 'phone':
-                return 1;
-            case 'radio':
-                return 0.2; // slightly visible
-            case 'background':
-                return 0;
-            case 'other':
-                return 0;
-            default:
-                return 0;
-        }
-    };
-
     // Update cursor type based on proximity
     useEffect(() => {
         if ((isNearPhone && isEndScene) || 

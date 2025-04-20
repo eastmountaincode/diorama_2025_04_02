@@ -2,6 +2,7 @@ import React from 'react';
 import { useCursor } from '../../context/CursorContext';
 import { useAtom } from 'jotai';
 import { breakpointAtom } from '../../atoms/gameState';
+import { playCameraClickSound } from '../../util/sound';
 
 interface ReaffirmButtonProps {
   onClick: () => void;
@@ -20,9 +21,15 @@ const ReaffirmButton: React.FC<ReaffirmButtonProps> = ({
   const [breakpoint] = useAtom(breakpointAtom);
   const isMobile = breakpoint === 'mobile';
 
+  // Handle click with sound
+  const handleClick = () => {
+    playCameraClickSound();
+    onClick();
+  };
+
   return (
     <button
-      onClick={onClick}
+      onClick={handleClick}
       onMouseEnter={() => setCursorType('pointing')}
       onMouseLeave={() => setCursorType('neutral')}
       className={`absolute z-30 bg-[#fffff0] text-gray-700 border border-gray-400 rounded px-3 py-1 

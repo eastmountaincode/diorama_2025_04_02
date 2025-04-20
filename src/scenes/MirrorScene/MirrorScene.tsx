@@ -19,7 +19,7 @@ const MirrorScene: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [breakpoint] = useAtom(breakpointAtom);
   const [_, setMirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
-  const [__, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
+  const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const isMobile = breakpoint === 'mobile';
   
   // State for background transition.
@@ -161,8 +161,12 @@ const MirrorScene: React.FC = () => {
     // If camera permission is not granted, use the fallback image
     if (cameraPermissionStatus !== 'granted') {
       setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
-      setMirrorTaskCompleted(true); // Mark task as completed
-      playGetRingSound(); 
+      
+      // Only mark task as completed and play sound if not already completed
+      if (!mirrorTaskCompleted) {
+        setMirrorTaskCompleted(true);
+        playGetRingSound();
+      }
       return;
     }
 
@@ -191,8 +195,12 @@ const MirrorScene: React.FC = () => {
     // Get the data URL from the canvas
     const dataUrl = canvas.toDataURL('image/png');
     setCapturedPhoto(dataUrl);
-    setMirrorTaskCompleted(true); // Mark task as completed
-    playGetRingSound(0.2, 1000);
+    
+    // Only mark task as completed and play sound if not already completed
+    if (!mirrorTaskCompleted) {
+      setMirrorTaskCompleted(true);
+      playGetRingSound();
+    }
   };
 
   // Function to close the photo view

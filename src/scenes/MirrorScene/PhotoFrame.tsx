@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom, isPhotoDisplayedAtom } from '../../atoms/gameState';
 import { createFramedPhotoDownload } from '../../util/photoUtils';
+import { useCursor } from '../../context/CursorContext';
+import { playMouseClickSound } from '../../util/sound';
 
 interface PhotoFrameProps {
   imageData: string | null;
@@ -11,6 +13,7 @@ interface PhotoFrameProps {
 const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const [breakpoint] = useAtom(breakpointAtom);
   const [_, setIsPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
+  const { setCursorType } = useCursor();
   const isMobile = breakpoint === 'mobile';
   const photoRef = useRef<HTMLImageElement>(null);
   const frameRef = useRef<HTMLImageElement>(null);
@@ -35,8 +38,18 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const handleFrameLoad = () => setFrameLoaded(true);
   const handlePhotoLoad = () => setPhotoLoaded(true);
 
-  // Wrap the onClose handler to update the atom
+  // Handle cursor changes for close button
+  const handleCloseButtonMouseEnter = () => {
+    setCursorType('pointing');
+  };
+
+  const handleCloseButtonMouseLeave = () => {
+    setCursorType('open');
+  };
+
+  // Wrap the onClose handler to update the atom and play sound
   const handleClose = () => {
+    playMouseClickSound();
     setIsPhotoDisplayed(false);
     onClose();
   };
@@ -125,6 +138,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           {/* Close button */}
           <button 
             onClick={handleClose}
+            onMouseEnter={handleCloseButtonMouseEnter}
+            onMouseLeave={handleCloseButtonMouseLeave}
             className="absolute rounded-full flex items-center justify-center z-30"
             style={{ 
               top: '5%', 

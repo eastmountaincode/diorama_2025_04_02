@@ -20,7 +20,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ imageSrc, onClose }) => {
   };
 
   const handleCloseButtonMouseLeave = () => {
-    setCursorType('neutral');
+    setCursorType('open');
   };
 
   // Handle close with sound

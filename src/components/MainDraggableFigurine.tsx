@@ -106,7 +106,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   // Set cursor based on dragging state and update global dragging state
   useEffect(() => {
     if (canDragFigurine) {
-      setCursorType(isDragging ? 'grasping' : 'open');
+      setCursorType(isDragging ? 'pinching' : 'open');
       setIsDraggingFigurine(isDragging);
     }
   }, [isDragging, canDragFigurine, setCursorType, setIsDraggingFigurine]);
@@ -116,7 +116,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     
     e.preventDefault();
     setIsDragging(true);
-    setCursorType('grasping');
+    setCursorType('pinching');
   
     const figurineRect = figurineRef.current.getBoundingClientRect();
   

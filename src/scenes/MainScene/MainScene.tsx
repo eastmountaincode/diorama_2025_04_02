@@ -52,6 +52,78 @@ const MainScene: React.FC = () => {
         }
     };
 
+    // Handle mouse down to avoid grasping cursor when clicking on interactive elements
+    const handleContainerMouseDown = (e: React.MouseEvent) => {
+        // If we're already dragging, let the dragging logic handle it
+        if (isDraggingFigurine) return;
+
+        // Get the event target
+        const target = e.target as HTMLElement;
+        
+        // Check if we're directly clicking on one of the interactive elements
+        // by checking if the target is one of our interactive images
+        const isClickingOnInteractiveElement = 
+            target.tagName === 'IMG' && 
+            (
+                ((target as HTMLImageElement).alt === 'Mirror' && isNearMirror && !isEndScene) ||
+                ((target as HTMLImageElement).alt === 'Hydrant' && isNearHydrant && !isEndScene) ||
+                ((target as HTMLImageElement).alt === 'Computer' && isNearComputer && !isEndScene) ||
+                ((target as HTMLImageElement).alt === 'Radio' && isNearRadio && !isEndScene) ||
+                ((target as HTMLImageElement).alt === 'Phone' && isNearPhone)
+            );
+
+        // ONLY handle the cursor for direct clicks on interactive elements
+        if (isClickingOnInteractiveElement) {
+            // Set cursor to pointing for interactive elements
+            setCursorType('pointing');
+            // Stop propagation to prevent other handlers
+            e.stopPropagation();
+        }
+        // Don't do anything for non-interactive areas to allow default grasping behavior
+    };
+
+    // Add effect to handle document-level mouse events
+    useEffect(() => {
+        // Only apply when in MainScene
+        if (currentScene !== 'MainScene') return;
+
+        // Function to handle mouseup at document level to ensure cursor is reset
+        const handleDocumentMouseUp = (e: MouseEvent) => {
+            if (isDraggingFigurine) return; // Skip if we're dragging
+
+            // Get the event target
+            const target = e.target as HTMLElement;
+            
+            // Only handle mouseup for IMG elements that are interactive
+            if (target.tagName === 'IMG') {
+                const imgTarget = target as HTMLImageElement;
+                if (imgTarget.alt === 'Mirror' && isNearMirror && !isEndScene) setCursorType('pointing');
+                else if (imgTarget.alt === 'Hydrant' && isNearHydrant && !isEndScene) setCursorType('pointing');
+                else if (imgTarget.alt === 'Computer' && isNearComputer && !isEndScene) setCursorType('pointing');
+                else if (imgTarget.alt === 'Radio' && isNearRadio && !isEndScene) setCursorType('pointing');
+                else if (imgTarget.alt === 'Phone' && isNearPhone) setCursorType('pointing');
+            }
+        };
+
+        // Add document-level handlers
+        document.addEventListener('mouseup', handleDocumentMouseUp);
+
+        // Cleanup
+        return () => {
+            document.removeEventListener('mouseup', handleDocumentMouseUp);
+        };
+    }, [
+        currentScene, 
+        isDraggingFigurine, 
+        isNearMirror, 
+        isNearHydrant, 
+        isNearComputer, 
+        isNearRadio, 
+        isNearPhone,
+        isEndScene,
+        setCursorType
+    ]);
+
     // Initialize cursor to open and let hover events handle specific elements
     useEffect(() => {
         // Only set to open when not in proximity of anything and not dragging
@@ -176,6 +248,7 @@ const MainScene: React.FC = () => {
                 pointerEvents: currentScene === 'MainScene' ? 'auto' : 'none',
                 position: 'relative'
             }}
+            onMouseDown={handleContainerMouseDown}
         >
             {/* Background for end scene - completely black */}
             {isEndScene && (

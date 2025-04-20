@@ -20,19 +20,19 @@ const INVENTORY_ITEMS: InventoryItem[] = [
   { 
     id: "ring1", 
     name: "Clay Ring 1", 
-    image: "assets/rings/clay_ring_1_demo-min.png", 
+    image: "assets/rings/Ring_1.GIF", 
     taskAtom: 'mirror'
   },
   { 
     id: "ring2", 
     name: "Clay Ring 2", 
-    image: "assets/rings/clay_ring_2_demo-min.png", 
+    image: "assets/rings/Ring_2.GIF", 
     taskAtom: 'hydrant'
   },
   { 
     id: "ring3", 
     name: "Clay Ring 3", 
-    image: "assets/rings/clay_ring_3_demo-min.png", 
+    image: "assets/rings/Ring_3.GIF", 
     taskAtom: 'computer'
   }
 ];

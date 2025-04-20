@@ -3,9 +3,12 @@ import './App.css'
 import { GameSpace } from './components/GameSpace'
 import { CursorProvider } from './context/CursorContext'
 import CustomCursor from './components/CustomCursor'
+import { useAtom } from 'jotai'
+import { hideCustomCursorAtom } from './scenes/ComputerScene/ComputerScene'
 
 function App() {
   const [isIOS, setIsIOS] = useState(false);
+  const [hideCustomCursor] = useAtom(hideCustomCursorAtom);
 
   // Detect iOS/iPadOS devices on mount
   useEffect(() => {
@@ -22,7 +25,7 @@ function App() {
 
   return (
     <CursorProvider>
-      <div className="w-full h-full" style={{ cursor: isIOS ? 'auto' : 'none' }}>
+      <div className={`w-full h-full ${hideCustomCursor ? 'show-cursor' : ''}`} style={{ cursor: isIOS ? 'auto' : 'none' }}>
         <CustomCursor />
         <GameSpace />
       </div>

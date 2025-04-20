@@ -208,7 +208,7 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
     }
 
     // Determine scale based on state - very subtle
-    const scale = isDragging ? 1.03 : isHovered ? 1.03 : 1;
+    const scale = 1
 
     return (
         <div

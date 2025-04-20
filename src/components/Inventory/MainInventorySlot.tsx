@@ -45,7 +45,7 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    opacity: isCompleted ? 0 : 0.15, // Only show placeholder when not completed
+    opacity: isCompleted ? 0 : 0.1, // Only show placeholder when not completed
     filter: 'grayscale(100%)',
     transition: 'opacity 1s ease-out', // Longer, smoother fade-out
   };

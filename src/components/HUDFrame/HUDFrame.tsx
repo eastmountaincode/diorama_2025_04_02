@@ -9,7 +9,9 @@ import {
   isSceneTransitioningAtom,
   mirrorTransitionCompleteAtom,
   isPhotoDisplayedAtom,
-  inventoryStateAtom
+  inventoryStateAtom,
+  isFigurinePlacedAtom,
+  isFigurineTouchingDropZoneAtom
 } from '../../atoms/gameState';
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
@@ -18,6 +20,7 @@ import { useCursor } from '../../context/CursorContext';
 import BackButton from './BackButton';
 import ReaffirmButton from './ReaffirmButton';
 import { atom } from 'jotai';
+import { isBrowserOpenAtom, isPhotoOpenAtom } from '../../scenes/ComputerScene/ComputerScene';
 
 // Create a new atom for triggering photo capture
 export const capturePhotoTriggerAtom = atom<boolean>(false);
@@ -38,6 +41,9 @@ export function HUDFrame() {
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [showReaffirmButton, setShowReaffirmButton] = useState(false);
   const [, setInventoryState] = useAtom(inventoryStateAtom);
+  const [isFigurinePlaced] = useAtom(isFigurinePlacedAtom);
+  const [isBrowserOpen] = useAtom(isBrowserOpenAtom);
+  const [isPhotoOpen] = useAtom(isPhotoOpenAtom);
   const { zoom = 1, translateX = 0, translateY = 0 } = hudTransform || { zoom: 1, translateX: 0, translateY: 0 };
   const {} = useCursor();
   const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
@@ -139,6 +145,22 @@ export function HUDFrame() {
     }
   }, [currentScene, setInventoryState]);
 
+  // Determine if the back button should be shown
+  const shouldShowBackButton = () => {
+    // Hide back button if browser or photo is open in computer scene
+    if (currentScene === 'ComputerScene' && (isBrowserOpen || isPhotoOpen)) {
+      return false;
+    }
+    
+    // Show back button in object scenes
+    return (
+      currentScene === 'HydrantScene' || 
+      currentScene === 'RadioScene' || 
+      (currentScene === 'MirrorScene' && !isPhotoDisplayed) || 
+      currentScene === 'ComputerScene'
+    );
+  };
+
   const sceneTransformStyle: CSSProperties = {
     transform: `translate(${translateX}px, ${translateY}px) scale(${zoom})`,
     transformOrigin: 'center center',
@@ -151,6 +173,35 @@ export function HUDFrame() {
     ...viewportStyle,
     transform: 'translate(-50%, -50%)',
     position: 'absolute'
+  };
+
+  // Touch Grass message positioned similar to other UI elements
+  const touchGrassStyle: CSSProperties = {
+    position: 'absolute',
+    fontFamily: 'monospace',
+    color: '#fffff0',
+    fontSize: breakpoint === 'mobile' ? '0.8rem' : '1.4rem',
+    letterSpacing: '0.1em',
+    zIndex: 50,
+    pointerEvents: 'none',
+    textAlign: 'center',
+    width: 'auto',
+    whiteSpace: 'nowrap',
+    // Position similar to back button but centered horizontally
+    ...(breakpoint === 'mobile' 
+      ? { top: '16%', left: '50%', transform: 'translateX(-50%)' } 
+      : { top: '20%', left: '43%', transform: 'translateX(-50%)' })
+  };
+
+  // Helper to determine what message should be shown in OpeningScene
+  const shouldShowGrassMessage = () => {
+    // Only show any message in OpeningScene and when not transitioning
+    if (currentScene !== 'OpeningScene' || isSceneTransitioning) {
+      return false;
+    }
+    
+    // Show message when figurine is not placed yet or when it's placed but waiting for click
+    return !isSceneTransitioning;
   };
 
   return (
@@ -189,12 +240,28 @@ export function HUDFrame() {
             )}
             
             {/* Back Button - only visible in object scenes */}
-            {(currentScene === 'HydrantScene' || currentScene === 'RadioScene' || (currentScene === 'MirrorScene' && !isPhotoDisplayed || currentScene === 'ComputerScene')) && (
+            {shouldShowBackButton() && (
               <BackButton
                 onClick={handleBackToMainScene}
                 style={breakpoint === 'mobile' ? { top: '5.9%', left: '9.1%' } : { top: '5.9%', left: '5.9%' }}
                 className={breakpoint === 'mobile' ? 'text-sm' : 'text-lg'}
               />
+            )}
+            
+            {/* Touch Grass Message - only visible in OpeningScene when not transitioning */}
+            {shouldShowGrassMessage() && (
+              <div style={touchGrassStyle}>
+                <div>TOUCH GRASS TO START</div>
+                {/* Only show the quote if figurine hasn't been placed yet */}
+                {!isFigurinePlaced && (
+                  <div style={{ 
+                    fontSize: breakpoint === 'mobile' ? '0.5rem' : '0.7rem',
+                    marginTop: '0.5rem'
+                  }}>
+                    <span style={{ fontStyle: 'italic' }}>"place me on the synthetic grass..."</span>
+                  </div>
+                )}
+              </div>
             )}
             
             {/* Reaffirm Existence Button - only visible in MirrorScene after transition and when no photo is displayed */}

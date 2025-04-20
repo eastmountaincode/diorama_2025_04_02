@@ -3,15 +3,30 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
 import ComputerFile from './ComputerFile';
 import PhotoViewer from './PhotoViewer';
+import InternetBrowser from './InternetBrowser';
 import { playGetRingSound } from '../../util/sound';
+import { atom } from 'jotai';
+
+// Export an atom to track if the browser is open
+export const isBrowserOpenAtom = atom<boolean>(false);
+
+// Export an atom to track if a photo is open
+export const isPhotoOpenAtom = atom<boolean>(false);
+
+// Export an atom to control custom cursor visibility
+export const hideCustomCursorAtom = atom<boolean>(false);
 
 const ComputerScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
   const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+  const [showBrowser, setShowBrowser] = useAtom(isBrowserOpenAtom);
+  const [, setIsPhotoOpen] = useAtom(isPhotoOpenAtom);
+  const [, setHideCustomCursor] = useAtom(hideCustomCursorAtom);
   const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
 
   const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
+  const internetIconSrc = 'assets/bg/computer/Network_Computers.ico';
 
   // Define photo paths for each folder
   const photos = {
@@ -24,6 +39,7 @@ const ComputerScene: React.FC = () => {
   const handleOpenPhoto = (folderName: string) => {
     const photoPath = photos[folderName as keyof typeof photos];
     setCurrentPhoto(photoPath);
+    setIsPhotoOpen(true);
 
     // If opening the archive photo and task not completed yet, mark it as completed
     if (folderName === 'archive_photo' && !computerTaskCompleted) {
@@ -35,6 +51,19 @@ const ComputerScene: React.FC = () => {
   // Handler for closing the photo
   const handleClosePhoto = () => {
     setCurrentPhoto(null);
+    setIsPhotoOpen(false);
+  };
+
+  // Handler for opening the internet browser
+  const handleOpenBrowser = () => {
+    setShowBrowser(true);
+    setHideCustomCursor(true); // Hide custom cursor when browser is open
+  };
+
+  // Handler for closing the internet browser
+  const handleCloseBrowser = () => {
+    setShowBrowser(false);
+    setHideCustomCursor(false); // Show custom cursor again when browser is closed
   };
 
   return (
@@ -78,6 +107,14 @@ const ComputerScene: React.FC = () => {
           scale={breakpoint === 'mobile' ? 0.2 : 0.28}
           onClick={() => handleOpenPhoto('studio_photo')}
         />
+        <ComputerFile 
+          name="Internet"
+          iconSrc={internetIconSrc}
+          positionX= {breakpoint === 'mobile' ? '39.5%' : '39.5%'}
+          positionY={breakpoint === 'mobile' ? '44%' : '39.5%'}    
+          scale={breakpoint === 'mobile' ? 0.2 : 0.28}
+          onClick={handleOpenBrowser}
+        />
       </div>
 
       {/* Photo Viewer */}
@@ -85,6 +122,13 @@ const ComputerScene: React.FC = () => {
         <PhotoViewer 
           imageSrc={currentPhoto} 
           onClose={handleClosePhoto} 
+        />
+      )}
+
+      {/* Internet Browser */}
+      {showBrowser && (
+        <InternetBrowser 
+          onClose={handleCloseBrowser} 
         />
       )}
     </div>

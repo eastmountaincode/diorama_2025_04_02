@@ -8,6 +8,7 @@ import {
   breakpointAtom,
   isEndSceneAtom
 } from '../../atoms/gameState';
+import { playButtonClickSound } from '../../util/sound';
 
 const RadioScene: React.FC = () => {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
@@ -26,6 +27,9 @@ const RadioScene: React.FC = () => {
   // Handle the radio button click
   const handleRadioButtonClick = () => {
     if (!allTasksCompleted) return;
+    
+    // Play button click sound
+    playButtonClickSound();
     
     // Wait 400ms then return to main scene and set to end scene mode
     setTimeout(() => {

@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useCursor } from '../context/CursorContext';
+import { useAtom } from 'jotai';
+import { hideCustomCursorAtom } from '../scenes/ComputerScene/ComputerScene';
 
 const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const { cursorType } = useCursor();
+  const [hideCustomCursor] = useAtom(hideCustomCursorAtom);
 
   // Detect iOS/iPadOS devices
   useEffect(() => {
@@ -102,8 +105,8 @@ const CustomCursor: React.FC = () => {
     };
   }, [isIOS]);
 
-  // Don't render the cursor on iOS/iPadOS devices
-  if (isIOS) return null;
+  // Don't render the cursor on iOS/iPadOS devices or when browser is open
+  if (isIOS || hideCustomCursor) return null;
 
   return (
     <div

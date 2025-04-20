@@ -239,6 +239,25 @@ const MainScene: React.FC = () => {
                 draggable={false}
             />
 
+            {/* Water Leaking Animation - only shows when hydrant task is not completed */}
+            {!hydrantTaskCompleted && !isEndScene && (
+                <img
+                    src="assets/bg/hydrant/water_leaking.gif"
+                    alt="Water Leaking"
+                    style={{
+                        position: 'absolute',
+                        top: breakpoint === 'mobile' ? '48.5%' : '48%',
+                        left: breakpoint === 'mobile' ? '33.4%' : '35.8%',
+                        width: breakpoint === 'mobile' ? '7.3%' : '5.9%',
+                        height: 'auto',
+                        pointerEvents: 'none',
+                        zIndex: 44,
+                        display: isEndScene ? 'none' : 'block'
+                    }}
+                    draggable={false}
+                />
+            )}
+
             {/* Stairs */}
             <img
                 src="assets/bg/bg_compressed_pngquant/just_stairs-fs8.png"

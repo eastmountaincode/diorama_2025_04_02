@@ -144,6 +144,25 @@ const HydrantScene: React.FC = () => {
         style={{ ...styles.base, ...styles.noWheelHydrant }}
         draggable={false}
       />
+      
+      {/* Water Leaking Animation - only shows when hydrant task is not completed */}
+      {!hydrantTaskCompleted && (
+        <img
+          src="assets/bg/hydrant/water_leaking.gif"
+          alt="Water Leaking"
+          style={{
+            ...styles.base,
+            top: breakpoint === 'mobile' ? '61%' : '70%',
+            left: breakpoint === 'mobile' ? '53%' : '55%',
+            width: breakpoint === 'mobile' ? '26%' : '26%',
+            height: 'auto',
+            pointerEvents: 'none',
+            zIndex: 40
+          }}
+          draggable={false}
+        />
+      )}
+      
       <img
         ref={wheelRef}
         src="assets/bg/hydrant/hydrant_wheel.png"

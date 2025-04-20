@@ -43,6 +43,26 @@ export const playSound = (soundPath: string, volume: number = 1.0, delay: number
  * @param delay Delay in milliseconds before playing the sound
  * @returns The Audio element that was created and played
  */
-export const playGetRingSound = (volume: number = 0.2, delay: number = 1000): HTMLAudioElement => {
+export const playGetRingSound = (volume: number = 0.25, delay: number = 1000): HTMLAudioElement => {
   return playSound("assets/audio/get_ring.wav", volume, delay);
+};
+
+/**
+ * Plays the "button click" sound effect
+ * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
+ * @param delay Delay in milliseconds before playing the sound
+ * @returns The Audio element that was created and played
+ */
+export const playButtonClickSound = (volume: number = 0.65, delay: number = 0): HTMLAudioElement => {
+  return playSound("assets/audio/button_click.wav", volume, delay);
+};
+
+/**
+ * Plays the "mouse click" sound effect
+ * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
+ * @param delay Delay in milliseconds before playing the sound
+ * @returns The Audio element that was created and played
+ */
+export const playMouseClickSound = (volume: number = 0.85, delay: number = 0): HTMLAudioElement => {
+  return playSound("assets/audio/mouse_click.mp3", volume, delay);
 }; 

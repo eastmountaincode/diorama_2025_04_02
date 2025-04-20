@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCursor } from '../../context/CursorContext';
 import { useAtom } from 'jotai';
 import { breakpointAtom } from '../../atoms/gameState';
+import { playMouseClickSound } from '../../util/sound';
 
 interface ComputerFileProps {
   name: string;
@@ -43,6 +44,12 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
     setCursorType('default');
   };
 
+  // Handle click with sound
+  const handleClick = () => {
+    playMouseClickSound();
+    if (onClick) onClick();
+  };
+
   return (
     <div 
       className="flex items-center justify-center cursor-pointer select-none"
@@ -54,7 +61,7 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
         height: `${baseWidth * scale}px`,
         textAlign: 'center',
       }}
-      onClick={onClick}
+      onClick={handleClick}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

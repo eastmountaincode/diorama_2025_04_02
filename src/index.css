@@ -5,6 +5,18 @@
   * {
     cursor: none !important;
   }
+
+  /* Exception for Internet Browser - when cursor should be visible */
+  .show-cursor * {
+    cursor: auto !important;
+  }
+  .show-cursor input {
+    cursor: text !important;
+  }
+  .show-cursor button, 
+  .show-cursor a {
+    cursor: pointer !important;
+  }
 }
 
 /* iOS/iPadOS specific cursor hiding has been removed as we want regular touch behavior */

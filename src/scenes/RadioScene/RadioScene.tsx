@@ -104,8 +104,8 @@ const RadioScene: React.FC = () => {
         display: currentScene === 'RadioScene' ? 'flex' : 'none',
       }}
       // Handle mouse events on the main container to ensure cursor always returns to open
-      onMouseDown={(e) => !isInteractingWithButton && setCursorType('open')}
-      onMouseUp={(e) => !isInteractingWithButton && setCursorType('open')}
+      onMouseDown={() => !isInteractingWithButton && setCursorType('open')}
+      onMouseUp={() => !isInteractingWithButton && setCursorType('open')}
     >
       {/* Radio Button - only visible when all tasks are completed */}
       {allTasksCompleted && (

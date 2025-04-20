@@ -17,8 +17,8 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setCursorType('pointer')}
-      onMouseLeave={() => setCursorType('default')}
+      onMouseEnter={() => setCursorType('pointing')}
+      onMouseLeave={() => setCursorType('neutral')}
       style={style}
       className={`absolute z-50 p-0 border-none bg-transparent cursor-pointer ${className}`}
       aria-label="Back Button"

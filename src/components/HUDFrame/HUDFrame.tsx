@@ -44,7 +44,7 @@ export function HUDFrame() {
   const [isBrowserOpen] = useAtom(isBrowserOpenAtom);
   const [isPhotoOpen] = useAtom(isPhotoOpenAtom);
   const { zoom = 1, translateX = 0, translateY = 0 } = hudTransform || { zoom: 1, translateX: 0, translateY: 0 };
-  const {} = useCursor();
+  const { setCursorType } = useCursor();
   const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
 
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
@@ -105,6 +105,23 @@ export function HUDFrame() {
   const handleReaffirmExistence = () => {
     // Trigger photo capture in MirrorScene
     setCapturePhotoTrigger(true);
+  };
+
+  // Cursor handlers for the viewport (pannable/zoomable area)
+  const handleMouseEnterGrabbable = () => {
+    setCursorType('open');
+  };
+
+  const handleMouseDownGrabbable = () => {
+    setCursorType('grasping');
+  };
+
+  const handleMouseUpGrabbable = () => {
+    setCursorType('open');
+  };
+
+  const handleMouseLeaveGrabbable = () => {
+    setCursorType('neutral');
   };
 
   const [capturePhotoTrigger, setCapturePhotoTrigger] = useAtom(capturePhotoTriggerAtom);
@@ -226,6 +243,10 @@ export function HUDFrame() {
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
+              onMouseEnter={handleMouseEnterGrabbable}
+              onMouseDown={handleMouseDownGrabbable}
+              onMouseUp={handleMouseUpGrabbable}
+              onMouseLeave={handleMouseLeaveGrabbable}
             >
               {/* SceneManager viewport */}
               <div className="w-full h-full select-none" style={sceneTransformStyle}>

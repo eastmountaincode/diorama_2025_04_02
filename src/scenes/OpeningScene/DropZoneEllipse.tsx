@@ -152,13 +152,30 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
   const handleEllipseMouseEnter = () => {
     if (isFigurinePlaced) {
       setIsEllipseHovered(true);
-      setCursorType('pointer');
+      setCursorType('pointing');
     }
   };
   
   const handleEllipseMouseLeave = () => {
     setIsEllipseHovered(false);
-    setCursorType('default');
+    setCursorType('open'); // Set back to open hand when leaving the ellipse
+  };
+
+  // Handle mouse down/up to maintain pointing cursor
+  const handleEllipseMouseDown = (e: React.MouseEvent) => {
+    if (isFigurinePlaced) {
+      // Prevent event bubbling so parent handlers don't change cursor to grasping
+      e.stopPropagation();
+      setCursorType('pointing');
+    }
+  };
+
+  const handleEllipseMouseUp = (e: React.MouseEvent) => {
+    if (isFigurinePlaced) {
+      // Prevent event bubbling
+      e.stopPropagation();
+      setCursorType('pointing');
+    }
   };
 
   return (
@@ -176,6 +193,8 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
         onClick={handleEllipseClick}
         onMouseEnter={handleEllipseMouseEnter}
         onMouseLeave={handleEllipseMouseLeave}
+        onMouseDown={handleEllipseMouseDown}
+        onMouseUp={handleEllipseMouseUp}
       />
     </svg>
   );

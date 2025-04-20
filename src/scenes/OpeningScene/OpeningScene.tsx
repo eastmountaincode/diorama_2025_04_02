@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, isFigurineTouchingDropZoneAtom, isFigurinePlacedAtom, isSceneTransitioningAtom, showOpeningSceneAtom } from '../../atoms/gameState';
 import DropZoneEllipse from './DropZoneEllipse';
 import OpeningSceneGrass from '../../components/OpeningSceneGrass';
+import { useCursor } from '../../context/CursorContext';
 
 const OpeningScene: React.FC = () => {
   const [breakpoint] = useAtom(breakpointAtom);
@@ -13,6 +14,26 @@ const OpeningScene: React.FC = () => {
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const [, setShowOpeningScene] = useAtom(showOpeningSceneAtom);
   const [opacity, setOpacity] = useState(1);
+  const { setCursorType } = useCursor();
+  
+  // Handle cursor changes
+  const handleMouseEnter = () => {
+    setCursorType('open');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorType('neutral');
+  };
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Prevent default browser behavior (text selection)
+    e.preventDefault();
+    setCursorType('grasping');
+  };
+
+  const handleMouseUp = () => {
+    setCursorType('open');
+  };
   
   // Handle fade-out effect when transitioning to MainScene
   useEffect(() => {
@@ -65,10 +86,18 @@ const OpeningScene: React.FC = () => {
   const ovalProps = getOvalProps();
 
   return (
-    <div className="w-full h-full relative z-30" style={{
-      opacity,
-      transition: isSceneTransitioning ? 'opacity 1.5s ease-out' : 'none',
-    }}>
+    <div 
+      className="w-full h-full relative z-30" 
+      style={{
+        opacity,
+        transition: isSceneTransitioning ? 'opacity 1.5s ease-out' : 'none',
+        userSelect: 'none', // Prevent text selection
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
       <OpeningSceneGrass 
         isFigurineTouchingDropZone={isFigurineTouchingDropZone}
         isFigurinePlaced={isFigurinePlaced}

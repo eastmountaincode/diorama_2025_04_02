@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, ReactNode } from 'react';
 
 // Define cursor types
-type CursorType = 'default' | 'pointer' | 'grabbing' | 'grab';
+type CursorType = 'neutral' | 'open' | 'pinching' | 'grasping' | 'pointing';
 
 // Define context types
 interface CursorContextType {
@@ -11,7 +11,7 @@ interface CursorContextType {
 
 // Create the context with default values
 const CursorContext = createContext<CursorContextType>({
-  cursorType: 'default',
+  cursorType: 'neutral',
   setCursorType: () => {},
 });
 
@@ -24,7 +24,7 @@ interface CursorProviderProps {
 }
 
 export const CursorProvider: React.FC<CursorProviderProps> = ({ children }) => {
-  const [cursorType, setCursorType] = useState<CursorType>('default');
+  const [cursorType, setCursorType] = useState<CursorType>('neutral');
 
   return (
     <CursorContext.Provider value={{ cursorType, setCursorType }}>

@@ -25,10 +25,20 @@ const CustomCursor: React.FC = () => {
 
   // Map cursor types to image paths
   const cursorImages = {
-    default: 'assets/cursor/cursor_compressed/neutral_hand.png',
-    pointer: 'assets/cursor/cursor_compressed/open_hand.png',
-    grabbing: 'assets/cursor/cursor_compressed/grabbing_pinching_hand.png',
-    grab: 'assets/cursor/cursor_compressed/grasping_hand.png'
+    neutral: 'assets/cursor/cursor_compressed/neutral_hand.png',
+    open: 'assets/cursor/cursor_compressed/open_hand.png',
+    pinching: 'assets/cursor/cursor_compressed/grabbing_pinching_hand.png',
+    grasping: 'assets/cursor/cursor_compressed/grasping_hand.png',
+    pointing: 'assets/cursor/cursor_compressed/pointing_hand-min.PNG'
+  };
+
+  // Define specific offsets for each cursor type
+  const cursorOffsets = {
+    neutral: { x: -15, y: -8 },
+    open: { x: -15, y: -8 },
+    pinching: { x: -9, y: -8 },
+    grasping: { x: -15, y: -12 },
+    pointing: { x: -15, y: -2 } 
   };
 
   useEffect(() => {
@@ -108,14 +118,17 @@ const CustomCursor: React.FC = () => {
   // Don't render the cursor on iOS/iPadOS devices or when browser is open
   if (isIOS || hideCustomCursor) return null;
 
+  // Get the current cursor offset
+  const currentOffset = cursorOffsets[cursorType];
+
   return (
     <div
       style={{
         position: 'fixed',
         left: position.x,
         top: position.y,
-        // Offset to center the cursor image - adjusted lower by increasing y-value
-        transform: 'translate(-15px, -8px)',
+        // Use specific offset for current cursor type
+        transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
         pointerEvents: 'none', // Important! This prevents the cursor from interfering with click events
         zIndex: 99999, // Extremely high z-index to ensure it's above everything
         width: '30px',

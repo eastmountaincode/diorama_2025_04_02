@@ -35,11 +35,11 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
     // Update cursor type based on hover and drag state
     useEffect(() => {
         if (isDragging) {
-            setCursorType('grabbing');
+            setCursorType('pinching');
         } else if (isHovered && !isFigurinePlaced) {
-            setCursorType('pointer');
+            setCursorType('open');
         } else {
-            setCursorType('default');
+            setCursorType('open');
         }
     }, [isDragging, isHovered, isFigurinePlaced, setCursorType]);
 
@@ -230,6 +230,7 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
                 alignItems: 'center',
                 transform: `translate(${position.x}px, ${position.y}px) scale(${scale})`,
                 touchAction: 'none',
+                userSelect: 'none', // Prevent text selection
                 transition: isDragging 
                     ? 'none' 
                     : 'transform 0.2s ease',

@@ -15,11 +15,11 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ imageSrc, onClose }) => {
 
   // Handle cursor change on hover
   const handleCloseButtonMouseEnter = () => {
-    setCursorType('pointer');
+    setCursorType('pointing');
   };
 
   const handleCloseButtonMouseLeave = () => {
-    setCursorType('default');
+    setCursorType('neutral');
   };
 
   return (

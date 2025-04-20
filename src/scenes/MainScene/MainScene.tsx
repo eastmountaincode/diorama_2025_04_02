@@ -42,16 +42,15 @@ const MainScene: React.FC = () => {
     const [isNearComputer] = useAtom(isNearComputerAtom);
     const [isNearRadio] = useAtom(isNearRadioAtom);
 
-    // Update cursor type based on proximity
+    // Initialize cursor to neutral and let hover events handle specific elements
     useEffect(() => {
-        if ((isNearPhone && isEndScene) || 
-            (isNearMirror && !isEndScene) || 
-            (isNearHydrant && !isEndScene) || 
-            (isNearComputer && !isEndScene) || 
-            (isNearRadio && !isEndScene)) {
-            setCursorType('pointer');
-        } else {
-            setCursorType('default');
+        // Only set to neutral when not in proximity of anything
+        if (!((isNearPhone && isEndScene) || 
+              (isNearMirror && !isEndScene) || 
+              (isNearHydrant && !isEndScene) || 
+              (isNearComputer && !isEndScene) || 
+              (isNearRadio && !isEndScene))) {
+            setCursorType('neutral');
         }
     }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType, isEndScene]);
 
@@ -202,6 +201,8 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_mirror-fs8.png"
                 alt="Mirror"
                 onClick={handleMirrorClick}
+                onMouseEnter={() => isNearMirror && !isEndScene && setCursorType('pointing')}
+                onMouseLeave={() => setCursorType('neutral')}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '44%' : '40.5%',
@@ -223,6 +224,8 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_hydrant-fs8.png"
                 alt="Hydrant"
                 onClick={handleHydrantClick}
+                onMouseEnter={() => isNearHydrant && !isEndScene && setCursorType('pointing')}
+                onMouseLeave={() => setCursorType('neutral')}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '44%' : '40.7%',
@@ -281,6 +284,8 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_phone-fs8.png"
                 alt="Phone"
                 onClick={handlePhoneClick}
+                onMouseEnter={() => isNearPhone && setCursorType('pointing')}
+                onMouseLeave={() => setCursorType('neutral')}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '34.9%' : '25.6%',
@@ -322,6 +327,8 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_computer-fs8.png"
                 alt="Computer"
                 onClick={handleComputerClick}
+                onMouseEnter={() => isNearComputer && !isEndScene && setCursorType('pointing')}
+                onMouseLeave={() => setCursorType('neutral')}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '39.4%' : '32.45%',
@@ -343,6 +350,8 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_radio-fs8.png"
                 alt="Radio"
                 onClick={handleRadioClick}
+                onMouseEnter={() => isNearRadio && !isEndScene && setCursorType('pointing')}
+                onMouseLeave={() => setCursorType('neutral')}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '49%' : '48.5%',

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
 import MainInventorySlot from './MainInventorySlot';
+import { useCursor } from '../../context/CursorContext';
 
 type MainSceneInventoryProps = {
   breakpoint?: 'mobile' | 'desktop';
@@ -39,6 +40,7 @@ const INVENTORY_ITEMS: InventoryItem[] = [
 
 const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'desktop' }) => {
   const isMobile = breakpoint === 'mobile';
+  const { setCursorType } = useCursor();
   
   // Get task completion status from atoms
   const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
@@ -56,6 +58,26 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const prevMirrorCompleted = useRef(false);
   const prevHydrantCompleted = useRef(false);
   const prevComputerCompleted = useRef(false);
+  
+  // Handle cursor changes
+  const handleMouseEnter = () => {
+    setCursorType('open');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorType('neutral');
+  };
+  
+  // Handle mouse down/up for grasping effect
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Prevent default browser behavior (text selection)
+    e.preventDefault();
+    setCursorType('grasping');
+  };
+
+  const handleMouseUp = () => {
+    setCursorType('open');
+  };
   
   // Handle mirror task completion
   useEffect(() => {
@@ -184,14 +206,22 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const slotSize = isMobile ? '21%' : '58%';
   
   return (
-    <div className="inventory-container" style={{
-      width: '100%',
-      height: '100%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: isMobile ? 'center' : 'flex-start',
-      paddingTop: isMobile ? 0 : '45px',
-    }}>
+    <div 
+      className="inventory-container" 
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: isMobile ? 'center' : 'flex-start',
+        paddingTop: isMobile ? 0 : '45px',
+        userSelect: 'none', // Prevent text selection
+      }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
       <div className="inventory-slots" style={{
         width: isMobile ? '100%' : '90%',
         height: isMobile ? '90%' : '85%',

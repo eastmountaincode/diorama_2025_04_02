@@ -36,12 +36,12 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
   // Handle mouse events for hover effects and cursor changes
   const handleMouseEnter = () => {
     setIsHovered(true);
-    setCursorType('pointer');
+    setCursorType('pointing');
   };
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setCursorType('default');
+    setCursorType('neutral');
   };
 
   // Handle click with sound

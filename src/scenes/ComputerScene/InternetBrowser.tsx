@@ -17,11 +17,11 @@ const InternetBrowser: React.FC<InternetBrowserProps> = ({ onClose }) => {
 
   // Handle cursor change on hover
   const handleButtonMouseEnter = () => {
-    setCursorType('pointer');
+    setCursorType('pointing');
   };
 
   const handleButtonMouseLeave = () => {
-    setCursorType('default');
+    setCursorType('neutral');
   };
 
   // Handle form submission

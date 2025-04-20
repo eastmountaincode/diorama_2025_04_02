@@ -23,8 +23,8 @@ const ReaffirmButton: React.FC<ReaffirmButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setCursorType('pointer')}
-      onMouseLeave={() => setCursorType('default')}
+      onMouseEnter={() => setCursorType('pointing')}
+      onMouseLeave={() => setCursorType('neutral')}
       className={`absolute z-30 bg-[#fffff0] text-gray-700 border border-gray-400 rounded px-3 py-1 
                  hover:bg-gray-200 hover:text-gray-900 transition-all duration-500 opacity-0
                  ${isVisible ? 'opacity-100' : 'pointer-events-none'} ${className}`}

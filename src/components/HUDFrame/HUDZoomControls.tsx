@@ -12,8 +12,8 @@ const HUD_ZOOM_STEP = 0.5;
 export const HUDZoomControls: React.FC<HUDZoomControlsProps> = ({ setHudTransform }) => {
   const { setCursorType } = useCursor();
 
-  const handleMouseEnter = () => setCursorType('pointer');
-  const handleMouseLeave = () => setCursorType('default');
+  const handleMouseEnter = () => setCursorType('pointing');
+  const handleMouseLeave = () => setCursorType('neutral');
 
   return (
     <div

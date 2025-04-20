@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import DraggableInventoryFigurine from '../DraggableInventoryFigurine';
+import { useCursor } from '../../context/CursorContext';
 
 type OpeningSceneInventoryProps = {
   breakpoint?: 'mobile' | 'desktop';
@@ -7,6 +8,28 @@ type OpeningSceneInventoryProps = {
 
 const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoint = 'desktop' }) => {
   const [borderIsVisible, _] = useState(false);
+  const { setCursorType } = useCursor();
+
+  // Handle cursor changes
+  const handleMouseEnter = () => {
+    setCursorType('open');
+  };
+
+  const handleMouseLeave = () => {
+    setCursorType('neutral');
+  };
+
+  // Handle mouse down/up for grasping effect
+  const handleMouseDown = (e: React.MouseEvent) => {
+    // Prevent default browser behavior (text selection)
+    e.preventDefault();
+    setCursorType('grasping');
+  };
+
+  const handleMouseUp = () => {
+    setCursorType('open');
+  };
+
   // Container takes up the full width of its parent.
   const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -16,6 +39,7 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
     alignItems: breakpoint === 'mobile' ? 'center' : 'flex-start',
     paddingTop: breakpoint === 'desktop' ? '45px' : '0',
     paddingRight: breakpoint === 'mobile' ? '4%' : '0',
+    userSelect: 'none', // Prevent text selection
   };
 
   // Box style remains as defined, with relative positioning and overflow hidden.
@@ -65,7 +89,13 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
   };
 
   return (
-    <div style={containerStyle}>
+    <div 
+      style={containerStyle}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
+    >
       <div style={boxStyle}>
         <DraggableInventoryFigurine anchorDependency={breakpoint}>
           <img

@@ -162,7 +162,7 @@ const MirrorScene: React.FC = () => {
     if (cameraPermissionStatus !== 'granted') {
       setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
       setMirrorTaskCompleted(true); // Mark task as completed
-      playGetRingSound(0.2, 1000); 
+      playGetRingSound(); 
       return;
     }
 

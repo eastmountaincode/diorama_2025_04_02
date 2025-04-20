@@ -101,7 +101,7 @@ const HydrantScene: React.FC = () => {
         
         // Complete the hydrant task when reaching full left rotation
         setHydrantTaskCompleted(true);
-        playGetRingSound(0.2, 1000);
+        playGetRingSound();
         console.log("Hydrant task completed!");
       }
       deltaAngle = -MAX_ROTATION - totalRotation.current;

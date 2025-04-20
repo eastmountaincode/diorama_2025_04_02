@@ -44,7 +44,7 @@ const ComputerScene: React.FC = () => {
     // If opening the archive photo and task not completed yet, mark it as completed
     if (folderName === 'archive_photo' && !computerTaskCompleted) {
       setComputerTaskCompleted(true);
-      playGetRingSound(0.2, 1000);
+      playGetRingSound();
     }
   };
 

@@ -1,7 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, hydrantTaskCompletedAtom } from '../../atoms/gameState';
-import { playGetRingSound } from '../../util/sound';
+import { playGetRingSound, playWaterFlowingSound } from '../../util/sound';
 
 const HydrantScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -9,6 +9,7 @@ const HydrantScene: React.FC = () => {
   const [hydrantTaskCompleted, setHydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [rotation, setRotation] = useState(0);
   const wheelRef = useRef<HTMLImageElement>(null);
+  const waterSoundRef = useRef<HTMLAudioElement | null>(null);
 
   const MAX_ROTATION = 1080;
 
@@ -18,6 +19,32 @@ const HydrantScene: React.FC = () => {
   const totalRotation = useRef(0);
   const hasLoggedMaxClockwise = useRef(false);
   const hasLoggedMaxCounterclockwise = useRef(false);
+
+  // Play water flowing sound when scene is active and task is not completed
+  useEffect(() => {
+    if (currentScene === 'HydrantScene' && !hydrantTaskCompleted) {
+      // Play water flowing sound, looping
+      const audio = playWaterFlowingSound();
+      audio.loop = true;
+      waterSoundRef.current = audio;
+
+      // Cleanup function to stop sound when component unmounts or scene changes
+      return () => {
+        if (waterSoundRef.current) {
+          waterSoundRef.current.pause();
+          waterSoundRef.current = null;
+        }
+      };
+    }
+  }, [currentScene, hydrantTaskCompleted]);
+
+  // Stop water sound when task is completed
+  useEffect(() => {
+    if (hydrantTaskCompleted && waterSoundRef.current) {
+      waterSoundRef.current.pause();
+      waterSoundRef.current = null;
+    }
+  }, [hydrantTaskCompleted]);
 
   // Your original styles
   const styles = {

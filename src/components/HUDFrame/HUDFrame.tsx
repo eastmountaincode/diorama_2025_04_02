@@ -11,7 +11,6 @@ import {
   isPhotoDisplayedAtom,
   inventoryStateAtom,
   isFigurinePlacedAtom,
-  isFigurineTouchingDropZoneAtom
 } from '../../atoms/gameState';
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';

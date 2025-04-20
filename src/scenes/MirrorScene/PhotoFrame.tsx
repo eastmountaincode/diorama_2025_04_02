@@ -3,7 +3,6 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, isPhotoDisplayedAtom } from '../../atoms/gameState';
 import { createFramedPhotoDownload } from '../../util/photoUtils';
 import { useCursor } from '../../context/CursorContext';
-import { playMouseClickSound } from '../../util/sound';
 
 interface PhotoFrameProps {
   imageData: string | null;
@@ -47,9 +46,16 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
     setCursorType('open');
   };
 
+  const handleDownloadButtonMouseEnter = () => {
+    setCursorType('pointing');
+  };
+
+  const handleDownloadButtonMouseLeave = () => {
+    setCursorType('open');
+  };
+
   // Wrap the onClose handler to update the atom and play sound
   const handleClose = () => {
-    playMouseClickSound();
     setIsPhotoDisplayed(false);
     onClose();
   };
@@ -172,6 +178,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           <div className="flex justify-center">
             <button 
               onClick={handleDownload}
+              onMouseEnter={handleDownloadButtonMouseEnter}
+              onMouseLeave={handleDownloadButtonMouseLeave}
               disabled={!frameLoaded || !photoLoaded}
               style={{
                 ...buttonStyle,

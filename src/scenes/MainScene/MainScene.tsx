@@ -12,7 +12,8 @@ import {
     mirrorTaskCompletedAtom,
     hydrantTaskCompletedAtom,
     computerTaskCompletedAtom,
-    isEndSceneAtom
+    isEndSceneAtom,
+    isDraggingFigurineAtom
 } from '../../atoms/gameState';
 import MainDraggableFigurine from '../../components/MainDraggableFigurine';
 import FloorBoundary from './FloorBoundary';
@@ -26,6 +27,7 @@ const MainScene: React.FC = () => {
     const [breakpoint] = useAtom(breakpointAtom);
     const { setCursorType } = useCursor();
     const [isEndScene] = useAtom(isEndSceneAtom);
+    const [isDraggingFigurine] = useAtom(isDraggingFigurineAtom);
 
     // Task completion states
     const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
@@ -42,17 +44,26 @@ const MainScene: React.FC = () => {
     const [isNearComputer] = useAtom(isNearComputerAtom);
     const [isNearRadio] = useAtom(isNearRadioAtom);
 
-    // Initialize cursor to neutral and let hover events handle specific elements
+    // Helper function to avoid resetting cursor when dragging figurine
+    const handleMouseLeave = () => {
+        // Only change cursor if not dragging the figurine
+        if (!isDraggingFigurine) {
+            setCursorType('open');
+        }
+    };
+
+    // Initialize cursor to open and let hover events handle specific elements
     useEffect(() => {
-        // Only set to neutral when not in proximity of anything
-        if (!((isNearPhone && isEndScene) || 
+        // Only set to open when not in proximity of anything and not dragging
+        if (!isDraggingFigurine && 
+            !((isNearPhone && isEndScene) || 
               (isNearMirror && !isEndScene) || 
               (isNearHydrant && !isEndScene) || 
               (isNearComputer && !isEndScene) || 
               (isNearRadio && !isEndScene))) {
-            setCursorType('neutral');
+            setCursorType('open');
         }
-    }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType, isEndScene]);
+    }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType, isEndScene, isDraggingFigurine]);
 
     // Debug state for proximity visualization
     // const [showProximityDebug, setShowProximityDebug] = useState(false);
@@ -202,7 +213,7 @@ const MainScene: React.FC = () => {
                 alt="Mirror"
                 onClick={handleMirrorClick}
                 onMouseEnter={() => isNearMirror && !isEndScene && setCursorType('pointing')}
-                onMouseLeave={() => setCursorType('neutral')}
+                onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '44%' : '40.5%',
@@ -225,7 +236,7 @@ const MainScene: React.FC = () => {
                 alt="Hydrant"
                 onClick={handleHydrantClick}
                 onMouseEnter={() => isNearHydrant && !isEndScene && setCursorType('pointing')}
-                onMouseLeave={() => setCursorType('neutral')}
+                onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '44%' : '40.7%',
@@ -285,7 +296,7 @@ const MainScene: React.FC = () => {
                 alt="Phone"
                 onClick={handlePhoneClick}
                 onMouseEnter={() => isNearPhone && setCursorType('pointing')}
-                onMouseLeave={() => setCursorType('neutral')}
+                onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '34.9%' : '25.6%',
@@ -328,7 +339,7 @@ const MainScene: React.FC = () => {
                 alt="Computer"
                 onClick={handleComputerClick}
                 onMouseEnter={() => isNearComputer && !isEndScene && setCursorType('pointing')}
-                onMouseLeave={() => setCursorType('neutral')}
+                onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '39.4%' : '32.45%',
@@ -351,7 +362,7 @@ const MainScene: React.FC = () => {
                 alt="Radio"
                 onClick={handleRadioClick}
                 onMouseEnter={() => isNearRadio && !isEndScene && setCursorType('pointing')}
-                onMouseLeave={() => setCursorType('neutral')}
+                onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',
                     top: breakpoint === 'mobile' ? '49%' : '48.5%',

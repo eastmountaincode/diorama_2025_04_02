@@ -6,7 +6,8 @@ import {
   FLOOR_BOUNDARY, 
   FLOOR_BOUNDARY_OFFSET,
   FloorBoundaryShape,
-  figurinePositionAtom
+  figurinePositionAtom,
+  isDraggingFigurineAtom
 } from '../atoms/gameState';
 import { useCursor } from '../context/CursorContext';
 
@@ -60,6 +61,8 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   // Share position with MainScene for proximity detection
   const [_, setFigurinePosition] = useAtom(figurinePositionAtom);
   const [isDragging, setIsDragging] = useState(false);
+  // Share dragging state with MainScene to prevent cursor change when dragging
+  const [, setIsDraggingFigurine] = useAtom(isDraggingFigurineAtom);
   
   // Store the initial click offset from the figurine center
   const clickOffset = useRef({ x: 0, y: 0 });
@@ -100,12 +103,13 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     setFigurinePosition(position);
   }, [position, setFigurinePosition]);
   
-  // Set cursor based on dragging state
+  // Set cursor based on dragging state and update global dragging state
   useEffect(() => {
     if (canDragFigurine) {
       setCursorType(isDragging ? 'grasping' : 'open');
+      setIsDraggingFigurine(isDragging);
     }
-  }, [isDragging, canDragFigurine, setCursorType]);
+  }, [isDragging, canDragFigurine, setCursorType, setIsDraggingFigurine]);
   
   const handlePointerDown = (e: React.PointerEvent) => {
     if (isSceneTransitioning || !figurineRef.current || !canDragFigurine) return;
@@ -163,9 +167,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
       figurineRef.current.releasePointerCapture(e.pointerId);
     }
     setIsDragging(false);
-    if (canDragFigurine) {
-      setCursorType('open');
-    }
+    setCursorType('open');
   };
   
   return (

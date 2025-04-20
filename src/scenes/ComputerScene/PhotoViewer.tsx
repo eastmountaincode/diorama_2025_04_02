@@ -2,6 +2,7 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom } from '../../atoms/gameState';
 import { useCursor } from '../../context/CursorContext';
+import { playMouseClickSound } from '../../util/sound';
 
 interface PhotoViewerProps {
   imageSrc: string;
@@ -22,6 +23,12 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ imageSrc, onClose }) => {
     setCursorType('neutral');
   };
 
+  // Handle close with sound
+  const handleClose = () => {
+    playMouseClickSound();
+    onClose();
+  };
+
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" style={{ background: 'rgba(0, 0, 0, 0.7)' }}>
       <div className="relative" style={{ 
@@ -30,7 +37,7 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({ imageSrc, onClose }) => {
       }}>
         {/* Close button */}
         <button
-          onClick={onClose}
+          onClick={handleClose}
           onMouseEnter={handleCloseButtonMouseEnter}
           onMouseLeave={handleCloseButtonMouseLeave}
           className="absolute bg-black bg-opacity-50 text-white rounded-full hover:bg-opacity-70 flex items-center justify-center"

@@ -131,3 +131,6 @@ export const isEndSceneAtom = atom<boolean>(false);
 
 // Atom to track if the audio should be playing
 export const isAudioEnabledAtom = atom<boolean>(true);
+
+// Atom to track if the figurine is currently being dragged
+export const isDraggingFigurineAtom = atom<boolean>(false);

@@ -37,7 +37,7 @@ const CustomCursor: React.FC = () => {
     neutral: { x: -15, y: -8 },
     open: { x: -15, y: -8 },
     pinching: { x: -9, y: -8 },
-    grasping: { x: -15, y: -12 },
+    grasping: { x: -15, y: -8 },
     pointing: { x: -15, y: -2 } 
   };
 

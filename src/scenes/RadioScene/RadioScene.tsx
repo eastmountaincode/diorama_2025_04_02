@@ -6,7 +6,8 @@ import {
   hydrantTaskCompletedAtom, 
   computerTaskCompletedAtom,
   breakpointAtom,
-  isEndSceneAtom
+  isEndSceneAtom,
+  isAudioEnabledAtom
 } from '../../atoms/gameState';
 import { playButtonClickSound } from '../../util/sound';
 
@@ -14,6 +15,7 @@ const RadioScene: React.FC = () => {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
   const [, setIsEndScene] = useAtom(isEndSceneAtom);
+  const [, setIsAudioEnabled] = useAtom(isAudioEnabledAtom);
   const isMobile = breakpoint === 'mobile';
   
   // Get task completion states
@@ -30,6 +32,9 @@ const RadioScene: React.FC = () => {
     
     // Play button click sound
     playButtonClickSound();
+    
+    // Disable the background music
+    setIsAudioEnabled(false);
     
     // Wait 400ms then return to main scene and set to end scene mode
     setTimeout(() => {

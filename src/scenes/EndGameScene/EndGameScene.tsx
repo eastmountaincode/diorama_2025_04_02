@@ -29,6 +29,13 @@ const EndGameScene: React.FC = () => {
       }}
     >
       <h1 className="text-4xl mb-8">The End</h1>
+      <div className="mb-8">
+        <img 
+          src="assets/rings/Borromean_Knot.GIF" 
+          alt="Borromean Knot"
+          className="w-64 h-64 object-contain"
+        />
+      </div>
       <p className="text-xl mb-4">Thank you for playing</p>
       <p className="text-xs">(Refresh page to play again)</p>
     </div>

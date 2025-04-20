@@ -128,3 +128,6 @@ export const isPhotoDisplayedAtom = atom<boolean>(false);
 
 // Track when we've reached the end game state
 export const isEndSceneAtom = atom<boolean>(false);
+
+// Atom to track if the audio should be playing
+export const isAudioEnabledAtom = atom<boolean>(true);

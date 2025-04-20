@@ -56,7 +56,7 @@ const MainScene: React.FC = () => {
     }, [isNearMirror, isNearHydrant, isNearPhone, isNearComputer, isNearRadio, setCursorType, isEndScene]);
 
     // Debug state for proximity visualization
-    const [showProximityDebug, setShowProximityDebug] = useState(false);
+    // const [showProximityDebug, setShowProximityDebug] = useState(false);
 
     // Reference to container - explicitly typed as HTMLDivElement
     const containerRef = useRef<HTMLDivElement>(null);
@@ -106,18 +106,18 @@ const MainScene: React.FC = () => {
     };
 
     // Toggle debug visualization with 'D' key
-    useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'd' || event.key === 'D') {
-                setShowProximityDebug(prev => !prev);
-            }
-        };
+    // useEffect(() => {
+    //     const handleKeyDown = (event: KeyboardEvent) => {
+    //         if (event.key === 'd' || event.key === 'D') {
+    //             setShowProximityDebug(prev => !prev);
+    //         }
+    //     };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-        };
-    }, []);
+    //     window.addEventListener('keydown', handleKeyDown);
+    //     return () => {
+    //         window.removeEventListener('keydown', handleKeyDown);
+    //     };
+    // }, []);
 
     // Handle visibility based on current scene and transition state
     useEffect(() => {
@@ -179,7 +179,7 @@ const MainScene: React.FC = () => {
             )}
 
             {/* ProximityManager handles all proximity detection and visualization */}
-            <MainSceneProximityManager showDebug={showProximityDebug} />
+            <MainSceneProximityManager showDebug={false} />
 
             {/* TV and Boxes */}
             <img
@@ -371,13 +371,18 @@ const MainScene: React.FC = () => {
                 canDragFigurine={canDragFigurine}
             />
 
-
             {/* Add animation keyframes */}
             <style>
                 {`
                     @keyframes fadeIn {
                         from { opacity: 0; }
                         to { opacity: 1; }
+                    }
+                    
+                    @keyframes pulse {
+                        0% { filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1)); }
+                        50% { filter: drop-shadow(0 0 8px rgba(212,14,14,1)) drop-shadow(0 0 4px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)); }
+                        100% { filter: drop-shadow(0 0 5px rgba(212,14,14,1)) drop-shadow(0 0 2px rgba(212,14,14,1)) drop-shadow(0 0 1px rgba(212,14,14,1)); }
                     }
                 `}
             </style>

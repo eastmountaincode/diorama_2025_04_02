@@ -333,9 +333,9 @@ const MainScene: React.FC = () => {
                     alt="Water Leaking"
                     style={{
                         position: 'absolute',
-                        top: breakpoint === 'mobile' ? '45.6%' : '43.3%',
-                        left: breakpoint === 'mobile' ? '32.8%' : '35.5%',
-                        width: breakpoint === 'mobile' ? '8.6%' : '5.9%',
+                        top: breakpoint === 'mobile' ? '45.55%' : '42.9%',
+                        left: breakpoint === 'mobile' ? '32.5%' : '35.3%',
+                        width: breakpoint === 'mobile' ? '8.7%' : '6.8%',
                         height: 'auto',
                         pointerEvents: 'none',
                         zIndex: 44,

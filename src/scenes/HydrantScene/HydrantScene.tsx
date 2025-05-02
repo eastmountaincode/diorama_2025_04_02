@@ -56,8 +56,8 @@ const HydrantScene: React.FC = () => {
       ? { top: '49.6%', left: '46.9%', width: '21%' }
       : { top: '50%', left: '46.5%', width: '19%' },
     wheel: breakpoint === 'mobile'
-      ? { top: '51%', left: '48%', width: '13%' }
-      : { top: '52.2%', left: '48%', width: '11%' },
+      ? { top: '51%', left: '48%', width: '13%', zIndex: 41, opacity: 1 }
+      : { top: '52.2%', left: '48%', width: '11%', zIndex: 41, opacity: 1 },
   };
 
   // Combine base + wheel positioning, add current rotation
@@ -172,16 +172,52 @@ const HydrantScene: React.FC = () => {
         draggable={false}
       />
       
-      {/* Water Leaking Animation - only shows when hydrant task is not completed */}
+      {/* Water Gushing Animation - only shows when hydrant task is not completed */}
       {!hydrantTaskCompleted && (
         <img
-          src="assets/bg/hydrant/water_leaking.gif"
+          src="assets/bg/hydrant/close/closeup_Hydrant_On.GIF"
           alt="Water Leaking"
           style={{
             ...styles.base,
-            top: breakpoint === 'mobile' ? '61%' : '70%',
-            left: breakpoint === 'mobile' ? '53%' : '55%',
-            width: breakpoint === 'mobile' ? '26%' : '26%',
+            top: breakpoint === 'mobile' ? '55%' : '59%',
+            left: breakpoint === 'mobile' ? '50.5%' : '50%',
+            width: breakpoint === 'mobile' ? '31%' : '27%',
+            height: 'auto',
+            pointerEvents: 'none',
+            zIndex: 40
+          }}
+          draggable={false}
+        />
+      )}
+
+      {/* Water Leaking Animation - shows once hydrant task is completed */}
+      {hydrantTaskCompleted && (
+        <img
+          src="assets/bg/hydrant/close/closeup_Hydrant_Off.GIF"
+          alt="Water Leaking"
+          style={{
+            ...styles.base,
+            top: breakpoint === 'mobile' ? '54.4%' : '58.5%',
+            left: breakpoint === 'mobile' ? '48.6%' : '48.5%',
+            width: breakpoint === 'mobile' ? '20%' : '20%',
+            height: 'auto',
+            pointerEvents: 'none',
+            zIndex: 40
+          }}
+          draggable={false}
+        />
+      )}
+
+      {/* Sparks animation - only shows when hydrant task is not completed */}
+      {!hydrantTaskCompleted && (
+        <img
+          src="assets/bg/hydrant/close/closeup_Hydrant_sparks.GIF"
+          alt="Sparks"
+          style={{
+            ...styles.base,
+            top: breakpoint === 'mobile' ? '65%' : '70%',
+            left: breakpoint === 'mobile' ? '65%' : '73%',
+            width: breakpoint === 'mobile' ? '31%' : '29%',
             height: 'auto',
             pointerEvents: 'none',
             zIndex: 40

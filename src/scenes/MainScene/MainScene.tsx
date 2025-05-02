@@ -329,13 +329,32 @@ const MainScene: React.FC = () => {
             {/* Water Leaking Animation - only shows when hydrant task is not completed */}
             {!hydrantTaskCompleted && !isEndScene && (
                 <img
-                    src="assets/bg/hydrant/water_leaking.gif"
+                    src="assets/bg/hydrant/far/hydrant_ON.GIF"
                     alt="Water Leaking"
                     style={{
                         position: 'absolute',
-                        top: breakpoint === 'mobile' ? '48.5%' : '48%',
-                        left: breakpoint === 'mobile' ? '33.4%' : '35.8%',
-                        width: breakpoint === 'mobile' ? '7.3%' : '5.9%',
+                        top: breakpoint === 'mobile' ? '45.6%' : '43.3%',
+                        left: breakpoint === 'mobile' ? '32.8%' : '35.5%',
+                        width: breakpoint === 'mobile' ? '8.6%' : '5.9%',
+                        height: 'auto',
+                        pointerEvents: 'none',
+                        zIndex: 44,
+                        display: isEndScene ? 'none' : 'block'
+                    }}
+                    draggable={false}
+                />
+            )}
+
+            {/* Sparks animation - only shows when hydrant task is not completed */}
+            {!hydrantTaskCompleted && !isEndScene && (
+                <img
+                    src="assets/bg/hydrant/far/hydrant_sparks_ON.GIF"
+                    alt="Sparks"
+                    style={{
+                        position: 'absolute',
+                        top: breakpoint === 'mobile' ? '46%' : '45.5%',
+                        left: breakpoint === 'mobile' ? '34%' : '38%',
+                        width: breakpoint === 'mobile' ? '12%' : '8%',
                         height: 'auto',
                         pointerEvents: 'none',
                         zIndex: 44,

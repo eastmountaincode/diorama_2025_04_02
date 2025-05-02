@@ -15,9 +15,9 @@
 export const createFramedPhotoDownload = (
   photoImg: HTMLImageElement,
   frameImg: HTMLImageElement,
-  frameTopPct: number = 6,
-  frameLeftPct: number = 8,
-  frameWidthPct: number = 84,
+  frameTopPct: number = 4,
+  frameLeftPct: number = 6, 
+  frameWidthPct: number = 88,
   frameHeightPct: number = 81,
   fileName: string = 'i_still_exist.png'
 ): void => {

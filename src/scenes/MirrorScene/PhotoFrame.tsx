@@ -18,6 +18,7 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const frameRef = useRef<HTMLImageElement>(null);
   const [frameLoaded, setFrameLoaded] = useState(false);
   const [photoLoaded, setPhotoLoaded] = useState(false);
+  const [frameNumber, setFrameNumber] = useState<number>(0);
 
   // Check if the image is from camera (data URL) or a fallback image (file path)
   const isFromCamera = imageData?.startsWith('data:');
@@ -26,6 +27,10 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   useEffect(() => {
     // Set photo as displayed when component mounts
     setIsPhotoDisplayed(true);
+    
+    // Pick a random frame number between 19 and 26
+    const randomFrame = Math.floor(Math.random() * 8) + 19;
+    setFrameNumber(randomFrame);
     
     // Reset when component unmounts
     return () => {
@@ -67,9 +72,9 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
     createFramedPhotoDownload(
       photoRef.current,
       frameRef.current,
-      6,  // top percentage
-      8,  // left percentage
-      84, // width percentage
+      4,  // top percentage
+      6,  // left percentage
+      88, // width percentage
       81  // height percentage
     );
   };
@@ -82,7 +87,7 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
     left: isMobile ? '50%' : '50%',
     top: isMobile ? '50%' : '49%',
     transform: isMobile ? 'translate(-25%, -50%)' : 'translate(-50%, -50%)',
-    width: isMobile ? '105px' : '230px',
+    width: isMobile ? '105px' : '35%',
     backgroundColor: 'transparent',
   };
 
@@ -107,12 +112,11 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           <div 
             className="absolute z-10" 
             style={{
-              width: '84%',
+              width: '88%',
               height: '81%',
-              top: '6%',
-              left: '8%',
-              overflow: 'hidden',
-              borderRadius: '4px'
+              top: '4%',
+              left: '6%',
+              overflow: 'hidden'
             }}
           >
             <img 
@@ -134,7 +138,7 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           {/* Frame overlay */}
           <img 
             ref={frameRef}
-            src="assets/bg/mirror/mirror_scene_photo_frame.png" 
+            src={`assets/bg/mirror/photo_frames/${frameNumber}.png`}
             alt="Photo frame" 
             className="w-full relative z-20" 
             onLoad={handleFrameLoad}
@@ -148,8 +152,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
             onMouseLeave={handleCloseButtonMouseLeave}
             className="absolute rounded-full flex items-center justify-center z-30"
             style={{ 
-              top: '5%', 
-              right: '5%',
+              top: '-2%', 
+              right: '-2%',
               width: isMobile ? '10px' : '24px',
               height: isMobile ? '10px' : '24px',
               backgroundColor: '#e53e3e', // red-600 equivalent

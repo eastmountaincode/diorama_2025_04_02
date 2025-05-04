@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useCursor } from '../context/CursorContext';
 import { useAtom } from 'jotai';
 import { hideCustomCursorAtom } from '../scenes/ComputerScene/ComputerScene';
+import { currentSceneAtom } from '../atoms/gameState';
 
 const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -9,6 +10,7 @@ const CustomCursor: React.FC = () => {
   const [isIOS, setIsIOS] = useState(false);
   const { cursorType } = useCursor();
   const [hideCustomCursor] = useAtom(hideCustomCursorAtom);
+  const [currentScene] = useAtom(currentSceneAtom);
 
   // Detect iOS/iPadOS devices
   useEffect(() => {
@@ -35,9 +37,9 @@ const CustomCursor: React.FC = () => {
   // Define specific offsets for each cursor type
   const cursorOffsets = {
     neutral: { x: -15, y: -8 },
-    open: { x: -15, y: -8 },
+    open: { x: -18, y: -3 },
     pinching: { x: -9, y: -8 },
-    grasping: { x: -15, y: -8 },
+    grasping: { x: -18, y: -3 },
     pointing: { x: -5, y: -2 } 
   };
 
@@ -120,6 +122,9 @@ const CustomCursor: React.FC = () => {
 
   // Get the current cursor offset
   const currentOffset = cursorOffsets[cursorType];
+  
+  // Set cursor size based on scene
+  const cursorSize = ['HydrantScene', 'ComputerScene', 'MirrorScene', 'RadioScene'].includes(currentScene) ? 60 : 30;
 
   return (
     <div
@@ -131,8 +136,8 @@ const CustomCursor: React.FC = () => {
         transform: `translate(${currentOffset.x}px, ${currentOffset.y}px)`,
         pointerEvents: 'none', // Important! This prevents the cursor from interfering with click events
         zIndex: 99999, // Extremely high z-index to ensure it's above everything
-        width: '30px',
-        height: '30px',
+        width: `${cursorSize}px`,
+        height: `${cursorSize}px`,
         backgroundImage: `url(${cursorImages[cursorType]})`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',

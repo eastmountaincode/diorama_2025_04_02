@@ -120,9 +120,9 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   
     const figurineRect = figurineRef.current.getBoundingClientRect();
   
-    // Account for CSS transform translate(-2%, -68%)
-    const offsetX = breakpoint === 'mobile' ? figurineRect.width * 0.308 : figurineRect.width * 0.468;
-    const offsetY = breakpoint === 'mobile' ? figurineRect.height * -0.173 : figurineRect.height * -0.179;
+    // Account for CSS transform translate(-14%, -77%) and translate(-20%, -67%)
+    const offsetX = breakpoint === 'mobile' ? figurineRect.width * 0.308 : figurineRect.width * 0.367;
+    const offsetY = breakpoint === 'mobile' ? figurineRect.height * -0.173 : figurineRect.height * -0.27;
   
     clickOffset.current = {
       x: e.clientX - (figurineRect.left + figurineRect.width / 2 - offsetX),
@@ -147,8 +147,9 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     const newY = (newCenterY / containerRect.height) * 100;
     
     // Calculate the BOTTOM point of the figurine (center point + half height)
-    // Since the figurine is transformed with translate(-2%, -68%),
+    // Since the figurine is transformed with translate(-14%, -77%) and translate(-20%, -67%),
     // we need to adjust the calculation of the bottom point
+    // this is just for boundary detection
     const bottomY = newY - (figurineHeight * -0.68);
     
     // Get the current boundary with offset applied
@@ -178,10 +179,10 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
         // Position using top/left with the same coordinate system as the SVG viewBox
         top: `${position.y}%`,
         left: `${position.x}%`,
-        transform: breakpoint === 'mobile' ? 'translate(-20%, -67%)' : 'translate(-2%, -68%)', // Original transform that worked with positioning
+        transform: breakpoint === 'mobile' ? 'translate(-20%, -67%)' : 'translate(-14%, -77%)', // Original transform that worked with positioning
         
         // Size control based on breakpoint
-        width: breakpoint === 'mobile' ? '7.5%' : '4.9%',
+        width: breakpoint === 'mobile' ? '7.5%' : '6.8%',
         
         // Other styles
         zIndex: 11130,

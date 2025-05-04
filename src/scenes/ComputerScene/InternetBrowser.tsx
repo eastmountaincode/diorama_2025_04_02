@@ -12,8 +12,8 @@ const InternetBrowser: React.FC<InternetBrowserProps> = ({ onClose }) => {
   const [breakpoint] = useAtom(breakpointAtom);
   const { setCursorType } = useCursor();
   const isMobile = breakpoint === 'mobile';
-  const [url, setUrl] = useState('https://en.m.wikipedia.org/');
-  const [currentUrl, setCurrentUrl] = useState('https://en.m.wikipedia.org/');
+  const [url, setUrl] = useState('https://en.wikipedia.org/wiki/The_Symbolic');
+  const [currentUrl, setCurrentUrl] = useState('https://en.wikipedia.org/wiki/The_Symbolic');
 
   // Handle cursor change on hover
   const handleButtonMouseEnter = () => {

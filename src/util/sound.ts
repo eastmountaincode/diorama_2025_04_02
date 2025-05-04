@@ -7,7 +7,7 @@
  * @param delay Delay in milliseconds before playing the sound
  * @returns The Audio element that was created and played
  */
-export const playSound = (soundPath: string, volume: number = 1.0, delay: number = 0): HTMLAudioElement => {
+export const playSound = (soundPath: string, volume: number, delay: number): HTMLAudioElement => {
   const audio = new Audio(soundPath);
   
   // Apply exponential scaling to make volume control more natural at low levels
@@ -48,7 +48,7 @@ export const playGetRingSound = (volume: number = 0.4, delay: number = 500): HTM
 };
 
 /**
- * Plays the "button click" sound effect
+ * Plays the "button click" sound effect (for the radio)
  * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
  * @param delay Delay in milliseconds before playing the sound
  * @returns The Audio element that was created and played
@@ -85,4 +85,14 @@ export const playCameraClickSound = (volume: number = 0.5, delay: number = 0): H
  */
 export const playWaterFlowingSound = (volume: number = 0.4, delay: number = 0): HTMLAudioElement => {
   return playSound("assets/audio/water_flowing.mp3", volume, delay);
+};
+
+/**
+ * Plays the "wheel squeaking" sound effect
+ * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
+ * @param delay Delay in milliseconds before playing the sound
+ * @returns The Audio element that was created and played
+ */
+export const playWheelSqueakingSound = (volume: number = 0.4, delay: number = 0): HTMLAudioElement => {
+  return playSound("assets/audio/wheel_squeaking.wav", volume, delay);
 }; 

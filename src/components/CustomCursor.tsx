@@ -37,9 +37,9 @@ const CustomCursor: React.FC = () => {
   // Define specific offsets for each cursor type
   const cursorOffsets = {
     neutral: { x: -15, y: -8 },
-    open: { x: -18, y: -3 },
+    open: { x: -15, y: -8 },
     pinching: { x: -9, y: -8 },
-    grasping: { x: -18, y: -3 },
+    grasping: { x: -15, y: -8 },
     pointing: { x: -5, y: -2 } 
   };
 

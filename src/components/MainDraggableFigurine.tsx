@@ -100,8 +100,15 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   
   // Update figurine position atom whenever position changes
   useEffect(() => {
-    setFigurinePosition(position);
-  }, [position, setFigurinePosition]);
+    // Apply an offset for more accurate position tracking 
+    // (desktop only since mobile appears correct)
+    const positionOffsetX = breakpoint === 'mobile' ? 0 : 2.5;
+    const positionOffsetY = breakpoint === 'mobile' ? 0 : -1;
+    setFigurinePosition({
+      x: position.x + positionOffsetX,
+      y: position.y + positionOffsetY
+    });
+  }, [position, setFigurinePosition, breakpoint]);
   
   // Set cursor based on dragging state and update global dragging state
   useEffect(() => {
@@ -121,8 +128,8 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     const figurineRect = figurineRef.current.getBoundingClientRect();
   
     // Account for CSS transform translate(-14%, -77%) and translate(-20%, -67%)
-    const offsetX = breakpoint === 'mobile' ? figurineRect.width * 0.308 : figurineRect.width * 0.367;
-    const offsetY = breakpoint === 'mobile' ? figurineRect.height * -0.173 : figurineRect.height * -0.27;
+    const offsetX = breakpoint === 'mobile' ? figurineRect.width * 0.358 : figurineRect.width * 0.367;
+    const offsetY = breakpoint === 'mobile' ? figurineRect.height * -0.179 : figurineRect.height * -0.27;
   
     clickOffset.current = {
       x: e.clientX - (figurineRect.left + figurineRect.width / 2 - offsetX),
@@ -179,14 +186,14 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
         // Position using top/left with the same coordinate system as the SVG viewBox
         top: `${position.y}%`,
         left: `${position.x}%`,
-        transform: breakpoint === 'mobile' ? 'translate(-20%, -67%)' : 'translate(-14%, -77%)', // Original transform that worked with positioning
+        transform: breakpoint === 'mobile' ? 'translate(-14%, -69%)' : 'translate(-14%, -77%)', // Original transform that worked with positioning
         
         // Size control based on breakpoint
         width: breakpoint === 'mobile' ? '7.5%' : '6.8%',
         
         // Other styles
         zIndex: 11130,
-        transition: isDragging ? 'none' : 'all 0.1s ease-out'
+
       }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -194,11 +201,12 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
       onPointerCancel={handlePointerUp}
     >
       <img 
-        src="assets/figure/Laila_sprite_cropped.png"
+        src={isDragging ? "assets/figure/laila_grabbed_scaled-min.png" : "assets/figure/Laila_sprite_cropped.png"}
         alt="Laila Figurine"
         style={{
-          width: '100%',
+          width: isDragging ? '100%' : '111%',
           height: 'auto',
+          transform: isDragging ? (breakpoint === 'mobile' ? 'translate(0%, -4%)' : 'translate(0%, -4%) scale(1.11)') : 'none'
         }}
         draggable={false}
         className="pointer-events-none"

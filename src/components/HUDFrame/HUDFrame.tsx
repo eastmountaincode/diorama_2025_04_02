@@ -302,7 +302,14 @@ export function HUDFrame() {
             src={src}
             alt="HUD Frame"
             className="relative z-10 block pointer-events-none object-contain max-h-[90vh]"
-            style={{ display: 'block', width: 'auto', height: 'auto', maxWidth: '100%' }}
+            style={{ 
+              display: 'block', 
+              width: 'auto', 
+              height: 'auto', 
+              maxWidth: '100%',
+              opacity: currentScene === 'OpeningScene' ? 0 : 1,
+              transition: 'opacity 1.9s ease'
+            }}
           />
           <Inventory breakpoint={breakpoint} />
         </div>

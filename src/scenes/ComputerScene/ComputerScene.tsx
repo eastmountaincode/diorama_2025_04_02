@@ -16,10 +16,16 @@ export const isPhotoOpenAtom = atom<boolean>(false);
 // Export an atom to control custom cursor visibility
 export const hideCustomCursorAtom = atom<boolean>(false);
 
+// Type for photo metadata
+interface PhotoMeta {
+  path: string;
+  customWidth?: string;
+}
+
 const ComputerScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
   const [breakpoint] = useAtom(breakpointAtom);
-  const [currentPhoto, setCurrentPhoto] = useState<string | null>(null);
+  const [currentPhoto, setCurrentPhoto] = useState<PhotoMeta | null>(null);
   const [showBrowser, setShowBrowser] = useAtom(isBrowserOpenAtom);
   const [, setIsPhotoOpen] = useAtom(isPhotoOpenAtom);
   const [, setHideCustomCursor] = useAtom(hideCustomCursorAtom);
@@ -28,21 +34,38 @@ const ComputerScene: React.FC = () => {
   const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
   const internetIconSrc = 'assets/bg/computer/Network_Computers.ico';
 
-  // Define photo paths for each folder
-  const photos = {
-    'hydrant_photo': 'assets/bg/computer/photos_demo/direct_lease-min.png',
-    'archive_photo': 'assets/bg/computer/photos_demo/sb_in_dark-min.png',
-    'studio_photo': 'assets/bg/computer/photos_demo/studio_2-min.png',
+  // Define photo paths with simplified size presets
+  const photos: Record<string, PhotoMeta> = {
+    'hydrant_photo': {
+      path: 'assets/bg/computer/photos_new/hydrant_instructions.png',
+      customWidth: breakpoint === 'mobile' ? '15%' : '20%'
+    },
+    'corp_gore_manifesto': {
+      path: 'assets/bg/computer/photos_new/README.png',
+      customWidth: breakpoint === 'mobile' ? '12%' : '13%'
+    },
+    'family_photo_1': {
+      path: 'assets/bg/computer/photos_new/fam_1_white_gma.jpg',
+      customWidth: breakpoint === 'mobile' ? '13%' : '15%'
+    },
+    'child_photo': {
+      path: 'assets/bg/computer/photos_new/child.jpg',
+      customWidth: breakpoint === 'mobile' ? '13%' : '25%'
+    },
+    'family_photo_2': {
+      path: 'assets/bg/computer/photos_new/fam_2_chinese_gma.jpg',
+      customWidth: breakpoint === 'mobile' ? '13%' : '15%'
+    }
   };
 
   // Handler for opening a photo
   const handleOpenPhoto = (folderName: string) => {
-    const photoPath = photos[folderName as keyof typeof photos];
-    setCurrentPhoto(photoPath);
+    const photoMeta = photos[folderName];
+    setCurrentPhoto(photoMeta);
     setIsPhotoOpen(true);
 
-    // If opening the archive photo and task not completed yet, mark it as completed
-    if (folderName === 'archive_photo' && !computerTaskCompleted) {
+    // If opening the README file and task not completed yet, mark it as completed
+    if (folderName === 'child_photo' && !computerTaskCompleted) {
       setComputerTaskCompleted(true);
       playGetRingSound();
     }
@@ -88,39 +111,58 @@ const ComputerScene: React.FC = () => {
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '34.4%' : '35%'}
           positionY={breakpoint === 'mobile' ? '42.3%' : '36.3%'}
-          scale={breakpoint === 'mobile' ? 0.2 : 0.28}
+          scale={breakpoint === 'mobile' ? 0.19 : 0.28}
           onClick={() => handleOpenPhoto('hydrant_photo')}
         />
         <ComputerFile 
-          name="Archive"
+          name="Corp Gore Manifesto"
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '39%' : '39%'}
           positionY={breakpoint === 'mobile' ? '42.6%' : '36.78%'}    
-          scale={breakpoint === 'mobile' ? 0.2 : 0.28}
-          onClick={() => handleOpenPhoto('archive_photo')}
+          scale={breakpoint === 'mobile' ? 0.19 : 0.28}
+          onClick={() => handleOpenPhoto('corp_gore_manifesto')}
         />
         <ComputerFile 
-          name="Studio"
+          name="Family_1"
           iconSrc={folderIconSrc}
           positionX= {breakpoint === 'mobile' ? '35.5%' : '36.5%'}
           positionY={breakpoint === 'mobile' ? '44%' : '39.5%'}    
-          scale={breakpoint === 'mobile' ? 0.2 : 0.28}
-          onClick={() => handleOpenPhoto('studio_photo')}
+          scale={breakpoint === 'mobile' ? 0.19 : 0.28}
+          onClick={() => handleOpenPhoto('family_photo_1')}
         />
         <ComputerFile 
-          name="Internet"
-          iconSrc={internetIconSrc}
-          positionX= {breakpoint === 'mobile' ? '39.5%' : '39.5%'}
+          name="Family_2"
+          iconSrc={folderIconSrc}
+          positionX= {breakpoint === 'mobile' ? '39.5%' : '43%'}
           positionY={breakpoint === 'mobile' ? '44%' : '39.5%'}    
-          scale={breakpoint === 'mobile' ? 0.2 : 0.28}
-          onClick={handleOpenBrowser}
+          scale={breakpoint === 'mobile' ? 0.19 : 0.28}
+          onClick={() => handleOpenPhoto('family_photo_2')}
         />
+        <ComputerFile 
+          name="Child"
+          iconSrc={folderIconSrc}
+          positionX= {breakpoint === 'mobile' ? '42%' : '40%'}
+          positionY={breakpoint === 'mobile' ? '43%' : '39.5%'}    
+          scale={breakpoint === 'mobile' ? 0.19 : 0.28}
+          onClick={() => handleOpenPhoto('child_photo')}
+        />
+        {breakpoint === 'desktop' && (
+          <ComputerFile 
+            name="Internet"
+            iconSrc={internetIconSrc}
+            positionX='39.5%'
+            positionY='42.5%'    
+            scale={0.28}
+            onClick={handleOpenBrowser}
+          />
+        )}
       </div>
 
       {/* Photo Viewer */}
       {currentPhoto && (
         <PhotoViewer 
-          imageSrc={currentPhoto} 
+          imageSrc={currentPhoto.path} 
+          customWidth={currentPhoto.customWidth}
           onClose={handleClosePhoto} 
         />
       )}
@@ -135,4 +177,4 @@ const ComputerScene: React.FC = () => {
   );
 };
 
-export default ComputerScene; 
+export default ComputerScene;

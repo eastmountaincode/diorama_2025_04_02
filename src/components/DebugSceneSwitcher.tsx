@@ -48,141 +48,147 @@ export function DebugSceneSwitcher() {
     <div className="absolute top-4 right-4 z-50">
       {isVisible ? (
         <div className="p-1 bg-gray-700 text-white text-[10px] rounded">
-          <div className="flex flex-col items-start gap-2">
-            {/* Scene switching section */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Current Scene:</span>
-              <div className="flex flex-col gap-1 w-full">
-                {scenes.map((scene) => (
-                  <button
-                    key={scene}
-                    onClick={() => handleSceneChange(scene)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                      currentScene === scene
-                        ? 'bg-blue-500'
-                        : 'bg-gray-500 hover:bg-gray-600'
-                    }`}
-                  >
-                    {scene}
-                  </button>
-                ))}
+          <div className="flex flex-row gap-2">
+            {/* Left Column */}
+            <div className="flex flex-col items-start gap-2">
+              {/* Scene switching section */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Current Scene:</span>
+                <div className="flex flex-col gap-1 w-full">
+                  {scenes.map((scene) => (
+                    <button
+                      key={scene}
+                      onClick={() => handleSceneChange(scene)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                        currentScene === scene
+                          ? 'bg-blue-500'
+                          : 'bg-gray-500 hover:bg-gray-600'
+                      }`}
+                    >
+                      {scene}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Inventory state switching section */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Inventory State:</span>
-              <div className="flex flex-col gap-1 w-full">
-                {inventoryStates.map((state) => (
-                  <button
-                    key={state}
-                    onClick={() => setInventoryState(state)}
-                    className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                      inventoryState === state
-                        ? 'bg-blue-500'
-                        : 'bg-gray-500 hover:bg-gray-600'
-                    }`}
-                  >
-                    {state}
-                  </button>
-                ))}
+              {/* Inventory state switching section */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Inventory State:</span>
+                <div className="flex flex-col gap-1 w-full">
+                  {inventoryStates.map((state) => (
+                    <button
+                      key={state}
+                      onClick={() => setInventoryState(state)}
+                      className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                        inventoryState === state
+                          ? 'bg-blue-500'
+                          : 'bg-gray-500 hover:bg-gray-600'
+                      }`}
+                    >
+                      {state}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Camera Permission Status section (read-only) */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Camera Permission:</span>
+                <div className={`text-[10px] px-1.5 py-0.5 rounded w-full text-center ${getStatusColor(cameraPermissionStatus)}`}>
+                  {cameraPermissionStatus}
+                </div>
+              </div>
+              
+              {/* HUD transform information section */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">HUD Transform:</span>
+                <div className="text-[10px]">
+                  Zoom: {hudTransform.zoom.toFixed(2)} <br />
+                  TranslateX: {hudTransform.translateX.toFixed(2)} <br />
+                  TranslateY: {hudTransform.translateY.toFixed(2)}
+                </div>
               </div>
             </div>
             
-            {/* Camera Permission Status section (read-only) */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Camera Permission:</span>
-              <div className={`text-[10px] px-1.5 py-0.5 rounded w-full text-center ${getStatusColor(cameraPermissionStatus)}`}>
-                {cameraPermissionStatus}
+            {/* Right Column */}
+            <div className="flex flex-col items-start gap-2">
+              {/* Hydrant Task Completed toggle */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Hydrant Task:</span>
+                <button
+                  onClick={() => setHydrantTaskCompleted(!hydrantTaskCompleted)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                    hydrantTaskCompleted
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  {hydrantTaskCompleted ? 'Completed' : 'Not Completed'}
+                </button>
               </div>
-            </div>
-            
-            {/* Hydrant Task Completed toggle */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Hydrant Task:</span>
-              <button
-                onClick={() => setHydrantTaskCompleted(!hydrantTaskCompleted)}
-                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                  hydrantTaskCompleted
-                    ? 'bg-green-500 hover:bg-green-600'
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
-              >
-                {hydrantTaskCompleted ? 'Completed' : 'Not Completed'}
-              </button>
-            </div>
-            
-            {/* Mirror Task Completed toggle */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Mirror Task:</span>
-              <button
-                onClick={() => setMirrorTaskCompleted(!mirrorTaskCompleted)}
-                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                  mirrorTaskCompleted
-                    ? 'bg-green-500 hover:bg-green-600'
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
-              >
-                {mirrorTaskCompleted ? 'Completed' : 'Not Completed'}
-              </button>
-            </div>
-            
-            {/* Computer Task Completed toggle */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Computer Task:</span>
-              <button
-                onClick={() => setComputerTaskCompleted(!computerTaskCompleted)}
-                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                  computerTaskCompleted
-                    ? 'bg-green-500 hover:bg-green-600'
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
-              >
-                {computerTaskCompleted ? 'Completed' : 'Not Completed'}
-              </button>
-            </div>
-            
-            {/* End Scene State toggle */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">End Scene State:</span>
-              <button
-                onClick={() => setIsEndScene(!isEndScene)}
-                className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
-                  isEndScene
-                    ? 'bg-green-500 hover:bg-green-600'
-                    : 'bg-red-500 hover:bg-red-600'
-                }`}
-              >
-                {isEndScene ? 'Enabled' : 'Disabled'}
-              </button>
-            </div>
-            
-            {/* HUD transform information section */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">HUD Transform:</span>
-              <div className="text-[10px]">
-                Zoom: {hudTransform.zoom.toFixed(2)} <br />
-                TranslateX: {hudTransform.translateX.toFixed(2)} <br />
-                TranslateY: {hudTransform.translateY.toFixed(2)}
+              
+              {/* Mirror Task Completed toggle */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Mirror Task:</span>
+                <button
+                  onClick={() => setMirrorTaskCompleted(!mirrorTaskCompleted)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                    mirrorTaskCompleted
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  {mirrorTaskCompleted ? 'Completed' : 'Not Completed'}
+                </button>
               </div>
-            </div>
+              
+              {/* Computer Task Completed toggle */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Computer Task:</span>
+                <button
+                  onClick={() => setComputerTaskCompleted(!computerTaskCompleted)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                    computerTaskCompleted
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  {computerTaskCompleted ? 'Completed' : 'Not Completed'}
+                </button>
+              </div>
+              
+              {/* End Scene State toggle */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">End Scene State:</span>
+                <button
+                  onClick={() => setIsEndScene(!isEndScene)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                    isEndScene
+                      ? 'bg-green-500 hover:bg-green-600'
+                      : 'bg-red-500 hover:bg-red-600'
+                  }`}
+                >
+                  {isEndScene ? 'Enabled' : 'Disabled'}
+                </button>
+              </div>
 
-            {/* Figurine drop zone collision state */}
-            <div className="flex flex-col items-start gap-1">
-              <span className="text-[10px]">Figurine Status:</span>
-              <div className={`text-[10px] px-1.5 py-0.5 rounded ${isFigurineTouchingDropZone ? 'bg-green-500' : 'bg-red-500'}`}>
-                {isFigurineTouchingDropZone ? 'Touching Drop Zone' : 'Not Touching Drop Zone'}
+              {/* Figurine drop zone collision state */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Figurine Status:</span>
+                <div className={`text-[10px] px-1.5 py-0.5 rounded w-full text-center ${isFigurineTouchingDropZone ? 'bg-green-500' : 'bg-red-500'}`}>
+                  {isFigurineTouchingDropZone ? 'Touching Drop Zone' : 'Not Touching Drop Zone'}
+                </div>
               </div>
             </div>
-
-            {/* Hide button */}
-            <button
-              onClick={() => setIsVisible(false)}
-              className="px-1.5 py-0.5 rounded text-[10px] w-full bg-red-500 hover:bg-red-600 mt-1"
-            >
-              Hide
-            </button>
           </div>
+
+          {/* Hide button at the bottom */}
+          <button
+            onClick={() => setIsVisible(false)}
+            className="px-1.5 py-0.5 rounded text-[10px] w-full bg-red-500 hover:bg-red-600 mt-2"
+          >
+            Hide
+          </button>
         </div>
       ) : (
         <button

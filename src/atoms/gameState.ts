@@ -20,6 +20,13 @@ export const hudTransformAtom = atom<HudTransform>({
     translateY: 0,
 });
 
+// Atom to store MainScene's transform state, persisted when navigating away
+export const mainSceneTransformAtom = atom<HudTransform>({
+    zoom: 1,
+    translateX: 0,
+    translateY: 0,
+});
+
 // Interface to track position and dimensions of the drop zone
 export interface DropZoneShape {
     // Bounding box (for reference)

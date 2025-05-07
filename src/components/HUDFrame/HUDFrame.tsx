@@ -1,4 +1,4 @@
-import { CSSProperties, useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState, useRef } from 'react';
 import SceneManager from '../SceneManager';
 import Inventory from '../Inventory/Inventory';
 import { useAtom } from 'jotai';
@@ -11,6 +11,8 @@ import {
   isPhotoDisplayedAtom,
   inventoryStateAtom,
   isFigurinePlacedAtom,
+  mainSceneTransformAtom,
+  SceneType,
 } from '../../atoms/gameState';
 import { defaultHudTransforms } from '../../util/utilSettings';
 import { usePinchZoom } from './hooks/usePinchZoom';
@@ -43,9 +45,12 @@ export function HUDFrame() {
   const [isFigurinePlaced] = useAtom(isFigurinePlacedAtom);
   const [isBrowserOpen] = useAtom(isBrowserOpenAtom);
   const [isPhotoOpen] = useAtom(isPhotoOpenAtom);
+  const [mainSceneTransform, setMainSceneTransform] = useAtom(mainSceneTransformAtom);
   const { zoom = 1, translateX = 0, translateY = 0 } = hudTransform || { zoom: 1, translateX: 0, translateY: 0 };
   const { setCursorType } = useCursor();
   const [isPhotoDisplayed] = useAtom(isPhotoDisplayedAtom);
+  // Keep track of previous scene
+  const previousSceneRef = useRef<SceneType | null>(null);
 
   const [viewportStyle, setViewportStyle] = useState<ViewportStyle>({
     top: '50%',
@@ -54,11 +59,57 @@ export function HUDFrame() {
     height: '60%',
   });
 
+  // Save MainScene transform state when navigating away
+  useEffect(() => {
+    // Get default transform values for MainScene
+    const defaultMainSceneTransform = defaultHudTransforms[breakpoint]['MainScene'];
+    
+    // If we're leaving MainScene, save the current transform, but only if it's different from default
+    if (previousSceneRef.current === 'MainScene' && currentScene !== 'MainScene') {
+      // Only save if user has actually made changes from the default
+      const hasChangedZoom = Math.abs(hudTransform.zoom - defaultMainSceneTransform.zoom) > 0.01;
+      const hasChangedTranslateX = Math.abs(hudTransform.translateX - defaultMainSceneTransform.translateX) > 1;
+      const hasChangedTranslateY = Math.abs(hudTransform.translateY - defaultMainSceneTransform.translateY) > 1;
+      
+      if (hasChangedZoom || hasChangedTranslateX || hasChangedTranslateY) {
+        // User has made meaningful changes, save them
+        setMainSceneTransform(hudTransform);
+      } else {
+        // User hasn't changed anything, reset to default
+        setMainSceneTransform(defaultMainSceneTransform);
+      }
+    }
+    
+    // If we're returning to MainScene from another scene, restore the saved transform
+    if (previousSceneRef.current !== 'MainScene' && previousSceneRef.current !== null && currentScene === 'MainScene' && !isSceneTransitioning) {
+      // Compare saved transform with default to decide whether to restore it
+      const hasChangedZoom = Math.abs(mainSceneTransform.zoom - defaultMainSceneTransform.zoom) > 0.01;
+      const hasChangedTranslateX = Math.abs(mainSceneTransform.translateX - defaultMainSceneTransform.translateX) > 1;
+      const hasChangedTranslateY = Math.abs(mainSceneTransform.translateY - defaultMainSceneTransform.translateY) > 1;
+      
+      if (hasChangedZoom || hasChangedTranslateX || hasChangedTranslateY) {
+        // Only restore if there's a meaningful saved transform
+        setHudTransform(mainSceneTransform);
+      } else {
+        // If no meaningful changes, use default
+        setHudTransform(defaultMainSceneTransform);
+      }
+    }
+    
+    // Update previous scene reference
+    previousSceneRef.current = currentScene;
+  }, [currentScene, hudTransform, mainSceneTransform, setMainSceneTransform, setHudTransform, isSceneTransitioning, breakpoint]);
+
   // Update the HUD transform defaults when the scene or breakpoint changes.
   useEffect(() => {
+    // Skip MainScene if we're returning to it (we'll handle that in the other effect)
+    if (currentScene === 'MainScene' && previousSceneRef.current !== null && !isSceneTransitioning) {
+      return;
+    }
+    
     const defaults = defaultHudTransforms[breakpoint][currentScene];
     setHudTransform(defaults);
-  }, [currentScene, breakpoint, setHudTransform]);
+  }, [currentScene, breakpoint, setHudTransform, isSceneTransitioning]);
 
   // Update HUD source and viewport style based on screen size
   useEffect(() => {

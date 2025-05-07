@@ -6,6 +6,15 @@ import { MAX_ZOOM, MIN_ZOOM } from '../../../util/utilSettings';
 // Define which scenes allow zoom functionality
 const ZOOMABLE_SCENES = ['MainScene', 'ComputerScene'];
 
+// Scene-specific zoom and translate limits
+const COMPUTER_SCENE_LIMITS = {
+    zoom: { min: 3, max: 12 },
+    translate: { 
+        minX: -100, maxX: 100, 
+        minY: -100, maxY: 60   
+    }
+};
+
 export function usePinchZoom() {
     const [hudTransform, setHudTransform] = useAtom(hudTransformAtom);
     const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
@@ -28,6 +37,27 @@ export function usePinchZoom() {
     const isZoomAllowed = useCallback(() => {
         return ZOOMABLE_SCENES.includes(currentScene) && !isSceneTransitioning;
     }, [currentScene, isSceneTransitioning]);
+
+    // Helper to get zoom limits based on current scene
+    const getZoomLimits = useCallback(() => {
+        if (currentScene === 'ComputerScene') {
+            return COMPUTER_SCENE_LIMITS.zoom;
+        }
+        return { min: MIN_ZOOM, max: MAX_ZOOM };
+    }, [currentScene]);
+
+    // Helper to apply translation limits
+    const applyTranslateLimits = useCallback((x: number, y: number) => {
+        if (currentScene === 'ComputerScene') {
+            const { minX, maxX, minY, maxY } = COMPUTER_SCENE_LIMITS.translate;
+            return {
+                x: Math.min(Math.max(x, minX), maxX),
+                y: Math.min(Math.max(y, minY), maxY)
+            };
+        }
+        // No limits for other scenes
+        return { x, y };
+    }, [currentScene]);
 
     const getRelativePosition = useCallback((clientX: number, clientY: number) => {
         // Get viewport rectangle
@@ -98,11 +128,14 @@ export function usePinchZoom() {
             const dy = touch2.clientY - touch1.clientY;
             const currentDistance = Math.sqrt(dx * dx + dy * dy);
             
+            // Get zoom limits for current scene
+            const zoomLimits = getZoomLimits();
+            
             // Calculate scale change
             const scaleChange = currentDistance / pinchRef.current.startDistance;
             const newScale = Math.min(
-                Math.max(pinchRef.current.startScale * scaleChange, MIN_ZOOM),
-                MAX_ZOOM
+                Math.max(pinchRef.current.startScale * scaleChange, zoomLimits.min),
+                zoomLimits.max
             );
             
             // Update midpoint visualization for debugging
@@ -129,13 +162,16 @@ export function usePinchZoom() {
             const newTranslateX = relMidpoint.x - (sceneMidpointX * newScale);
             const newTranslateY = relMidpoint.y - (sceneMidpointY * newScale);
             
+            // Apply translation limits
+            const limitedTranslate = applyTranslateLimits(newTranslateX, newTranslateY);
+            
             setHudTransform({
                 zoom: newScale,
-                translateX: newTranslateX,
-                translateY: newTranslateY
+                translateX: limitedTranslate.x,
+                translateY: limitedTranslate.y
             });
         },
-        [setHudTransform, getRelativePosition]
+        [setHudTransform, getRelativePosition, getZoomLimits, applyTranslateLimits]
     );
 
     const handleTouchEnd = useCallback(

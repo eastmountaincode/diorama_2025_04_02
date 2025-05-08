@@ -387,7 +387,7 @@ const MainScene: React.FC = () => {
                 src="assets/bg/bg_compressed_pngquant/just_phone-fs8.png"
                 alt="Phone"
                 onClick={handlePhoneClick}
-                onMouseEnter={() => isNearPhone && setCursorType('pointing')}
+                onMouseEnter={() => isNearPhone && isEndScene && setCursorType('pointing')}
                 onMouseLeave={handleMouseLeave}
                 style={{
                     position: 'absolute',

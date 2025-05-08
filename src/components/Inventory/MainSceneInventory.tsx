@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, computerTaskCompletedAtom } from '../../atoms/gameState';
+import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, computerTaskCompletedAtom, ringsAnimationActiveAtom } from '../../atoms/gameState';
 import MainInventorySlot from './MainInventorySlot';
 import { useCursor } from '../../context/CursorContext';
 
@@ -46,6 +46,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const [mirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const [hydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [computerTaskCompleted] = useAtom(computerTaskCompletedAtom);
+  const [ringsAnimationActive] = useAtom(ringsAnimationActiveAtom);
   
   // State to track animation states for each ring
   const [ringStates, setRingStates] = useState({
@@ -54,10 +55,17 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     computer: { glowing: false, opacity: 0 }
   });
   
+  // State to track the animated rings
+  const [animationProgress, setAnimationProgress] = useState(0); // 0 to 100
+  const [showBorromeanKnot, setShowBorromeanKnot] = useState(false);
+  const [borromeanKnotOpacity, setBorromeanKnotOpacity] = useState(0);
+  
   // Refs to track previous completion state
   const prevMirrorCompleted = useRef(false);
   const prevHydrantCompleted = useRef(false);
   const prevComputerCompleted = useRef(false);
+  const animationFrameRef = useRef<number | null>(null);
+  const animationPhaseRef = useRef('moving'); // 'moving', 'pausing', 'fading'
   
   // Handle cursor changes
   const handleMouseEnter = () => {
@@ -187,6 +195,78 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     prevComputerCompleted.current = computerTaskCompleted;
   }, [computerTaskCompleted]);
   
+  // Handle ring animation
+  useEffect(() => {
+    // Clean up any existing animation frame
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    
+    if (ringsAnimationActive) {
+      let startTime: number | null = null;
+      const moveDuration = 6000; // Increased to 6 seconds for slower movement
+      const pauseDuration = 100; // Brief pause
+      const fadeDuration = 1000; // Fade duration
+      const totalDuration = moveDuration + pauseDuration + fadeDuration;
+      
+      animationPhaseRef.current = 'moving';
+      setShowBorromeanKnot(false);
+      setBorromeanKnotOpacity(0);
+      
+      const animate = (timestamp: number) => {
+        if (!startTime) startTime = timestamp;
+        const elapsed = timestamp - startTime;
+        
+        // Determine the current animation phase
+        if (elapsed < moveDuration) {
+          // Phase 1: Moving rings to center
+          animationPhaseRef.current = 'moving';
+          const progress = Math.min(elapsed / moveDuration * 100, 100);
+          setAnimationProgress(progress);
+        } else if (elapsed < moveDuration + pauseDuration) {
+          // Phase 2: Pause at the center
+          animationPhaseRef.current = 'pausing';
+          setAnimationProgress(100); // Keep at final position
+        } else if (elapsed < totalDuration) {
+          // Phase 3: Fade out rings, fade in Borromean Knot
+          animationPhaseRef.current = 'fading';
+          setAnimationProgress(100); // Keep at final position
+          
+          // Calculate fade progress (0-100%)
+          const fadeElapsed = elapsed - (moveDuration + pauseDuration);
+          const fadeProgress = Math.min(fadeElapsed / fadeDuration, 1);
+          
+          // Show the Borromean Knot at the start of the fade phase
+          if (!showBorromeanKnot) {
+            setShowBorromeanKnot(true);
+          }
+          
+          // Update Borromean Knot opacity
+          setBorromeanKnotOpacity(fadeProgress);
+        }
+        
+        if (elapsed < totalDuration) {
+          animationFrameRef.current = requestAnimationFrame(animate);
+        }
+      };
+      
+      animationFrameRef.current = requestAnimationFrame(animate);
+    } else {
+      setAnimationProgress(0);
+      setShowBorromeanKnot(false);
+      setBorromeanKnotOpacity(0);
+      animationPhaseRef.current = 'moving';
+    }
+    
+    // Clean up on unmount
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [ringsAnimationActive]);
+  
   // Helper function to get properties for each slot
   const getSlotProps = (taskAtom: 'mirror' | 'hydrant' | 'computer') => {
     const taskCompletedMap = {
@@ -205,6 +285,146 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   // Calculate the size of each inventory slot based on the breakpoint
   const slotSize = isMobile ? '21%' : '58%';
   
+  // Get the position for the first animated ring (moving from top to middle)
+  const getFirstRingStyle = () => {
+    const progress = animationProgress / 100;
+    const isFading = animationPhaseRef.current === 'fading';
+    
+    // Calculate fade-out opacity
+    let opacity = 1;
+    if (isFading) {
+      opacity = Math.max(1 - borromeanKnotOpacity * 1.5, 0);
+    }
+    
+    // For desktop, we need more accurate positioning based on the inventory layout
+    if (!isMobile) {
+      // Get the positions based on the vertical layout
+      const desktopStartY = '12%'; // First slot position
+      const desktopEndY = '35%';  // Second slot position - adjusted not to go too far down
+      
+      const currentY = `calc(${desktopStartY} + ${(parseFloat(desktopEndY) - parseFloat(desktopStartY)) * progress}%)`;
+      
+      return {
+        position: 'absolute' as const,
+        top: currentY,
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '45%', // Desktop size for first ring
+        height: 'auto',
+        objectFit: 'contain' as const,
+        opacity,
+        zIndex: 10,
+        transition: isFading ? 'opacity 0.3s ease-out' : 'none',
+      };
+    } else {
+      // Mobile layout (horizontal)
+      const startPosition = {
+        top: '50%',
+        left: '26.5%'
+      };
+      
+      const endPosition = {
+        top: '50%',
+        left: '50%'
+      };
+      
+      const currentLeft = `calc(${startPosition.left} + ${(parseFloat(endPosition.left) - parseFloat(startPosition.left)) * progress}%)`;
+      
+      return {
+        position: 'absolute' as const,
+        top: '50%',
+        left: currentLeft,
+        transform: 'translate(-50%, -50%)',
+        width: '14.5vw', 
+        height: 'auto',
+        objectFit: 'contain' as const,
+        opacity,
+        zIndex: 10,
+        transition: isFading ? 'opacity 0.3s ease-out' : 'none',
+      };
+    }
+  };
+
+  // Get the position for the third animated ring (moving from bottom to middle)
+  const getThirdRingStyle = () => {
+    const progress = animationProgress / 100;
+    const isFading = animationPhaseRef.current === 'fading';
+    
+    // Calculate fade-out opacity
+    let opacity = 1;
+    if (isFading) {
+      opacity = Math.max(1 - borromeanKnotOpacity * 1.5, 0);
+    }
+    
+    // For desktop, we need more accurate positioning based on the inventory layout
+    if (!isMobile) {
+      // Get the positions based on the vertical layout
+      const desktopStartY = '57.2%'; // Third slot position
+      const desktopEndY = '35%';  // Second slot position
+      
+      const currentY = `calc(${desktopStartY} - ${(parseFloat(desktopStartY) - parseFloat(desktopEndY)) * progress}%)`;
+      
+      return {
+        position: 'absolute' as const,
+        top: currentY,
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '39%', 
+        height: 'auto',
+        objectFit: 'contain' as const,
+        opacity,
+        zIndex: 10,
+        transition: isFading ? 'opacity 0.3s ease-out' : 'none',
+      };
+    } else {
+      // Mobile layout (horizontal)
+      const startPosition = {
+        top: '50%',
+        left: '73.5%'
+      };
+      
+      const endPosition = {
+        top: '50%',
+        left: '50%'
+      };
+      
+      const currentLeft = `calc(${startPosition.left} - ${(parseFloat(startPosition.left) - parseFloat(endPosition.left)) * progress}%)`;
+      
+      return {
+        position: 'absolute' as const,
+        top: '50%',
+        left: currentLeft,
+        transform: 'translate(-50%, -50%)',
+        width: '13vw', 
+        height: 'auto',
+        objectFit: 'contain' as const,
+        opacity,
+        zIndex: 10,
+        transition: isFading ? 'opacity 0.3s ease-out' : 'none',
+      };
+    }
+  };
+  
+  // Style for the Borromean Knot 
+  const getBorromeanKnotStyle = () => {
+    return {
+      position: 'absolute' as const,
+      top: isMobile ? '46%' : '35%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: isMobile ? '23%' : '71%',
+      height: 'auto',
+      objectFit: 'contain' as const,
+      opacity: borromeanKnotOpacity,
+      zIndex: 11, // Above the rings
+      transition: 'opacity 0.3s ease-in',
+    };
+  };
+
+  // Determine which animated rings should be shown
+  const shouldShowFirstRing = ringsAnimationActive && mirrorTaskCompleted && animationProgress > 0;
+  const shouldShowThirdRing = ringsAnimationActive && computerTaskCompleted && animationProgress > 0;
+
   return (
     <div 
       className="inventory-container" 
@@ -233,21 +453,66 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         alignItems: 'center',
         position: 'relative',
       }}>
-        {INVENTORY_ITEMS.map((item) => {
+        {INVENTORY_ITEMS.map((item, index) => {
           const slotProps = getSlotProps(item.taskAtom);
+          // Hide the completed rings during animation
+          const hideFirstRing = index === 0 && shouldShowFirstRing;
+          const hideThirdRing = index === 2 && shouldShowThirdRing;
+          
+          // Also hide the second ring (hydrant) when fading to Borromean Knot
+          const isFadingPhase = ringsAnimationActive && showBorromeanKnot;
+          const hideSecondRing = index === 1 && 
+            hydrantTaskCompleted && 
+            isFadingPhase;
+          
+          const hideRing = hideFirstRing || hideSecondRing || hideThirdRing;
+          
+          // Calculate opacity for middle ring during fade-out
+          const ringOpacity = (index === 1 && hydrantTaskCompleted && isFadingPhase) 
+            ? Math.max(1 - borromeanKnotOpacity * 1.5, 0) 
+            : slotProps.opacity;
+          
           return (
             <MainInventorySlot
               key={item.id}
               name={item.name}
               image={item.image}
-              isCompleted={slotProps.isCompleted}
+              isCompleted={slotProps.isCompleted && !hideRing}
               glowing={slotProps.glowing}
-              opacity={slotProps.opacity}
+              opacity={ringOpacity}
               slotSize={slotSize}
               isMobile={isMobile}
+              isAnimating={ringsAnimationActive}
             />
           );
         })}
+        
+        {/* Animated ring moving from slot 1 to slot 2 */}
+        {shouldShowFirstRing && (
+          <img 
+            src="assets/rings/Ring_1.GIF"
+            alt="Animated Ring 1"
+            style={getFirstRingStyle()}
+          />
+        )}
+        
+        {/* Animated ring moving from slot 3 to slot 2 */}
+        {shouldShowThirdRing && (
+          <img 
+            src="assets/rings/Ring_3.GIF"
+            alt="Animated Ring 3"
+            style={getThirdRingStyle()}
+          />
+        )}
+        
+        {/* Borromean Knot that fades in after rings fade out */}
+        {showBorromeanKnot && (
+          <img 
+            src="assets/rings/Borromean_Knot.GIF"
+            alt="Borromean Knot"
+            style={getBorromeanKnotStyle()}
+          />
+        )}
       </div>
     </div>
   );

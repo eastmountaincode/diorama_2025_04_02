@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, breakpointAtom } from '../../atoms/gameState';
+import { currentSceneAtom, breakpointAtom, ringsAnimationActiveAtom } from '../../atoms/gameState';
 import EndSceneButtons from './EndSceneButtons';
 import EndSceneMedia from './EndSceneMedia';
 import CreditsModal from './CreditsModal';
@@ -11,6 +11,7 @@ const EndGameScene: React.FC = () => {
   const [opacity, setOpacity] = useState(0);
   const [videoEnded, setVideoEnded] = useState(false);
   const [isCreditsOpen, setIsCreditsOpen] = useState(false);
+  const [, setRingsAnimationActive] = useAtom(ringsAnimationActiveAtom);
   
   // Fade in effect
   useEffect(() => {
@@ -22,6 +23,22 @@ const EndGameScene: React.FC = () => {
       return () => clearTimeout(timer);
     }
   }, [currentScene]);
+  
+  // Trigger rings animation 1 second after scene becomes active
+  useEffect(() => {
+    if (currentScene === 'EndGameScene') {
+      const timer = setTimeout(() => {
+        setRingsAnimationActive(true);
+      }, 2500);
+      
+      return () => clearTimeout(timer);
+    }
+    
+    // Reset animation when leaving the scene
+    return () => {
+      setRingsAnimationActive(false);
+    };
+  }, [currentScene, setRingsAnimationActive]);
   
   // Handle video end
   const handleVideoEnded = () => {

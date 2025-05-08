@@ -1,6 +1,6 @@
 import React from 'react';
 
-interface MainInventorySlotProps {
+type MainInventorySlotProps = {
   name: string;
   image: string;
   isCompleted: boolean;
@@ -8,7 +8,8 @@ interface MainInventorySlotProps {
   opacity: number;
   slotSize: string;
   isMobile: boolean;
-}
+  isAnimating?: boolean;
+};
 
 const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
   name,
@@ -17,7 +18,8 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
   glowing,
   opacity,
   slotSize,
-  isMobile
+  isMobile,
+  isAnimating = false
 }) => {
   // Style for the slot container
   const slotStyle: React.CSSProperties = {
@@ -26,14 +28,15 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     paddingBottom: slotSize, // Creates a perfect square
     aspectRatio: '1 / 1', // Backup to ensure perfect square
     margin: isMobile ? '0 1.5%' : '3.5% 0',
-    border: '1px solid rgba(255, 255, 255, 0.3)',
+    border: isAnimating ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
     borderRadius: '6px',
-    backgroundColor: 'rgba(20, 20, 20, 0.05)',
+    backgroundColor: isAnimating ? 'transparent' : 'rgba(20, 20, 20, 0.05)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden', // Ensure images don't overflow the box
+    transition: 'background-color 0.5s ease, border 0.5s ease',
   };
 
   // Style for the grayscale placeholder
@@ -45,9 +48,9 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    opacity: isCompleted ? 0 : 0.1, // Only show placeholder when not completed
+    opacity: isCompleted ? 0 : (isAnimating ? 0 : 0.1), // Hide placeholder if animating
     filter: 'grayscale(100%)',
-    transition: 'opacity 1s ease-out', // Longer, smoother fade-out
+    transition: 'opacity 2s ease-out', // Longer, smoother fade-out
   };
 
   // Style for the colored ring with glow

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAtom } from 'jotai';
-import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, computerTaskCompletedAtom, cameraPermissionStatusAtom, isEndSceneAtom } from '../atoms/gameState';
+import { currentSceneAtom, inventoryStateAtom, SceneType, hudTransformAtom, isFigurineTouchingDropZoneAtom, isSceneTransitioningAtom, hydrantTaskCompletedAtom, mirrorTaskCompletedAtom, computerTaskCompletedAtom, cameraPermissionStatusAtom, isEndSceneAtom, ringsAnimationActiveAtom } from '../atoms/gameState';
 
 // Define possible scenes for the SceneManager
 const scenes: SceneType[] = ['OpeningScene', 'MainScene', 'HydrantScene', 'MirrorScene', 'ComputerScene', 'RadioScene', 'EndGameScene'];
@@ -19,6 +19,7 @@ export function DebugSceneSwitcher() {
   const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
   const [isEndScene, setIsEndScene] = useAtom(isEndSceneAtom);
   const [cameraPermissionStatus] = useAtom(cameraPermissionStatusAtom);
+  const [ringsAnimationActive, setRingsAnimationActive] = useAtom(ringsAnimationActiveAtom);
   const [isVisible, setIsVisible] = useState(false);
   
   const handleSceneChange = (scene: SceneType) => {
@@ -178,6 +179,21 @@ export function DebugSceneSwitcher() {
                 <div className={`text-[10px] px-1.5 py-0.5 rounded w-full text-center ${isFigurineTouchingDropZone ? 'bg-green-500' : 'bg-red-500'}`}>
                   {isFigurineTouchingDropZone ? 'Touching Drop Zone' : 'Not Touching Drop Zone'}
                 </div>
+              </div>
+
+              {/* Rings Animation toggle */}
+              <div className="flex flex-col items-start gap-1">
+                <span className="text-[10px]">Rings Animation:</span>
+                <button
+                  onClick={() => setRingsAnimationActive(!ringsAnimationActive)}
+                  className={`px-1.5 py-0.5 rounded text-[10px] w-full ${
+                    ringsAnimationActive
+                      ? 'bg-purple-500 hover:bg-purple-600'
+                      : 'bg-gray-500 hover:bg-gray-600'
+                  }`}
+                >
+                  {ringsAnimationActive ? 'Active' : 'Trigger Animation'}
+                </button>
               </div>
             </div>
           </div>

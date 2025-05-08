@@ -232,7 +232,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
           
           {/* Visuals */}
           <div style={styles.section}>
-            <h3 style={styles.heading}>Visuals</h3>
+            <h3 style={styles.heading}>Visual Development</h3>
             <div style={styles.creditRow}>
               <span style={styles.name}>N3L</span>
               <a 

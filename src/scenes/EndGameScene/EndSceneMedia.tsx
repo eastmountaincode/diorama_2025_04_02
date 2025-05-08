@@ -18,13 +18,14 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   
   // Video positioning parameters
   const videoStyles = {
-    width: '70%',
-    height: 'auto',
+    width: '100%',
+    height: '100%',
     position: 'absolute' as const,
-    top: '49%',
+    top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    objectFit: 'contain' as const,
+    objectFit: 'cover' as const,
+    maxWidth: 'none',
   };
   
   // GIF positioning parameters

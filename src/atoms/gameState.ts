@@ -141,3 +141,6 @@ export const isAudioEnabledAtom = atom<boolean>(true);
 
 // Atom to track if the figurine is currently being dragged
 export const isDraggingFigurineAtom = atom<boolean>(false);
+
+// Atom to control the Borromean rings animation
+export const ringsAnimationActiveAtom = atom<boolean>(false);

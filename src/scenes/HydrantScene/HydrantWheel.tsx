@@ -126,7 +126,7 @@ const HydrantWheel: React.FC<HydrantWheelProps> = ({
         
         // Play the ring sound with Web Audio API - using minimal delay for better responsiveness
         // This needs to happen BEFORE we call onTaskComplete for better sound policy compliance
-        playRingSound(0.42, 10);
+        playRingSound();
         
         // Complete the hydrant task when reaching full left rotation
         onTaskComplete();
@@ -157,9 +157,12 @@ const HydrantWheel: React.FC<HydrantWheelProps> = ({
         let targetVolume = 0;
         
         if (rotationSpeedRef.current > minSpeed) {
-          targetVolume = Math.min(1, (rotationSpeedRef.current - minSpeed) / (maxSpeed - minSpeed));
-          // Apply exponential scaling to make it sound more natural (done in hook)
-          targetVolume = Math.pow(targetVolume, 2) * 0.9; // Cap at 0.9 max volume
+          // Apply smoother curve to volume mapping using easing function
+          const normalizedSpeed = Math.min(1, (rotationSpeedRef.current - minSpeed) / (maxSpeed - minSpeed));
+          // Use ease-in-out curve for more natural sound response
+          targetVolume = normalizedSpeed * normalizedSpeed * (3 - 2 * normalizedSpeed);
+          // Cap at 0.85 for better control
+          targetVolume = targetVolume * 0.85;
           
           // Set the volume through our hook
           setVolume(targetVolume);

@@ -144,3 +144,6 @@ export const isDraggingFigurineAtom = atom<boolean>(false);
 
 // Atom to control the Borromean rings animation
 export const ringsAnimationActiveAtom = atom<boolean>(false);
+
+// End game scene atoms
+export const endSceneVideoEndedAtom = atom<boolean>(false);

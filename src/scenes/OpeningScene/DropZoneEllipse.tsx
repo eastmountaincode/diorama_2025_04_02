@@ -130,7 +130,7 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
     if (isFigurinePlaced) {
       console.log('Ellipse clicked with figurine placed! Ready to transition to main scene.');
       
-      // Enable transition animation for the transform
+      // First set transition flag - this should trigger OpeningScene's fade-out animation
       setIsSceneTransitioning(true);
       
       // Start transition to zoom 1
@@ -140,11 +140,12 @@ const DropZoneEllipse: React.FC<DropZoneEllipseProps> = ({
         translateY: 0
       });
       
-      // First wait for the zoom transform to fully complete
+      // Give the OpeningScene time to start fading out before changing scenes
+      // Use a shorter timeout to reduce the wait but still allow animations to start
       setTimeout(() => {
-        // Change to MainScene after transform is complete
+        // Change to MainScene after OpeningScene has started fading
         setCurrentScene('MainScene');
-      }, 2000); // Wait for transform to fully complete
+      }, 200); 
     }
   };
   

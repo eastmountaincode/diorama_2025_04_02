@@ -172,7 +172,7 @@ export function HUDFrame() {
   };
 
   const handleMouseLeaveGrabbable = () => {
-    setCursorType('neutral');
+    setCursorType('open');
   };
 
   const [capturePhotoTrigger, setCapturePhotoTrigger] = useAtom(capturePhotoTriggerAtom);
@@ -249,7 +249,7 @@ export function HUDFrame() {
     color: '#fffff0',
     fontSize: breakpoint === 'mobile' ? '0.8rem' : '1.4rem',
     letterSpacing: '0.1em',
-    zIndex: 50,
+    zIndex: 5, // Lower z-index so figurine (10000) appears above
     pointerEvents: 'none',
     textAlign: 'center',
     width: 'auto',
@@ -278,10 +278,6 @@ export function HUDFrame() {
 
       {/* Main content container */}
       <div className="relative w-full h-full flex items-center justify-center z-20">
-        {/* Breakpoint Indicator */}
-        {/* <div className="absolute top-2 left-2 z-30 bg-black bg-opacity-50 text-white text-xs p-1 rounded pointer-events-none">
-          Breakpoint: {breakpoint}
-        </div> */}
 
         {/* Container wrapping HUD frame image */}
         <div className="inline-block relative p-2 max-h-[98vh] flex items-center justify-center mt-2">

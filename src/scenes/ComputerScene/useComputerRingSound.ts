@@ -1,41 +1,38 @@
 import { useCallback } from 'react';
 
 // AudioContext singleton
-let ringAudioContext: AudioContext | null = null;
+let computerAudioContext: AudioContext | null = null;
 
 // Get or create the audio context
 const getAudioContext = (): AudioContext => {
-  if (!ringAudioContext) {
-    ringAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+  if (!computerAudioContext) {
+    computerAudioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
   }
-  return ringAudioContext;
+  return computerAudioContext;
 };
 
 /**
- * Custom hook to play the "get ring" sound with Web Audio API
+ * Custom hook to play the computer ring sound with Web Audio API
  * @returns Functions to control the ring sound
  */
-export const useRingSound = () => {
+export const useComputerRingSound = () => {
   // Play the ring sound with optional delay
-  const playSound = useCallback((volume: number = 0.39, delayMs: number = 200) => {
+  const playSound = useCallback((volume: number = 0.39, delayMs: number = 600) => {
     try {
       // Use Web Audio API for better volume control
       const context = getAudioContext();
       
-      // On some browsers, we need to ensure context is resumed even during mouse down
+      // On some browsers, we need to ensure context is resumed even during interaction
       const ensureContextRunning = async () => {
         // Force context to resume if not already running
         if (context.state !== 'running') {
           try {
             await context.resume();
-            console.log("AudioContext resumed successfully");
+            console.log("Computer AudioContext resumed successfully");
           } catch (err) {
-            console.error("Failed to resume AudioContext:", err);
+            console.error("Failed to resume Computer AudioContext:", err);
           }
         }
-        
-        // Create new audio element for each play
-        const audio = new Audio('assets/audio/get_ring.wav');
         
         // Create a buffered source for more reliable playback
         try {
@@ -67,17 +64,20 @@ export const useRingSound = () => {
                   source.disconnect();
                   gainNode.disconnect();
                 } catch (e) {
-                  console.error("Error disconnecting ring audio nodes:", e);
+                  console.error("Error disconnecting computer ring audio nodes:", e);
                 }
               };
             } catch (err) {
-              console.error("Error starting ring sound:", err);
+              console.error("Error starting computer ring sound:", err);
             }
           }, delayMs);
           
         } catch (fetchError) {
           // Fallback to MediaElementSource if buffered approach fails
-          console.warn("Buffer source failed, falling back to MediaElement:", fetchError);
+          console.warn("Buffer source failed for computer, falling back to MediaElement:", fetchError);
+          
+          // Create new audio element for each play
+          const audio = new Audio('assets/audio/get_ring.wav');
           
           // Create Web Audio nodes
           const source = context.createMediaElementSource(audio);
@@ -93,7 +93,7 @@ export const useRingSound = () => {
             const playPromise = audio.play();
             if (playPromise) {
               playPromise.catch(error => {
-                console.error("Error playing ring sound:", error);
+                console.error("Error playing computer ring sound:", error);
               });
             }
             
@@ -103,7 +103,7 @@ export const useRingSound = () => {
                 source.disconnect();
                 gainNode.disconnect();
               } catch (e) {
-                console.error("Error disconnecting audio nodes:", e);
+                console.error("Error disconnecting computer audio nodes:", e);
               }
             };
           }, delayMs);
@@ -114,7 +114,7 @@ export const useRingSound = () => {
       ensureContextRunning();
       
     } catch (error) {
-      console.error("Web Audio API failed for ring sound:", error);
+      console.error("Web Audio API failed for computer ring sound:", error);
     }
   }, []);
   

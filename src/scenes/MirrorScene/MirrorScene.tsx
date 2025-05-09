@@ -10,7 +10,7 @@ import {
 import CameraVideoFeed from '../../components/CameraVideoFeed';
 import PhotoFrame from './PhotoFrame';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
-import { playGetRingSound } from '../../util/sound';
+import { useMirrorRingSound } from './useMirrorRingSound';
 
 const MirrorScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -21,6 +21,9 @@ const MirrorScene: React.FC = () => {
   const [_, setMirrorTransitionComplete] = useAtom(mirrorTransitionCompleteAtom);
   const [mirrorTaskCompleted, setMirrorTaskCompleted] = useAtom(mirrorTaskCompletedAtom);
   const isMobile = breakpoint === 'mobile';
+  
+  // Use our Web Audio API hooks for sounds
+  const { playSound: playRingSound } = useMirrorRingSound();
   
   // State for background transition.
   // "showSecondBackground" now represents whether the top (non-cut-out) layer has faded out.
@@ -158,6 +161,8 @@ const MirrorScene: React.FC = () => {
 
   // Function to capture photo from video stream or use fallback image
   const capturePhoto = () => {
+    // Camera sound is now played by ReaffirmButton, no need to play it here
+    
     // If camera permission is not granted, use the fallback image
     if (cameraPermissionStatus !== 'granted') {
       setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
@@ -165,7 +170,8 @@ const MirrorScene: React.FC = () => {
       // Only mark task as completed and play sound if not already completed
       if (!mirrorTaskCompleted) {
         setMirrorTaskCompleted(true);
-        playGetRingSound();
+        // Use Web Audio API version of the sound
+        playRingSound();
       }
       return;
     }
@@ -199,7 +205,8 @@ const MirrorScene: React.FC = () => {
     // Only mark task as completed and play sound if not already completed
     if (!mirrorTaskCompleted) {
       setMirrorTaskCompleted(true);
-      playGetRingSound();
+      // Use Web Audio API version of the sound
+      playRingSound();
     }
   };
 
@@ -248,6 +255,8 @@ const MirrorScene: React.FC = () => {
 
   useEffect(() => {
     if (capturePhotoTrigger && !capturedPhoto) {
+      // Now the ReaffirmButton is playing the camera sound using Web Audio API
+      // So we can just call capturePhoto directly without worrying about duplicate sounds
       capturePhoto();
     }
   }, [capturePhotoTrigger, capturedPhoto]);

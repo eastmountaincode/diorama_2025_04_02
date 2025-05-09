@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAtom } from 'jotai';
-import { mirrorTaskCompletedAtom, hydrantTaskCompletedAtom, computerTaskCompletedAtom, ringsAnimationActiveAtom } from '../../atoms/gameState';
+import { 
+  mirrorTaskCompletedAtom, 
+  hydrantTaskCompletedAtom, 
+  computerTaskCompletedAtom, 
+  ringsAnimationActiveAtom,
+  endSceneVideoEndedAtom,
+  currentSceneAtom
+} from '../../atoms/gameState';
 import MainInventorySlot from './MainInventorySlot';
 import { useCursor } from '../../context/CursorContext';
 
@@ -47,6 +54,8 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const [hydrantTaskCompleted] = useAtom(hydrantTaskCompletedAtom);
   const [computerTaskCompleted] = useAtom(computerTaskCompletedAtom);
   const [ringsAnimationActive] = useAtom(ringsAnimationActiveAtom);
+  const [endSceneVideoEnded] = useAtom(endSceneVideoEndedAtom);
+  const [currentScene] = useAtom(currentSceneAtom);
   
   // State to track animation states for each ring
   const [ringStates, setRingStates] = useState({
@@ -66,6 +75,9 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const prevComputerCompleted = useRef(false);
   const animationFrameRef = useRef<number | null>(null);
   const animationPhaseRef = useRef('moving'); // 'moving', 'pausing', 'fading'
+  
+  // New state to prevent rings from reappearing
+  const [allRingsHidden, setAllRingsHidden] = useState(false);
   
   // Handle cursor changes
   const handleMouseEnter = () => {
@@ -267,6 +279,39 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     };
   }, [ringsAnimationActive]);
   
+  // Handle Borromean Knot fade-out after end scene video
+  useEffect(() => {
+    if (endSceneVideoEnded) {
+      // Immediately hide all rings when the video ends
+      setAllRingsHidden(true);
+      
+      if (showBorromeanKnot) {
+        // Create a fade-out animation for the Borromean Knot
+        let opacity = borromeanKnotOpacity;
+        const fadeOutInterval = setInterval(() => {
+          opacity -= 0.05;
+          
+          if (opacity <= 0) {
+            clearInterval(fadeOutInterval);
+            opacity = 0;
+            setShowBorromeanKnot(false);
+          }
+          
+          setBorromeanKnotOpacity(opacity);
+        }, 100); // Fade out over 2 seconds
+        
+        return () => clearInterval(fadeOutInterval);
+      }
+    }
+  }, [endSceneVideoEnded, showBorromeanKnot, borromeanKnotOpacity]);
+  
+  // Reset the allRingsHidden state when leaving end scene
+  useEffect(() => {
+    if (currentScene !== 'EndGameScene') {
+      setAllRingsHidden(false);
+    }
+  }, [currentScene]);
+  
   // Helper function to get properties for each slot
   const getSlotProps = (taskAtom: 'mirror' | 'hydrant' | 'computer') => {
     const taskCompletedMap = {
@@ -455,15 +500,15 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       }}>
         {INVENTORY_ITEMS.map((item, index) => {
           const slotProps = getSlotProps(item.taskAtom);
-          // Hide the completed rings during animation
-          const hideFirstRing = index === 0 && shouldShowFirstRing;
-          const hideThirdRing = index === 2 && shouldShowThirdRing;
+          // Hide the completed rings during animation or when all rings should be hidden
+          const hideFirstRing = (index === 0 && shouldShowFirstRing) || allRingsHidden;
+          const hideThirdRing = (index === 2 && shouldShowThirdRing) || allRingsHidden;
           
-          // Also hide the second ring (hydrant) when fading to Borromean Knot
+          // Also hide the second ring (hydrant) when fading to Borromean Knot or when all rings should be hidden
           const isFadingPhase = ringsAnimationActive && showBorromeanKnot;
-          const hideSecondRing = index === 1 && 
+          const hideSecondRing = (index === 1 && 
             hydrantTaskCompleted && 
-            isFadingPhase;
+            isFadingPhase) || allRingsHidden;
           
           const hideRing = hideFirstRing || hideSecondRing || hideThirdRing;
           
@@ -488,7 +533,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         })}
         
         {/* Animated ring moving from slot 1 to slot 2 */}
-        {shouldShowFirstRing && (
+        {shouldShowFirstRing && !allRingsHidden && (
           <img 
             src="assets/rings/Ring_1.GIF"
             alt="Animated Ring 1"
@@ -497,7 +542,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         )}
         
         {/* Animated ring moving from slot 3 to slot 2 */}
-        {shouldShowThirdRing && (
+        {shouldShowThirdRing && !allRingsHidden && (
           <img 
             src="assets/rings/Ring_3.GIF"
             alt="Animated Ring 3"

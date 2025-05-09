@@ -19,6 +19,7 @@ export const useWheelSound = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
+  const lastVolumeRef = useRef<number>(0);
   
   // Start playing the wheel sound
   const startSound = useCallback(() => {
@@ -39,6 +40,7 @@ export const useWheelSound = () => {
       
       // Start with zero volume to avoid pops
       gainNode.gain.value = 0;
+      lastVolumeRef.current = 0;
       
       // Connect nodes: source -> gain -> destination
       source.connect(gainNode);
@@ -87,13 +89,34 @@ export const useWheelSound = () => {
       audioRef.current.currentTime = 0;
       audioRef.current = null;
     }
+    
+    lastVolumeRef.current = 0;
   }, []);
   
-  // Set the volume (0-1)
+  // Set the volume (0-1) with smooth transition
   const setVolume = useCallback((volume: number) => {
-    if (gainNodeRef.current) {
+    if (gainNodeRef.current && wheelAudioContext) {
       // Apply cubic scaling for more natural sound
-      gainNodeRef.current.gain.value = Math.pow(volume, 3);
+      const targetVolume = Math.pow(volume, 3);
+      
+      // Skip if the volume change is negligible to avoid scheduling too many ramps
+      if (Math.abs(targetVolume - lastVolumeRef.current) < 0.01) {
+        return;
+      }
+      
+      const now = wheelAudioContext.currentTime;
+      // Use a very short ramp (20ms) to avoid pops while still being responsive
+      const rampTime = now + 0.02;
+      
+      // Cancel any scheduled ramps
+      gainNodeRef.current.gain.cancelScheduledValues(now);
+      // Start from current value
+      gainNodeRef.current.gain.setValueAtTime(gainNodeRef.current.gain.value, now);
+      // Ramp to new value
+      gainNodeRef.current.gain.linearRampToValueAtTime(targetVolume, rampTime);
+      
+      // Update last volume
+      lastVolumeRef.current = targetVolume;
     }
   }, []);
   
@@ -103,11 +126,17 @@ export const useWheelSound = () => {
       const gainNode = gainNodeRef.current;
       const now = wheelAudioContext.currentTime;
       
+      // Start from current value
+      gainNode.gain.cancelScheduledValues(now);
+      gainNode.gain.setValueAtTime(gainNode.gain.value, now);
+      
       // Gradual volume reduction over specified duration
       gainNode.gain.linearRampToValueAtTime(0, now + duration/1000);
       
       // Clean up after fade completes
       setTimeout(stopSound, duration);
+      
+      lastVolumeRef.current = 0;
     } else {
       stopSound();
     }

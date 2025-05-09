@@ -128,8 +128,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
                 transform: isFromCamera ? 'scaleX(-1)' : 'none', // Only mirror camera images
                 width: isFromCamera ? '100%' : '90%',
                 height: isFromCamera ? '100%' : '80%',
-                objectPosition: isFromCamera ? 'center' : 'center 35%',
-                margin: isFromCamera ? '0' : '5% auto 0'
+                objectPosition: isFromCamera ? 'center' : 'center 47.5%',
+                margin: isFromCamera ? '0' : '10% auto 0'
               }} 
               onLoad={handlePhotoLoad}
             />

@@ -41,7 +41,7 @@ const ComputerFile: React.FC<ComputerFileProps> = ({
 
   const handleMouseLeave = () => {
     setIsHovered(false);
-    setCursorType('neutral');
+    setCursorType('open');
   };
 
   // Handle click with sound

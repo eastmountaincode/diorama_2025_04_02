@@ -50,7 +50,7 @@ const OpeningScene: React.FC = () => {
         setTimeout(() => {
           setShowOpeningScene(false);
         }, 1500); // Match the fade-out duration
-      }, 3500); // Wait for transform + MainScene fade-in
+      }, 1000); // Wait for transform + MainScene fade-in
       
       return () => clearTimeout(timer);
     }

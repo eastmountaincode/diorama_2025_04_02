@@ -4,6 +4,7 @@ import { breakpointAtom } from '../../atoms/gameState';
 import { AiOutlineClose } from 'react-icons/ai';
 import { FaInstagram } from 'react-icons/fa';
 import { useCursor } from '../../context/CursorContext';
+import { playMouseClickSound } from '../../util/sound';
 
 interface CreditsModalProps {
   isOpen: boolean;
@@ -46,13 +47,19 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // Handle close with sound
+  const handleClose = () => {
+    playMouseClickSound();
+    onClose();
+  };
+
   if (!isOpen) return null;
 
   // Style objects - organized for better readability
   const styles = {
     overlay: {
       position: 'fixed' as const,
-      top: 0,
+      top: -10,
       left: 0,
       right: 0,
       bottom: 0,
@@ -64,23 +71,39 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       padding: '5%',
     },
     container: {
-      width: breakpoint === 'mobile' ? '90%' : '60%',
-      maxWidth: '500px',
+      width: breakpoint === 'mobile' ? '90%' : '80%',
+      maxWidth: '650px',
       display: 'flex',
       flexDirection: 'column' as const,
       alignItems: 'flex-start',
+      fontFamily: '"Times New Roman", Times, serif',
     },
     modal: {
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
       color: 'white',
       border: '1px solid white',
-      borderRadius: '4px',
-      padding: breakpoint === 'mobile' ? '5%' : '3%',
+      padding: breakpoint === 'mobile' ? '5%' : '5%',
       width: '100%',
       maxWidth: '100%',
       overflow: 'auto',
       position: 'relative' as const,
-      boxSizing: 'border-box' as const,
+      boxSizing: 'border-box' as const
+    },
+    contentContainer: {
+      display: 'flex',
+      width: '100%',
+    },
+    leftColumn: {
+      flex: breakpoint === 'mobile' ? '1 1 70%' : '1 1 70%',
+      paddingRight: breakpoint === 'mobile' ? '2%' : '3%',
+    },
+    rightColumn: {
+      flex: breakpoint === 'mobile' ? '1 1 30%' : '1 1 30%',
+      display: 'flex',
+      flexDirection: 'column' as const,
+      justifyContent: 'center',
+      alignItems: 'center',
+      paddingLeft: breakpoint === 'mobile' ? '2%' : '3%',
     },
     header: {
       display: 'flex',
@@ -95,18 +118,19 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       letterSpacing: '0.05em',
       fontWeight: 'bold' as const,
       margin: 0,
+      fontFamily: '"Times New Roman", Times, serif',
     },
     closeButton: {
       backgroundColor: 'transparent',
       color: 'white',
       border: 'none',
-      fontSize: calculateFontSize(18),
+      fontSize: calculateFontSize(28),
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
       opacity: 0.8,
-      padding: '0',
+      padding: '5px',
       zIndex: 10,
     },
     section: {
@@ -114,7 +138,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       width: '100%',
     },
     heading: {
-      fontSize: calculateFontSize(18),
+      fontSize: calculateFontSize(breakpoint === 'mobile' ? 16 : 18),
       marginBottom: '3%',
       borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
       paddingBottom: '2%',
@@ -123,25 +147,27 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       letterSpacing: '0.03em',
       fontWeight: '600' as const,
       textTransform: 'uppercase' as const,
+      fontFamily: '"Times New Roman", Times, serif',
     },
     creditRow: {
       display: 'flex',
       alignItems: 'center',
+      justifyContent: 'space-between',
       marginBottom: '3%',
       width: '100%',
       paddingLeft: '2%',
       minHeight: '30px',
     },
     name: {
-      fontSize: calculateFontSize(16),
+      fontSize: calculateFontSize(breakpoint === 'mobile' ? 14 : 16),
       fontWeight: '400' as const,
-      marginRight: '8px',
-      flex: '0 1 auto',
-      whiteSpace: 'nowrap' as const,
+      flex: '1 1 auto',
+      whiteSpace: breakpoint === 'mobile' ? 'normal' as const : 'nowrap' as const,
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       opacity: 0.9,
       fontStyle: 'normal' as const,
+      fontFamily: '"Times New Roman", Times, serif',
     },
     link: {
       color: 'white',
@@ -151,25 +177,34 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       opacity: 0.7,
       transition: 'opacity 0.2s ease',
       padding: '2px',
-      marginLeft: '3px',
+      marginLeft: '10px',
       ':hover': {
         opacity: 1,
       }
     },
     icon: {
-      fontSize: calculateFontSize(16),
+      fontSize: calculateFontSize(22),
+    },
+    teamLogo: {
+      width: '100%',
+      maxWidth: breakpoint === 'mobile' ? '120px' : '180px',
+      height: 'auto',
+      opacity: 1,
+      marginBottom: breakpoint === 'mobile' ? '5%' : '15%',
+      marginTop: breakpoint === 'mobile' ? '30%' : '0',
     },
     copyright: {
       marginTop: '8%',
       fontSize: calculateFontSize(12),
       opacity: 0.6,
-      textAlign: 'left' as const,
+      textAlign: 'center' as const,
       width: '100%',
+      fontFamily: '"Times New Roman", Times, serif',
     }
   };
 
   return (
-    <div style={styles.overlay} onClick={onClose}>
+    <div style={styles.overlay} onClick={handleClose}>
       <div style={styles.container}>
         <div 
           ref={modalRef}
@@ -182,7 +217,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
             </h2>
             <button 
               style={styles.closeButton} 
-              onClick={onClose}
+              onClick={handleClose}
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             >
@@ -190,83 +225,97 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
             </button>
           </div>
           
-          {/* Narrative */}
-          <div style={styles.section}>
-            <h3 style={styles.heading}>Narrative & Song</h3>
-            <div style={styles.creditRow}>
-              <span style={styles.name}>Laila Smith</span>
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick('https://www.instagram.com/lailasmith/');
-                }}
-                style={styles.link}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaInstagram style={styles.icon} />
-              </a>
+          <div style={styles.contentContainer}>
+            {/* Left Column */}
+            <div style={styles.leftColumn}>
+              {/* Narrative */}
+              <div style={styles.section}>
+                <h3 style={styles.heading}>Narrative & Song</h3>
+                <div style={styles.creditRow}>
+                  <span style={styles.name}>Laila Smith</span>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('https://www.instagram.com/lailasmith/');
+                    }}
+                    style={styles.link}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <FaInstagram style={styles.icon} />
+                  </a>
+                </div>
+              </div>
+              
+              {/* Web Development */}
+              <div style={styles.section}>
+                <h3 style={styles.heading}>Web Development</h3>
+                <div style={styles.creditRow}>
+                  <span style={styles.name}>Andrew Boylan</span>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('https://www.instagram.com/ndrewboylan/');
+                    }}
+                    style={styles.link}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <FaInstagram style={styles.icon} />
+                  </a>
+                </div>
+              </div>
+              
+              {/* Visuals */}
+              <div style={styles.section}>
+                <h3 style={styles.heading}>Visual Development</h3>
+                <div style={styles.creditRow}>
+                  <span style={styles.name}>N3L</span>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('https://www.instagram.com/garbageandglory.jpg/');
+                    }}
+                    style={styles.link}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <FaInstagram style={styles.icon} />
+                  </a>
+                </div>
+              </div>
+              
+              {/* Publishing */}
+              <div style={styles.section}>
+                <h3 style={styles.heading}>Publishing</h3>
+                <div style={styles.creditRow}>
+                  <span style={styles.name}>UNL Rent-Network</span>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('https://www.instagram.com/unl.rn/');
+                    }}
+                    style={styles.link}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <FaInstagram style={styles.icon} />
+                  </a>
+                </div>
+              </div>
             </div>
-          </div>
-          
-          {/* Web Development */}
-          <div style={styles.section}>
-            <h3 style={styles.heading}>Web Development</h3>
-            <div style={styles.creditRow}>
-              <span style={styles.name}>Andrew Boylan</span>
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick('https://www.instagram.com/ndrewboylan/');
-                }}
-                style={styles.link}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaInstagram style={styles.icon} />
-              </a>
-            </div>
-          </div>
-          
-          {/* Visuals */}
-          <div style={styles.section}>
-            <h3 style={styles.heading}>Visual Development</h3>
-            <div style={styles.creditRow}>
-              <span style={styles.name}>N3L</span>
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick('https://www.instagram.com/garbageandglory.jpg/');
-                }}
-                style={styles.link}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaInstagram style={styles.icon} />
-              </a>
-            </div>
-          </div>
-          
-          {/* Publishing */}
-          <div style={styles.section}>
-            <h3 style={styles.heading}>Publishing</h3>
-            <div style={styles.creditRow}>
-              <span style={styles.name}>UNL Rent-Network</span>
-              <a 
-                href="#" 
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick('https://www.instagram.com/unl.rn/');
-                }}
-                style={styles.link}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                <FaInstagram style={styles.icon} />
-              </a>
+            
+            {/* Right Column */}
+            <div style={styles.rightColumn}>
+              <img 
+                src="assets/credits/team_dio.png" 
+                alt="Team Dio" 
+                style={styles.teamLogo}
+              />
             </div>
           </div>
           

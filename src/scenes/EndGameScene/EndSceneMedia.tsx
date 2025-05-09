@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
-import { breakpointAtom } from '../../atoms/gameState';
+import { breakpointAtom, endSceneVideoEndedAtom } from '../../atoms/gameState';
+import { useEndSceneAudio } from './useEndSceneAudio';
 
 interface EndSceneMediaProps {
   videoEnded: boolean;
@@ -14,7 +15,9 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   currentScene
 }) => {
   const [breakpoint] = useAtom(breakpointAtom);
+  const [, setEndSceneVideoEnded] = useAtom(endSceneVideoEndedAtom);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { connectVideoAudio, disconnectVideoAudio } = useEndSceneAudio();
   
   // Video positioning parameters
   const videoStyles = {
@@ -30,19 +33,19 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   
   // GIF positioning parameters
   const gifStyles = breakpoint === 'mobile' ? {
-    width: 'auto',
-    height: '40vh',
-    position: 'absolute' as const,
+    width: '100%',
+    height: '60%',
+    scale: '1.7',
     top: '40%',
     left: '50%',
-    transform: 'translate(-50%, -50%)',
-    objectFit: 'contain' as const,
+    transform: 'translate(1%, -3%)',
     zIndex: 50,
+    overflow: 'hidden',
   } : {
     width: '100%',
     height: 'auto',
     position: 'absolute' as const,
-    top: '43%',
+    top: '46.5%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
   };
@@ -51,14 +54,45 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   useEffect(() => {
     if (currentScene === 'EndGameScene' && !videoEnded) {
       if (videoRef.current) {
-        // Set volume to a lower level (0.0 to 1.0)
-        videoRef.current.volume = 0.2;
-        videoRef.current.play().catch(e => 
-          console.error("Video playback failed:", e)
-        );
+        // First play the video
+        videoRef.current.play()
+          .then(() => {
+            // After successful play, try to connect the audio
+            try {
+              connectVideoAudio(videoRef.current!, 0.5);
+            } catch (audioError) {
+              console.warn("Falling back to native volume control", audioError);
+              videoRef.current!.volume = 0.5;
+            }
+          })
+          .catch(e => console.error("Video playback failed:", e));
       }
     }
-  }, [currentScene, videoEnded]);
+  }, [currentScene, videoEnded, connectVideoAudio]);
+
+  // Disconnect Web Audio API when component unmounts
+  useEffect(() => {
+    return () => {
+      disconnectVideoAudio();
+    };
+  }, [disconnectVideoAudio]);
+
+  // Handle video end
+  const handleVideoEnded = () => {
+    setEndSceneVideoEnded(true); // Set atom for Borromean knot fade-out
+    onVideoEnded(); // Call the original handler
+  };
+
+  // Reset endSceneVideoEnded when unmounting or changing scenes
+  useEffect(() => {
+    if (currentScene !== 'EndGameScene') {
+      setEndSceneVideoEnded(false);
+    }
+    
+    return () => {
+      setEndSceneVideoEnded(false);
+    };
+  }, [currentScene, setEndSceneVideoEnded]);
 
   return (
     <>
@@ -66,12 +100,12 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         <video
           ref={videoRef}
           style={videoStyles}
-          src="assets/end_video/Dio_End_Scene_3s.mp4"
+          src="assets/end_video/Dio_End_Scene.mp4"
           playsInline
           muted={false}
           controls={false}
           preload="auto"
-          onEnded={onVideoEnded}
+          onEnded={handleVideoEnded}
         />
       ) : (
         <img

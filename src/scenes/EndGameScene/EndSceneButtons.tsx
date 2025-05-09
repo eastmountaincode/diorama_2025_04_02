@@ -4,6 +4,7 @@ import { breakpointAtom } from '../../atoms/gameState';
 import { FaInfoCircle } from 'react-icons/fa';
 import { IoMusicalNotes } from 'react-icons/io5';
 import { useCursor } from '../../context/CursorContext';
+import { playMouseClickSound } from '../../util/sound';
 
 interface EndSceneButtonsProps {
   onCreditsClick: () => void;
@@ -82,11 +83,22 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
     setHoveredButton(null);
   };
 
+  // Handle button clicks with sound
+  const handleCreditsClick = () => {
+    playMouseClickSound();
+    onCreditsClick();
+  };
+
+  const handleListenClick = () => {
+    playMouseClickSound();
+    onListenClick();
+  };
+
   return (
     <div style={buttonContainerStyles}>
       <button 
         style={getButtonStyle('credits')}
-        onClick={onCreditsClick}
+        onClick={handleCreditsClick}
         onMouseEnter={() => handleButtonMouseEnter('credits')}
         onMouseLeave={handleButtonMouseLeave}
       >
@@ -95,7 +107,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
       </button>
       <button 
         style={getButtonStyle('stream')}
-        onClick={onListenClick}
+        onClick={handleListenClick}
         onMouseEnter={() => handleButtonMouseEnter('stream')}
         onMouseLeave={handleButtonMouseLeave}
       >

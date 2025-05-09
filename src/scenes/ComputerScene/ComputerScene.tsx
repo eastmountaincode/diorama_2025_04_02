@@ -4,7 +4,7 @@ import { breakpointAtom, currentSceneAtom, computerTaskCompletedAtom } from '../
 import ComputerFile from './ComputerFile';
 import PhotoViewer from './PhotoViewer';
 import InternetBrowser from './InternetBrowser';
-import { playGetRingSound } from '../../util/sound';
+import { useComputerRingSound } from './useComputerRingSound';
 import { atom } from 'jotai';
 
 // Export an atom to track if the browser is open
@@ -30,6 +30,9 @@ const ComputerScene: React.FC = () => {
   const [, setIsPhotoOpen] = useAtom(isPhotoOpenAtom);
   const [, setHideCustomCursor] = useAtom(hideCustomCursorAtom);
   const [computerTaskCompleted, setComputerTaskCompleted] = useAtom(computerTaskCompletedAtom);
+  
+  // Use our Web Audio API hook for ring sound
+  const { playSound: playRingSound } = useComputerRingSound();
 
   const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
   const internetIconSrc = 'assets/bg/computer/Network_Computers.ico';
@@ -67,7 +70,8 @@ const ComputerScene: React.FC = () => {
     // If opening the README file and task not completed yet, mark it as completed
     if (folderName === 'child_photo' && !computerTaskCompleted) {
       setComputerTaskCompleted(true);
-      playGetRingSound();
+      // Use Web Audio API version of the sound
+      playRingSound();
     }
   };
 

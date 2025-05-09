@@ -234,6 +234,7 @@ const DraggableInventoryFigurine: React.FC<DraggableInventoryFigurineProps> = ({
                 transition: isDragging 
                     ? 'none' 
                     : 'transform 0.2s ease',
+                zIndex: 10000,
             }}
         >
             {children}

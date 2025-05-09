@@ -68,16 +68,6 @@ export const playMouseClickSound = (volume: number = 0.75, delay: number = 0): H
 };
 
 /**
- * Plays the "camera click" sound effect
- * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
- * @param delay Delay in milliseconds before playing the sound
- * @returns The Audio element that was created and played
- */
-export const playCameraClickSound = (volume: number = 0.5, delay: number = 0): HTMLAudioElement => {
-  return playSound("assets/audio/camera_click.mp3", volume, delay);
-};
-
-/**
  * Plays the "water flowing" sound effect
  * @param volume Optional volume level (0.0 to 1.0), uses exponential scaling
  * @param delay Delay in milliseconds before playing the sound

@@ -8,5 +8,5 @@ export default defineConfig({
     react(),
     tailwindcss(),
   ],
-  base: '/diorama_2025_04_02/'
+  // Removing the base path for Vercel deployment
 })

@@ -12,6 +12,9 @@ import {
 import { useCursor } from '../context/CursorContext';
 import { useDraggingSound } from '../hooks/useDraggingSound';
 
+// DEV ONLY: Set to true to disable dragging for development purposes
+const DEV_DISABLE_DRAGGING = false;
+
 interface MainDraggableFigurineProps {
   containerRef: any; // Using any to bypass type check issues temporarily
   canDragFigurine?: boolean;
@@ -69,6 +72,9 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   // Store the initial click offset from the figurine center
   const clickOffset = useRef({ x: 0, y: 0 });
   
+  // Check if dragging is currently allowed
+  const isDraggingAllowed = canDragFigurine && !DEV_DISABLE_DRAGGING;
+  
   // Get current boundary based on breakpoint and apply the offset
   const getBoundaryWithOffset = () => {
     const base = FLOOR_BOUNDARY[breakpoint];
@@ -114,14 +120,14 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   
   // Set cursor based on dragging state and update global dragging state
   useEffect(() => {
-    if (canDragFigurine) {
+    if (isDraggingAllowed) {
       setCursorType(isDragging ? 'pinching' : 'open');
       setIsDraggingFigurine(isDragging);
     }
-  }, [isDragging, canDragFigurine, setCursorType, setIsDraggingFigurine]);
+  }, [isDragging, isDraggingAllowed, setCursorType, setIsDraggingFigurine]);
   
   const handlePointerDown = (e: React.PointerEvent) => {
-    if (isSceneTransitioning || !figurineRef.current || !canDragFigurine) return;
+    if (isSceneTransitioning || !figurineRef.current || !isDraggingAllowed) return;
     
     e.preventDefault();
     setIsDragging(true);
@@ -146,7 +152,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   
   
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging || !containerRef.current || !canDragFigurine) return;
+    if (!isDragging || !containerRef.current || !isDraggingAllowed) return;
     
     const containerRect = containerRef.current.getBoundingClientRect();
     

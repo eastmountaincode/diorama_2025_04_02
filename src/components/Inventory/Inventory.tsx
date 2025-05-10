@@ -36,7 +36,7 @@ const Inventory: React.FC<InventoryProps> = ({ breakpoint }) => {
         };
 
   return (
-    <div style={style}>
+    <div style={style} className="select-none">
       {inventoryState === 'OpeningScene' ? (
         <OpeningSceneInventory breakpoint={breakpoint} />
       ) : (

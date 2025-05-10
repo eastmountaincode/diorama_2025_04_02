@@ -280,7 +280,7 @@ export function HUDFrame() {
       <div className="relative w-full h-full flex items-center justify-center z-20">
 
         {/* Container wrapping HUD frame image */}
-        <div className="inline-block relative p-2 max-h-[98vh] flex items-center justify-center mt-2">
+        <div className="inline-block relative p-2 max-h-[98vh] select-none flex items-center justify-center mt-2">
           {/* Interactive SceneManager viewport */}
           <div className="absolute top-0 left-0 w-full h-full">
             <div
@@ -347,7 +347,7 @@ export function HUDFrame() {
           <img
             src={src}
             alt="HUD Frame"
-            className="relative z-10 block pointer-events-none object-contain max-h-[90vh]"
+            className="relative z-10 block pointer-events-none select-none object-contain max-h-[90vh]"
             style={{ 
               display: 'block', 
               width: 'auto', 

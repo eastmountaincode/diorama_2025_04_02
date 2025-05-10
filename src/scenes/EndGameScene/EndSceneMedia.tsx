@@ -100,7 +100,7 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         <video
           ref={videoRef}
           style={videoStyles}
-          src="assets/end_video/Dio_End_Scene.mp4"
+          src="assets/end_video/Dio_End_Scene_3s.mp4"
           playsInline
           muted={false}
           controls={false}

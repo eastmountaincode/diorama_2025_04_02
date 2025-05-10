@@ -22,5 +22,6 @@ export const defaultHudTransforms: Record<BreakpointType, Record<SceneType, { zo
   }
 };
 
-export const MAX_ZOOM = 3.5;
+// export const MAX_ZOOM = 3.5;
+export const MAX_ZOOM = 999999;
 export const MIN_ZOOM = 0.5;

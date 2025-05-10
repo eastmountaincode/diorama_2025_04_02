@@ -5,7 +5,8 @@ import {
   currentSceneAtom,
   isEndSceneAtom,
   figurinePositionAtom,
-  isAudioEnabledAtom
+  isAudioEnabledAtom,
+  isBackgroundMusicDisabledAtom
 } from '../atoms/gameState';
 
 interface GlobalAudioPlayerProps {
@@ -24,6 +25,7 @@ const GlobalAudioPlayer: React.FC<GlobalAudioPlayerProps> = ({ audioSrc }) => {
   const [currentScene] = useAtom(currentSceneAtom);
   const [isEndScene] = useAtom(isEndSceneAtom);
   const [isAudioEnabled] = useAtom(isAudioEnabledAtom);
+  const [isBackgroundMusicDisabled] = useAtom(isBackgroundMusicDisabledAtom);
   const [breakpoint] = useAtom(breakpointAtom);
   const [figurinePosition] = useAtom(figurinePositionAtom);
   const [isAudioLoaded, setIsAudioLoaded] = useState(false);
@@ -129,7 +131,7 @@ const GlobalAudioPlayer: React.FC<GlobalAudioPlayerProps> = ({ audioSrc }) => {
     // List of scenes where audio should play
     const audioEnabledScenes = ['MainScene', 'MirrorScene', 'HydrantScene', 'ComputerScene', 'RadioScene'];
     
-    if (audioEnabledScenes.includes(currentScene) && !isEndScene && isAudioEnabled) {
+    if (audioEnabledScenes.includes(currentScene) && !isEndScene && isAudioEnabled && !isBackgroundMusicDisabled) {
       // Resume audio context if it was suspended (needed for Chrome autoplay policy)
       if (audioContextRef.current?.state === 'suspended') {
         audioContextRef.current.resume();
@@ -144,10 +146,10 @@ const GlobalAudioPlayer: React.FC<GlobalAudioPlayerProps> = ({ audioSrc }) => {
         });
       }
     } else {
-      // Pause audio when in excluded scenes, in end scene, or audio is disabled
+      // Pause audio when in excluded scenes, in end scene, audio is disabled, or background music is disabled
       audioRef.current.pause();
     }
-  }, [currentScene, isEndScene, isAudioEnabled, isAudioLoaded]);
+  }, [currentScene, isEndScene, isAudioEnabled, isAudioLoaded, isBackgroundMusicDisabled]);
 
   // Calculate volume based on figurine position in MainScene
   useEffect(() => {

@@ -247,7 +247,7 @@ export function HUDFrame() {
     position: 'absolute',
     fontFamily: 'monospace',
     color: '#fffff0',
-    fontSize: breakpoint === 'mobile' ? '0.8rem' : '1.4rem',
+    fontSize: breakpoint === 'mobile' ? '0.8rem' : '1.6rem',
     letterSpacing: '0.1em',
     zIndex: 5, // Lower z-index so figurine (10000) appears above
     pointerEvents: 'none',
@@ -318,15 +318,14 @@ export function HUDFrame() {
             {/* Touch Grass Message - only visible in OpeningScene when not transitioning */}
             {shouldShowGrassMessage() && (
               <div style={touchGrassStyle}>
-                <div>TOUCH GRASS TO START</div>
-                {/* Only show the quote if figurine hasn't been placed yet */}
-                {!isFigurinePlaced && (
-                  <div style={{ 
-                    fontSize: breakpoint === 'mobile' ? '0.5rem' : '0.7rem',
-                    marginTop: '0.5rem'
-                  }}>
+                {!isFigurinePlaced ? (
+                  // Show only the quote when figurine isn't placed
+                  <div>
                     <span style={{ fontStyle: 'italic' }}>"place me on the synthetic grass..."</span>
                   </div>
+                ) : (
+                  // Show only "TOUCH GRASS TO START" after figurine is placed
+                  <div>TOUCH GRASS TO START</div>
                 )}
               </div>
             )}

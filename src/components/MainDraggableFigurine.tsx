@@ -10,6 +10,7 @@ import {
   isDraggingFigurineAtom
 } from '../atoms/gameState';
 import { useCursor } from '../context/CursorContext';
+import { useDraggingSound } from '../hooks/useDraggingSound';
 
 interface MainDraggableFigurineProps {
   containerRef: any; // Using any to bypass type check issues temporarily
@@ -52,6 +53,7 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   const [breakpoint] = useAtom(breakpointAtom);
   const [isSceneTransitioning] = useAtom(isSceneTransitioningAtom);
   const { setCursorType } = useCursor();
+  const { playRandomDraggingSound } = useDraggingSound();
   
   // Reference to the figurine element
   const figurineRef = useRef<HTMLDivElement>(null);
@@ -124,6 +126,9 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
     e.preventDefault();
     setIsDragging(true);
     setCursorType('pinching');
+    
+    // Play a random dragging sound
+    playRandomDraggingSound();
   
     const figurineRect = figurineRef.current.getBoundingClientRect();
   

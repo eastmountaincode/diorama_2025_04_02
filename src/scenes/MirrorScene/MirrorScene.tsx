@@ -242,7 +242,7 @@ const MirrorScene: React.FC = () => {
             isMobile ? 'bottom-2 right-2 p-1 max-w-[150px]' : 'bottom-4 right-4 p-2'
           }`}
         >
-          <p className={`text-white ${isMobile ? 'text-[10px]' : 'text-xs'}`}>
+          <p className={`text-white ${isMobile ? 'text-[10px]' : 'text-xs'} font-mono`}>
             {isMobile && errorMessage.length > 50
               ? errorMessage.substring(0, 50) + '...'
               : errorMessage}

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useAtom } from 'jotai';
-import { IoClose } from 'react-icons/io5';
+import { AiOutlineClose } from 'react-icons/ai';
 import { breakpointAtom } from '../../atoms/gameState';
 import { useCursor } from '../../context/CursorContext';
 import { playMouseClickSound } from '../../util/sound';
@@ -20,14 +20,17 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
   const [breakpoint] = useAtom(breakpointAtom);
   const { setCursorType } = useCursor();
   const isMobile = breakpoint === 'mobile';
+  const [isHovered, setIsHovered] = useState(false);
   
   // Handle cursor change on hover
   const handleCloseButtonMouseEnter = () => {
     setCursorType('pointing');
+    setIsHovered(true);
   };
 
   const handleCloseButtonMouseLeave = () => {
     setCursorType('open');
+    setIsHovered(false);
   };
 
   // Handle close with sound
@@ -36,8 +39,6 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
     onClose();
   };
   
-
-
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50" 
       style={{ background: 'rgba(0, 0, 0, 0.7)' }}
@@ -53,16 +54,23 @@ const PhotoViewer: React.FC<PhotoViewerProps> = ({
           onClick={handleClose}
           onMouseEnter={handleCloseButtonMouseEnter}
           onMouseLeave={handleCloseButtonMouseLeave}
-          className="absolute bg-black bg-opacity-60 text-white rounded-full hover:bg-opacity-80 flex items-center justify-center"
+          className="absolute rounded-full flex items-center justify-center z-30"
           style={{ 
-            zIndex: 99,
-            width: isMobile ? '6px' : '18px',
-            height: isMobile ? '6px' : '18px',
-            top: isMobile ? '-2px' : '-10px',
-            right: isMobile ? '-2px' : '-10px',
+            top: isMobile ? '-5%' : '-3%', 
+            right: isMobile ? '-5%' : '-3%',
+            width: isMobile ? '5px' : '9px',
+            height: isMobile ? '5px' : '9px',
+            backgroundColor: '#fffff0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0',
+            color: '#4a5568',
+            cursor: 'pointer',
+            filter: isHovered ? 'brightness(0.85)' : 'brightness(1)'
           }}
         >
-          <IoClose />
+          <AiOutlineClose size={isMobile ? 3 : 5} />
         </button>
         
         {/* Photo */}

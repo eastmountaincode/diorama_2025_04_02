@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, isPhotoDisplayedAtom } from '../../atoms/gameState';
 import { createFramedPhotoDownload } from '../../util/photoUtils';
 import { useCursor } from '../../context/CursorContext';
+import { AiOutlineClose, AiOutlineSave } from 'react-icons/ai';
 
 interface PhotoFrameProps {
   imageData: string | null;
@@ -81,7 +82,6 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
 
   if (!imageData) return null;
 
-  // Style for the container - using the transform offset that worked
   const containerStyle = {
     position: 'absolute' as const,
     left: isMobile ? '50%' : '50%',
@@ -93,14 +93,15 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
 
   // Style for download button
   const buttonStyle = {
+    fontFamily: 'monospace',
     fontSize: isMobile ? '8px' : '14px',
     padding: isMobile ? '2px 6px' : '6px 12px',
-    backgroundColor: '#3b82f6',
-    color: 'white',
-    borderRadius: '4px',
+    backgroundColor: '#fffff0',
+    color: '#4a5568',
+    borderRadius: '2px',
     marginTop: isMobile ? '4px' : '8px',
     border: 'none',
-    cursor: 'pointer'
+    cursor: 'pointer',
   };
 
   return (
@@ -152,28 +153,22 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
             onMouseLeave={handleCloseButtonMouseLeave}
             className="absolute rounded-full flex items-center justify-center z-30"
             style={{ 
-              top: '-2%', 
-              right: '-2%',
-              width: isMobile ? '10px' : '24px',
-              height: isMobile ? '10px' : '24px',
-              backgroundColor: '#e53e3e', // red-600 equivalent
+              top: isMobile ? '-5%' : '-2%', 
+              right: isMobile ? '-5%' : '-2%',
+              width: isMobile ? '15px' : '24px',
+              height: isMobile ? '15px' : '24px',
+
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              lineHeight: 1
+              padding: '0',
+
+              cursor: 'pointer',
+              backgroundColor: '#fffff0',
+            color: '#4a5568'
             }}
           >
-            <span 
-              style={{ 
-                color: 'white',
-                fontWeight: 'bold',
-                fontSize: isMobile ? '8px' : '14px',
-                marginTop: isMobile ? '-1px' : '-2px',
-                textAlign: 'center'
-              }}
-            >
-              &times;
-            </span>
+            <AiOutlineClose size={isMobile ? 10 : 16} />
           </button>
         </div>
         
@@ -188,10 +183,17 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
               style={{
                 ...buttonStyle,
                 opacity: (!frameLoaded || !photoLoaded) ? 0.5 : 1,
-                cursor: (!frameLoaded || !photoLoaded) ? 'not-allowed' : 'pointer'
+                cursor: (!frameLoaded || !photoLoaded) ? 'not-allowed' : 'pointer',
+                backgroundColor: '#fffff0',
+                color: '#4a5568'
               }}
+              className="flex items-center justify-center"
             >
-              Download
+              <AiOutlineSave 
+                size={isMobile ? 12 : 16} 
+                className={isMobile ? "mr-1" : "mr-1.5"} 
+              />
+              <span>Download</span>
             </button>
           </div>
         )}

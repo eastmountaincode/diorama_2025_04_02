@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useCursor } from '../../context/CursorContext';
 
 interface BackButtonProps {
@@ -13,12 +13,23 @@ const BackButton: React.FC<BackButtonProps> = ({
   className = ''
 }) => {
   const { setCursorType } = useCursor();
+  const [isHovered, setIsHovered] = useState(false);
+  
+  const handleMouseEnter = () => {
+    setCursorType('pointing');
+    setIsHovered(true);
+  };
+  
+  const handleMouseLeave = () => {
+    setCursorType('neutral');
+    setIsHovered(false);
+  };
 
   return (
     <button
       onClick={onClick}
-      onMouseEnter={() => setCursorType('pointing')}
-      onMouseLeave={() => setCursorType('neutral')}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       style={style}
       className={`absolute z-50 p-0 border-none bg-transparent cursor-pointer ${className}`}
       aria-label="Back Button"
@@ -26,8 +37,11 @@ const BackButton: React.FC<BackButtonProps> = ({
       <img
         src="assets/hud/back_button.png"  // Update path as necessary
         alt="Back Button"
-        className="drop-shadow hover:opacity-80" // Tailwind drop shadow for extra pop
-        style={{ width: '64px', height: 'auto' }}  // Adjust size as needed
+        style={{ 
+          width: '64px', 
+          height: 'auto',
+          filter: isHovered ? 'brightness(0.85)' : 'brightness(1)'
+        }}
         draggable={false}
       />
     </button>

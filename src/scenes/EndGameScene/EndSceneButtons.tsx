@@ -41,6 +41,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
     border: '1px solid white',
     borderRadius: '4px',
     fontSize: breakpoint === 'mobile' ? '0.7rem' : '0.8rem',
+    fontFamily: 'monospace',
     cursor: 'pointer',
     display: 'flex',
     alignItems: 'center',
@@ -103,7 +104,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
         onMouseLeave={handleButtonMouseLeave}
       >
         <FaInfoCircle style={iconStyles} />
-        Credits
+        <span className="font-mono">Credits</span>
       </button>
       <button 
         style={getButtonStyle('stream')}
@@ -112,7 +113,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
         onMouseLeave={handleButtonMouseLeave}
       >
         <IoMusicalNotes style={iconStyles} />
-        <span style={{ whiteSpace: 'nowrap' }}>Stream 'Diorama'</span>
+        <span style={{ whiteSpace: 'nowrap', fontFamily: 'monospace' }}>Stream 'Diorama'</span>
       </button>
     </div>
   );

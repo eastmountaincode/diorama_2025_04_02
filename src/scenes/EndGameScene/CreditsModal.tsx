@@ -76,7 +76,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       display: 'flex',
       flexDirection: 'column' as const,
       alignItems: 'flex-start',
-      fontFamily: '"Times New Roman", Times, serif',
+      fontFamily: "monospace",
     },
     modal: {
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
@@ -118,7 +118,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       letterSpacing: '0.05em',
       fontWeight: 'bold' as const,
       margin: 0,
-      fontFamily: '"Times New Roman", Times, serif',
+      fontFamily: "monospace",
     },
     closeButton: {
       backgroundColor: 'transparent',
@@ -147,7 +147,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       letterSpacing: '0.03em',
       fontWeight: '600' as const,
       textTransform: 'uppercase' as const,
-      fontFamily: '"Times New Roman", Times, serif',
+      fontFamily: "monospace",
     },
     creditRow: {
       display: 'flex',
@@ -157,6 +157,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       width: '100%',
       paddingLeft: '2%',
       minHeight: '30px',
+      fontFamily: "monospace",
     },
     name: {
       fontSize: calculateFontSize(breakpoint === 'mobile' ? 14 : 16),
@@ -167,7 +168,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       textOverflow: 'ellipsis',
       opacity: 0.9,
       fontStyle: 'normal' as const,
-      fontFamily: '"Times New Roman", Times, serif',
+      fontFamily: "monospace",
     },
     link: {
       color: 'white',
@@ -199,7 +200,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       opacity: 0.6,
       textAlign: 'center' as const,
       width: '100%',
-      fontFamily: '"Times New Roman", Times, serif',
+      fontFamily: "monospace",
     }
   };
 
@@ -230,7 +231,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
             <div style={styles.leftColumn}>
               {/* Narrative */}
               <div style={styles.section}>
-                <h3 style={styles.heading}>Narrative & Song</h3>
+                <h3 style={styles.heading}>Narrative & Music</h3>
                 <div style={styles.creditRow}>
                   <span style={styles.name}>Laila Smith</span>
                   <a 
@@ -290,7 +291,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
               
               {/* Publishing */}
               <div style={styles.section}>
-                <h3 style={styles.heading}>Publishing</h3>
+                <h3 style={styles.heading}>Visual Assistant</h3>
                 <div style={styles.creditRow}>
                   <span style={styles.name}>UNL Rent-Network</span>
                   <a 

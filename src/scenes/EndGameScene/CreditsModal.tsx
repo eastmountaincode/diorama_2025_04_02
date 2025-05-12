@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom } from '../../atoms/gameState';
 import { AiOutlineClose } from 'react-icons/ai';
-import { FaInstagram } from 'react-icons/fa';
+import { FaInstagram, FaGlobe } from 'react-icons/fa';
 import { useCursor } from '../../context/CursorContext';
 import { playMouseClickSound } from '../../util/sound';
 
@@ -14,25 +14,7 @@ interface CreditsModalProps {
 const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
   const [breakpoint] = useAtom(breakpointAtom);
   const { setCursorType } = useCursor();
-  const [viewportWidth, setViewportWidth] = useState(window.innerWidth);
   const modalRef = useRef<HTMLDivElement>(null);
-
-  // Update viewport width on resize
-  useEffect(() => {
-    const handleResize = () => {
-      setViewportWidth(window.innerWidth);
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Helper function for font sizes
-  const calculateFontSize = (baseSize: number): string => {
-    const minSize = Math.max(baseSize * 0.6, 10);
-    const size = Math.max(minSize, viewportWidth * 0.01 * baseSize * 0.08);
-    return `${size}px`;
-  };
 
   // Mouse handlers for cursor changes
   const handleMouseEnter = () => {
@@ -59,7 +41,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
   const styles = {
     overlay: {
       position: 'fixed' as const,
-      top: -10,
+      top: 0,
       left: 0,
       right: 0,
       bottom: 0,
@@ -68,11 +50,12 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       alignItems: 'center',
       justifyContent: 'center',
       zIndex: 100,
-      padding: '5%',
     },
     container: {
-      width: breakpoint === 'mobile' ? '90%' : '80%',
-      maxWidth: '650px',
+      width: breakpoint === 'mobile' ? '83%' : '80%',
+      height: breakpoint === 'mobile' ? '80%' : '83%',
+      maxWidth: '600px',
+      maxHeight: '600px',
       display: 'flex',
       flexDirection: 'column' as const,
       alignItems: 'flex-start',
@@ -82,20 +65,23 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       backgroundColor: 'rgba(0, 0, 0, 0.6)',
       color: 'white',
       border: '1px solid white',
-      padding: breakpoint === 'mobile' ? '5%' : '5%',
+      padding: breakpoint === 'mobile' ? '5%' : '4%',
       width: '100%',
-      maxWidth: '100%',
+      height: '100%',
       overflow: 'auto',
       position: 'relative' as const,
-      boxSizing: 'border-box' as const
+      boxSizing: 'border-box' as const,
+      display: 'flex',
+      flexDirection: 'column' as const,
     },
     contentContainer: {
       display: 'flex',
       width: '100%',
+      flex: '1 1 auto',
     },
     leftColumn: {
-      flex: breakpoint === 'mobile' ? '1 1 70%' : '1 1 70%',
-      paddingRight: breakpoint === 'mobile' ? '2%' : '3%',
+      flex: breakpoint === 'mobile' ? '1 1 100%' : '1 1 70%',
+      paddingRight: breakpoint === 'mobile' ? '0' : '2%',
     },
     rightColumn: {
       flex: breakpoint === 'mobile' ? '1 1 30%' : '1 1 30%',
@@ -113,7 +99,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       marginBottom: '7%',
     },
     title: {
-      fontSize: calculateFontSize(22),
+      fontSize: breakpoint === 'mobile' ? '16px' : '20px',
       textAlign: 'left' as const,
       letterSpacing: '0.05em',
       fontWeight: 'bold' as const,
@@ -124,7 +110,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       backgroundColor: 'transparent',
       color: 'white',
       border: 'none',
-      fontSize: calculateFontSize(28),
+      fontSize: breakpoint === 'mobile' ? '18px' : '24px',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
@@ -134,11 +120,11 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       zIndex: 10,
     },
     section: {
-      marginBottom: '6%',
+      marginBottom: '4%',
       width: '100%',
     },
     heading: {
-      fontSize: calculateFontSize(breakpoint === 'mobile' ? 16 : 18),
+      fontSize: breakpoint === 'mobile' ? '14px' : '16px',
       marginBottom: '3%',
       borderBottom: '1px solid rgba(255, 255, 255, 0.3)',
       paddingBottom: '2%',
@@ -160,7 +146,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       fontFamily: "monospace",
     },
     name: {
-      fontSize: calculateFontSize(breakpoint === 'mobile' ? 14 : 16),
+      fontSize: breakpoint === 'mobile' ? '13px' : '14px',
       fontWeight: '400' as const,
       flex: '1 1 auto',
       whiteSpace: breakpoint === 'mobile' ? 'normal' as const : 'nowrap' as const,
@@ -184,19 +170,20 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
       }
     },
     icon: {
-      fontSize: calculateFontSize(22),
+      fontSize: breakpoint === 'mobile' ? '16px' : '19px',
     },
     teamLogo: {
       width: '100%',
-      maxWidth: breakpoint === 'mobile' ? '120px' : '180px',
+      maxWidth: breakpoint === 'mobile' ? '80%' : '85%',
       height: 'auto',
       opacity: 1,
-      marginBottom: breakpoint === 'mobile' ? '5%' : '15%',
-      marginTop: breakpoint === 'mobile' ? '30%' : '0',
+      marginBottom: breakpoint === 'mobile' ? '5%' : '10%',
+      marginTop: breakpoint === 'mobile' ? '20%' : '5%',
     },
     copyright: {
-      marginTop: '8%',
-      fontSize: calculateFontSize(12),
+      marginTop: 'auto',
+      paddingTop: '15px',
+      fontSize: breakpoint === 'mobile' ? '10px' : '12px',
       opacity: 0.6,
       textAlign: 'center' as const,
       width: '100%',
@@ -258,6 +245,18 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
                     href="#" 
                     onClick={(e) => {
                       e.preventDefault();
+                      handleLinkClick('https://andrew-boylan.com/');
+                    }}
+                    style={styles.link}
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <FaGlobe style={styles.icon} />
+                  </a>
+                  <a 
+                    href="#" 
+                    onClick={(e) => {
+                      e.preventDefault();
                       handleLinkClick('https://www.instagram.com/ndrewboylan/');
                     }}
                     style={styles.link}
@@ -310,14 +309,16 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
               </div>
             </div>
             
-            {/* Right Column */}
-            <div style={styles.rightColumn}>
-              <img 
-                src="assets/credits/team_dio.png" 
-                alt="Team Dio" 
-                style={styles.teamLogo}
-              />
-            </div>
+            {/* Right Column - Only show on desktop */}
+            {breakpoint !== 'mobile' && (
+              <div style={styles.rightColumn}>
+                <img 
+                  src="assets/credits/team_dio.png" 
+                  alt="Team Dio" 
+                  style={styles.teamLogo}
+                />
+              </div>
+            )}
           </div>
           
           <div style={styles.copyright}>

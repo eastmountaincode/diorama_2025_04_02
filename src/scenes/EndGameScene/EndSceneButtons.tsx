@@ -22,12 +22,12 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
   // Button container styles
   const buttonContainerStyles = {
     position: 'absolute' as const,
-    bottom: breakpoint === 'mobile' ? '5%' : '8%',
+    bottom: breakpoint === 'mobile' ? '7%' : '8%',
     left: '50%',
     transform: 'translateX(-50%)',
     display: 'flex',
     flexDirection: breakpoint === 'mobile' ? 'column' as const : 'row' as const,
-    gap: breakpoint === 'mobile' ? '0.8rem' : '1rem',
+    gap: breakpoint === 'mobile' ? '0.7rem' : '1rem',
     zIndex: 60,
     width: breakpoint === 'mobile' ? 'auto' : 'auto',
     alignItems: 'center',
@@ -49,7 +49,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
     minWidth: breakpoint === 'mobile' ? '160px' : 'auto',
     justifyContent: 'center',
     whiteSpace: 'nowrap' as const,
-    width: 'auto',
+    width: breakpoint === 'mobile' ? '160px' : 'auto',
     opacity: 0.8,
   };
 
@@ -59,7 +59,7 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
     return {
       ...buttonStyles,
       opacity: isHovered ? 1 : 0.8,
-      ...(buttonId === 'stream' && { width: breakpoint === 'mobile' ? 'fit-content' : 'auto' }),
+      ...(breakpoint !== 'mobile' && buttonId === 'stream' && { width: 'auto' }),
     };
   };
 

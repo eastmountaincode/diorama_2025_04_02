@@ -321,7 +321,18 @@ export function HUDFrame() {
                 {!isFigurinePlaced ? (
                   // Show only the quote when figurine isn't placed
                   <div>
-                    <span style={{ fontStyle: 'italic' }}>"place me on the synthetic grass..."</span>
+                    <span style={{ 
+                      fontStyle: 'italic', 
+                      fontSize: breakpoint === 'mobile' 
+                        ? 'clamp(0.6rem, 3vw, 0.9rem)' 
+                        : 'clamp(1rem, 1.5vw, 1.6rem)',
+                      ...(breakpoint === 'mobile' && {
+                        maxWidth: '100%',
+                        display: 'inline-block',
+                        whiteSpace: 'normal',
+                        overflowWrap: 'break-word'
+                      })
+                    }}>"place me on the synthetic grass..."</span>
                   </div>
                 ) : (
                   // Show only "TOUCH GRASS TO START" after figurine is placed

@@ -30,4 +30,5 @@ html, body, #root {
     position: fixed;
     width: 100%;
     touch-action: none;
+    background-color: black;
   }

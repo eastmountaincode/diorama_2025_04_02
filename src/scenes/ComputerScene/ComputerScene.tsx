@@ -41,11 +41,11 @@ const ComputerScene: React.FC = () => {
   const photos: Record<string, PhotoMeta> = {
     'hydrant_photo': {
       path: 'assets/bg/computer/photos_new/hydrant_instructions.png',
-      customWidth: breakpoint === 'mobile' ? '15%' : '20%'
+      customWidth: breakpoint === 'mobile' ? '14%' : '20%'
     },
     'corp_gore_manifesto': {
       path: 'assets/bg/computer/photos_new/README.png',
-      customWidth: breakpoint === 'mobile' ? '12%' : '13%'
+      customWidth: breakpoint === 'mobile' ? '12%' : '12%'
     },
     'family_photo_1': {
       path: 'assets/bg/computer/photos_new/fam_1_white_gma.jpg',

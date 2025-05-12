@@ -34,11 +34,11 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   // GIF positioning parameters
   const gifStyles = breakpoint === 'mobile' ? {
     width: '100%',
-    height: '60%',
-    scale: '1.7',
+    height: '62%',
+    scale: '1.5',
     top: '40%',
     left: '50%',
-    transform: 'translate(1%, -3%)',
+    transform: 'translate(1%, 0.4%)',
     zIndex: 50,
     overflow: 'hidden',
   } : {
@@ -100,7 +100,7 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         <video
           ref={videoRef}
           style={videoStyles}
-          src="assets/end_video/dio_end_scene_update_min.mp4"
+          src="assets/end_video/Dio_End_Scene_3s.mp4"
           playsInline
           muted={false}
           controls={false}
@@ -109,7 +109,7 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         />
       ) : (
         <img
-          src="assets/end_video/DioEndScreenLoop.gif"
+          src="assets/end_video/dioendscreenloop_new.gif"
           alt="End Scene Loop"
           style={gifStyles}
         />

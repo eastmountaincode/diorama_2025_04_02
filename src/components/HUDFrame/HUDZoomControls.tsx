@@ -19,8 +19,8 @@ export const HUDZoomControls: React.FC<HUDZoomControlsProps> = ({ setHudTransfor
     <div
       className="absolute z-50 flex flex-col items-center"
       style={{
-        top: '6%',       // Use a percentage value (adjust as needed)
-        right: '24%',     // Use a percentage value for responsiveness
+        top: '8%',       // Use a percentage value (adjust as needed)
+        right: '23%',     // Use a percentage value for responsiveness
         pointerEvents: 'auto',
       }}
       onMouseEnter={handleMouseEnter}

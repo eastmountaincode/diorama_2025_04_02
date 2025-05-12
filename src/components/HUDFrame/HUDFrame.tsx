@@ -117,8 +117,8 @@ export function HUDFrame() {
       const isMobile = window.matchMedia('(max-width: 667px)').matches;
       setSrc(
         isMobile
-          ? 'assets/hud/hud_frame_mobile_demo.png'
-          : 'assets/hud/hud_frame_desktop_v1.png'
+          ? 'assets/hud/HUD_frame_mobile_new.PNG'
+          : 'assets/hud/Hud_frame_desktop_new.PNG'
       );
 
       if (isMobile) {
@@ -310,7 +310,7 @@ export function HUDFrame() {
             {shouldShowBackButton() && (
               <BackButton
                 onClick={handleBackToMainScene}
-                style={breakpoint === 'mobile' ? { top: '5.9%', left: '9.1%' } : { top: '5.9%', left: '5.9%' }}
+                style={breakpoint === 'mobile' ? { top: '6.5%', left: '11.5%' } : { top: '8.7%', left: '6%' }}
                 className={breakpoint === 'mobile' ? 'text-sm' : 'text-lg'}
               />
             )}

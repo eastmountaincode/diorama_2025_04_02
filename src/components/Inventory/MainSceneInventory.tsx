@@ -59,9 +59,9 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   
   // State to track animation states for each ring
   const [ringStates, setRingStates] = useState({
-    mirror: { glowing: false, opacity: 0 },
-    hydrant: { glowing: false, opacity: 0 },
-    computer: { glowing: false, opacity: 0 }
+    mirror: { opacity: 0 },
+    hydrant: { opacity: 0 },
+    computer: { opacity: 0 }
   });
   
   // State to track the animated rings
@@ -78,15 +78,6 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   
   // New state to prevent rings from reappearing
   const [allRingsHidden, setAllRingsHidden] = useState(false);
-  
-  // Handle cursor changes
-  const handleMouseEnter = () => {
-    setCursorType('open');
-  };
-
-  const handleMouseLeave = () => {
-    setCursorType('neutral');
-  };
   
   // Handle mouse down/up for grasping effect
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -105,7 +96,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       // First, make sure the ring is at opacity 0
       setRingStates(prev => ({
         ...prev,
-        mirror: { glowing: true, opacity: 0 }
+        mirror: { opacity: 0 }
       }));
       
       // Start fading in the image slowly (over 3 seconds)
@@ -119,17 +110,9 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         
         setRingStates(prev => ({
           ...prev,
-          mirror: { ...prev.mirror, opacity }
+          mirror: { opacity }
         }));
       }, 150); // Slower fade-in
-      
-      // Stop glowing after 5 seconds
-      setTimeout(() => {
-        setRingStates(prev => ({
-          ...prev,
-          mirror: { ...prev.mirror, glowing: false }
-        }));
-      }, 5000);
     }
     
     prevMirrorCompleted.current = mirrorTaskCompleted;
@@ -141,7 +124,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       // First, make sure the ring is at opacity 0
       setRingStates(prev => ({
         ...prev,
-        hydrant: { glowing: true, opacity: 0 }
+        hydrant: { opacity: 0 }
       }));
       
       // Start fading in the image slowly (over 3 seconds)
@@ -155,17 +138,9 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         
         setRingStates(prev => ({
           ...prev,
-          hydrant: { ...prev.hydrant, opacity }
+          hydrant: { opacity }
         }));
       }, 150); // Slower fade-in
-      
-      // Stop glowing after 5 seconds
-      setTimeout(() => {
-        setRingStates(prev => ({
-          ...prev,
-          hydrant: { ...prev.hydrant, glowing: false }
-        }));
-      }, 5000);
     }
     
     prevHydrantCompleted.current = hydrantTaskCompleted;
@@ -177,7 +152,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       // First, make sure the ring is at opacity 0
       setRingStates(prev => ({
         ...prev,
-        computer: { glowing: true, opacity: 0 }
+        computer: { opacity: 0 }
       }));
       
       // Start fading in the image slowly (over 3 seconds)
@@ -191,17 +166,9 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         
         setRingStates(prev => ({
           ...prev,
-          computer: { ...prev.computer, opacity }
+          computer: { opacity }
         }));
       }, 150); // Slower fade-in
-      
-      // Stop glowing after 5 seconds
-      setTimeout(() => {
-        setRingStates(prev => ({
-          ...prev,
-          computer: { ...prev.computer, glowing: false }
-        }));
-      }, 5000);
     }
     
     prevComputerCompleted.current = computerTaskCompleted;
@@ -322,13 +289,16 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     
     return {
       isCompleted: taskCompletedMap[taskAtom],
-      glowing: ringStates[taskAtom].glowing,
       opacity: ringStates[taskAtom].opacity
     };
   };
   
   // Calculate the size of each inventory slot based on the breakpoint
-  const slotSize = isMobile ? '21%' : '58%';
+  const slotSize = isMobile ? '17%' : '48%';
+  
+
+  // Define the margin/gap between slots
+  const slotMargin = isMobile ? '0 2.9%' : '10.5% 0'; // Increased from original values
   
   // Get the position for the first animated ring (moving from top to middle)
   const getFirstRingStyle = () => {
@@ -344,7 +314,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     // For desktop, we need more accurate positioning based on the inventory layout
     if (!isMobile) {
       // Get the positions based on the vertical layout
-      const desktopStartY = '12%'; // First slot position
+      const desktopStartY = '12.7%'; // First slot position
       const desktopEndY = '35%';  // Second slot position - adjusted not to go too far down
       
       const currentY = `calc(${desktopStartY} + ${(parseFloat(desktopEndY) - parseFloat(desktopStartY)) * progress}%)`;
@@ -354,7 +324,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         top: currentY,
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '45%', // Desktop size for first ring
+        width: '35%', // Desktop size for first ring
         height: 'auto',
         objectFit: 'contain' as const,
         opacity,
@@ -365,7 +335,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       // Mobile layout (horizontal)
       const startPosition = {
         top: '50%',
-        left: '26.5%'
+        left: '27.7%'
       };
       
       const endPosition = {
@@ -380,7 +350,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         top: '50%',
         left: currentLeft,
         transform: 'translate(-50%, -50%)',
-        width: '14.5vw', 
+        width: '13.2%',
         height: 'auto',
         objectFit: 'contain' as const,
         opacity,
@@ -404,7 +374,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
     // For desktop, we need more accurate positioning based on the inventory layout
     if (!isMobile) {
       // Get the positions based on the vertical layout
-      const desktopStartY = '57.2%'; // Third slot position
+      const desktopStartY = '59.4%'; // Third slot position
       const desktopEndY = '35%';  // Second slot position
       
       const currentY = `calc(${desktopStartY} - ${(parseFloat(desktopStartY) - parseFloat(desktopEndY)) * progress}%)`;
@@ -414,7 +384,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         top: currentY,
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: '39%', 
+        width: '29%', 
         height: 'auto',
         objectFit: 'contain' as const,
         opacity,
@@ -425,7 +395,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
       // Mobile layout (horizontal)
       const startPosition = {
         top: '50%',
-        left: '73.5%'
+        left: '72%'
       };
       
       const endPosition = {
@@ -440,7 +410,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         top: '50%',
         left: currentLeft,
         transform: 'translate(-50%, -50%)',
-        width: '13vw', 
+        width: '11.2%', 
         height: 'auto',
         objectFit: 'contain' as const,
         opacity,
@@ -454,10 +424,10 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   const getBorromeanKnotStyle = () => {
     return {
       position: 'absolute' as const,
-      top: isMobile ? '46%' : '35%',
-      left: '50%',
+      top: isMobile ? '51%' : '35.1%',
+      left: isMobile ? '50.3%' : '50.3%',
       transform: 'translate(-50%, -50%)',
-      width: isMobile ? '23%' : '71%',
+      width: isMobile ? '14.2%' : '41%',
       height: 'auto',
       objectFit: 'contain' as const,
       opacity: borromeanKnotOpacity,
@@ -479,11 +449,10 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         display: 'flex',
         justifyContent: 'center',
         alignItems: isMobile ? 'center' : 'flex-start',
-        paddingTop: isMobile ? 0 : '45px',
+        paddingTop: isMobile ? '0.6%' : '23.7%',
+        paddingLeft: isMobile ? '1%' : '2.4%',
         userSelect: 'none', // Prevent text selection
       }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
     >
@@ -523,11 +492,11 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
               name={item.name}
               image={item.image}
               isCompleted={slotProps.isCompleted && !hideRing}
-              glowing={slotProps.glowing}
               opacity={ringOpacity}
               slotSize={slotSize}
               isMobile={isMobile}
               isAnimating={ringsAnimationActive}
+              slotMargin={slotMargin}
             />
           );
         })}

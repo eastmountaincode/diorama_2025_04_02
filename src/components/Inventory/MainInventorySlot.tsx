@@ -4,22 +4,22 @@ type MainInventorySlotProps = {
   name: string;
   image: string;
   isCompleted: boolean;
-  glowing: boolean;
   opacity: number;
   slotSize: string;
   isMobile: boolean;
   isAnimating?: boolean;
+  slotMargin?: string;
 };
 
 const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
   name,
   image,
   isCompleted,
-  glowing,
   opacity,
   slotSize,
   isMobile,
-  isAnimating = false
+  isAnimating = false,
+  slotMargin
 }) => {
   // Style for the slot container
   const slotStyle: React.CSSProperties = {
@@ -27,16 +27,15 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     height: 0,
     paddingBottom: slotSize, // Creates a perfect square
     aspectRatio: '1 / 1', // Backup to ensure perfect square
-    margin: isMobile ? '0 1.5%' : '3.5% 0',
-    border: isAnimating ? 'none' : '1px solid rgba(255, 255, 255, 0.3)',
-    borderRadius: '6px',
-    backgroundColor: isAnimating ? 'transparent' : 'rgba(20, 20, 20, 0.05)',
+    margin: slotMargin || (isMobile ? '0 1.5%' : '3.5% 0'),
+    backgroundColor: 'transparent',
+    //backgroundColor: 'blue',
+    //opacity: 0.5,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden', // Ensure images don't overflow the box
-    transition: 'background-color 0.5s ease, border 0.5s ease',
   };
 
   // Style for the grayscale placeholder
@@ -48,7 +47,7 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    opacity: isCompleted ? 0 : (isAnimating ? 0 : 0.1), // Hide placeholder if animating
+    opacity: (isAnimating ? 0 : 0.1), // Hide placeholder if animating
     filter: 'grayscale(100%)',
     transition: 'opacity 2s ease-out', // Longer, smoother fade-out
   };
@@ -63,9 +62,7 @@ const MainInventorySlot: React.FC<MainInventorySlotProps> = ({
     left: '50%',
     transform: 'translate(-50%, -50%)',
     opacity: isCompleted ? opacity : 0,
-    filter: glowing 
-      ? 'drop-shadow(0 0 5px rgb(255, 255, 255)) drop-shadow(0 0 2px rgb(255, 255, 255)) drop-shadow(0 0 1px rgb(255, 255, 255))'
-      : 'none',
+    filter: 'none',
     transition: 'filter 0.5s ease-out',
     zIndex: 2, // Ensure colored ring appears above placeholder
   };

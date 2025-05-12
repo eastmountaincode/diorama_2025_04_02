@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom } from '../../atoms/gameState';
 import { AiOutlineClose } from 'react-icons/ai';

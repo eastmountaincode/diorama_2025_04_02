@@ -3,7 +3,7 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, isPhotoDisplayedAtom } from '../../atoms/gameState';
 import { createFramedPhotoDownload } from '../../util/photoUtils';
 import { useCursor } from '../../context/CursorContext';
-import { AiOutlineClose, AiOutlineSave } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
 
 interface PhotoFrameProps {
   imageData: string | null;
@@ -20,6 +20,10 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const [frameLoaded, setFrameLoaded] = useState(false);
   const [photoLoaded, setPhotoLoaded] = useState(false);
   const [frameNumber, setFrameNumber] = useState<number>(0);
+  const [downloading, setDownloading] = useState(false);
+  const isMobileInstagram = typeof navigator !== 'undefined' && 
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) && 
+    navigator.userAgent.includes('Instagram');
 
   // Check if the image is from camera (data URL) or a fallback image (file path)
   const isFromCamera = imageData?.startsWith('data:');
@@ -69,6 +73,8 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   const handleDownload = () => {
     if (!imageData || !frameRef.current || !photoRef.current || !frameLoaded || !photoLoaded) return;
     
+    setDownloading(true);
+    
     // Use the utility function to create and download the framed photo
     createFramedPhotoDownload(
       photoRef.current,
@@ -78,6 +84,11 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
       88, // width percentage
       81  // height percentage
     );
+    
+    // Reset downloading state after a short delay
+    setTimeout(() => {
+      setDownloading(false);
+    }, 1000);
   };
 
   if (!imageData) return null;
@@ -179,21 +190,34 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
               onClick={handleDownload}
               onMouseEnter={handleDownloadButtonMouseEnter}
               onMouseLeave={handleDownloadButtonMouseLeave}
-              disabled={!frameLoaded || !photoLoaded}
+              disabled={!frameLoaded || !photoLoaded || downloading}
               style={{
                 ...buttonStyle,
-                opacity: (!frameLoaded || !photoLoaded) ? 0.5 : 1,
-                cursor: (!frameLoaded || !photoLoaded) ? 'not-allowed' : 'pointer',
+                opacity: (!frameLoaded || !photoLoaded || downloading) ? 0.5 : 1,
+                cursor: (!frameLoaded || !photoLoaded || downloading) ? 'not-allowed' : 'pointer',
                 backgroundColor: '#fffff0',
                 color: '#4a5568'
               }}
               className="flex items-center justify-center"
             >
-              <AiOutlineSave 
-                size={isMobile ? 12 : 16} 
-                className={isMobile ? "mr-1" : "mr-1.5"} 
-              />
-              <span>Download</span>
+              {downloading ? (
+                <span>Opening...</span>
+              ) : (
+                <>
+                  {isMobileInstagram ? (
+                    <AiOutlineShareAlt 
+                      size={isMobile ? 12 : 16} 
+                      className={isMobile ? "mr-1" : "mr-1.5"} 
+                    />
+                  ) : (
+                    <AiOutlineSave 
+                      size={isMobile ? 12 : 16} 
+                      className={isMobile ? "mr-1" : "mr-1.5"} 
+                    />
+                  )}
+                  <span>{isMobileInstagram ? "Save Photo" : "Download"}</span>
+                </>
+              )}
             </button>
           </div>
         )}

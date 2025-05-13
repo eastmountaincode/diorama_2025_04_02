@@ -105,11 +105,77 @@ export const createFramedPhotoDownload = (
   // Get the data URL from the canvas
   const dataUrl = canvas.toDataURL('image/png');
   
-  // Create a temporary link element
-  const link = document.createElement('a');
-  link.href = dataUrl;
-  link.download = fileName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  // Mobile detection
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isInApp = window.navigator.userAgent.includes('Instagram') || 
+                  window.navigator.userAgent.includes('FBAV') || 
+                  window.navigator.userAgent.includes('FBAN');
+  
+  if (isMobile && isInApp) {
+    // For in-app browsers on mobile, open the image in a new tab first
+    // This often allows the user to long press and save the image
+    const newTab = window.open();
+    if (newTab) {
+      newTab.document.write(`
+        <html>
+          <head>
+            <title>Save your photo</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+              body { 
+                margin: 0; 
+                padding: 0; 
+                display: flex; 
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+                background-color: #000;
+                color: #fff;
+                font-family: sans-serif;
+                text-align: center;
+              }
+              img { 
+                max-width: 100%; 
+                max-height: 80vh;
+                object-fit: contain;
+              }
+              .instructions {
+                padding: 20px;
+                font-size: 16px;
+              }
+            </style>
+          </head>
+          <body>
+            <img src="${dataUrl}" alt="Your Photo">
+            <div class="instructions">
+              Press and hold on the image to save it to your device
+            </div>
+          </body>
+        </html>
+      `);
+      newTab.document.close();
+    }
+  } else {
+    // Traditional download for desktop and standard mobile browsers
+    try {
+      // Create a temporary link element
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Clean up
+      setTimeout(() => {
+        document.body.removeChild(link);
+        // Revoke the object URL to free memory
+        URL.revokeObjectURL(link.href);
+      }, 100);
+    } catch (error) {
+      console.error('Download failed:', error);
+      // Fallback for browsers that don't support download attribute
+      window.open(dataUrl, '_blank');
+    }
+  }
 }; 

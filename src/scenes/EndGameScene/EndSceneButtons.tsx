@@ -6,6 +6,13 @@ import { IoMusicalNotes } from 'react-icons/io5';
 import { useCursor } from '../../context/CursorContext';
 import { playMouseClickSound } from '../../util/sound';
 
+// Add type declaration for gtag
+declare global {
+  interface Window {
+    gtag: (...args: any[]) => void;
+  }
+}
+
 interface EndSceneButtonsProps {
   onCreditsClick: () => void;
   onListenClick: () => void;
@@ -91,6 +98,14 @@ const EndSceneButtons: React.FC<EndSceneButtonsProps> = ({
   };
 
   const handleListenClick = () => {
+    // Google Analytics event
+    if (typeof window !== 'undefined' && window.gtag) {
+        window.gtag('event', 'stream_click', {
+            event_category: 'engagement',
+            event_label: 'diorama_game',
+            value: 1
+        });
+    }
     playMouseClickSound();
     onListenClick();
   };

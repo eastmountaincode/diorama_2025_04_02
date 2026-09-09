@@ -52,7 +52,7 @@ export function GameAssetLoadingScreen({ onReady }: GameAssetLoadingScreenProps)
   return (
     <main className="asset-loading-screen" aria-busy={errorMessage === null}>
       <div className="asset-loading-content">
-        <p className="asset-loading-title">LOADING DIORAMA</p>
+        <p className="asset-loading-title">LOADING</p>
         <progress
           className="asset-loading-progress"
           max={Math.max(progress.total, 1)}

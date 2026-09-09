@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useWheelSound } from './useWheelSound';
 import { useRingSound } from './useRingSound';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 interface HydrantWheelProps {
   isDisabled: boolean;
@@ -205,7 +206,7 @@ const HydrantWheel: React.FC<HydrantWheelProps> = ({
   return (
     <img
       ref={wheelRef}
-      src="assets/bg/hydrant/hydrant_wheel.png"
+      src={gameAssetUrl('assets/bg/hydrant/hydrant_wheel.png')}
       alt="Hydrant Wheel"
       style={computedWheelStyle}
       draggable={false}
@@ -216,4 +217,4 @@ const HydrantWheel: React.FC<HydrantWheelProps> = ({
   );
 };
 
-export default HydrantWheel; 
+export default HydrantWheel;

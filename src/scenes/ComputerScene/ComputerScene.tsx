@@ -6,6 +6,7 @@ import PhotoViewer from './PhotoViewer';
 import InternetBrowser from './InternetBrowser';
 import { useComputerRingSound } from './useComputerRingSound';
 import { atom } from 'jotai';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // Export an atom to track if the browser is open
 export const isBrowserOpenAtom = atom<boolean>(false);
@@ -34,29 +35,29 @@ const ComputerScene: React.FC = () => {
   // Use our Web Audio API hook for ring sound
   const { playSound: playRingSound } = useComputerRingSound();
 
-  const folderIconSrc = 'assets/bg/computer/Folder_Closed.ico';
-  const internetIconSrc = 'assets/bg/computer/Network_Computers.ico';
+  const folderIconSrc = gameAssetUrl('assets/bg/computer/Folder_Closed.ico');
+  const internetIconSrc = gameAssetUrl('assets/bg/computer/Network_Computers.ico');
 
   // Define photo paths with simplified size presets
   const photos: Record<string, PhotoMeta> = {
     'hydrant_photo': {
-      path: 'assets/bg/computer/photos_new/hydrant_instructions.png',
+      path: gameAssetUrl('assets/bg/computer/photos_new/hydrant_instructions.png'),
       customWidth: breakpoint === 'mobile' ? '14%' : '20%'
     },
     'corp_gore_manifesto': {
-      path: 'assets/bg/computer/photos_new/README.png',
+      path: gameAssetUrl('assets/bg/computer/photos_new/README.png'),
       customWidth: breakpoint === 'mobile' ? '12%' : '12%'
     },
     'family_photo_1': {
-      path: 'assets/bg/computer/photos_new/fam_1_white_gma.jpg',
+      path: gameAssetUrl('assets/bg/computer/photos_new/fam_1_white_gma.jpg'),
       customWidth: breakpoint === 'mobile' ? '13%' : '15%'
     },
     'child_photo': {
-      path: 'assets/bg/computer/photos_new/child.jpg',
+      path: gameAssetUrl('assets/bg/computer/photos_new/child.jpg'),
       customWidth: breakpoint === 'mobile' ? '13%' : '25%'
     },
     'family_photo_2': {
-      path: 'assets/bg/computer/photos_new/fam_2_chinese_gma.jpg',
+      path: gameAssetUrl('assets/bg/computer/photos_new/fam_2_chinese_gma.jpg'),
       customWidth: breakpoint === 'mobile' ? '13%' : '15%'
     }
   };
@@ -97,7 +98,7 @@ const ComputerScene: React.FC = () => {
     <div
       className="w-full h-full flex items-center justify-center z-20"
       style={{
-        backgroundImage: "url('assets/bg/computer/computer_close_up_xp-min.jpg')",
+        backgroundImage: `url("${gameAssetUrl('assets/bg/computer/computer_close_up_xp-min.jpg')}")`,
         backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',

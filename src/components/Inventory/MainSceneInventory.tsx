@@ -10,6 +10,7 @@ import {
 } from '../../atoms/gameState';
 import MainInventorySlot from './MainInventorySlot';
 import { useCursor } from '../../context/CursorContext';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 type MainSceneInventoryProps = {
   breakpoint?: 'mobile' | 'desktop';
@@ -490,7 +491,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
             <MainInventorySlot
               key={item.id}
               name={item.name}
-              image={item.image}
+              image={gameAssetUrl(item.image)}
               isCompleted={slotProps.isCompleted && !hideRing}
               opacity={ringOpacity}
               slotSize={slotSize}
@@ -504,7 +505,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         {/* Animated ring moving from slot 1 to slot 2 */}
         {shouldShowFirstRing && !allRingsHidden && (
           <img 
-            src="assets/rings/Ring_1.GIF"
+            src={gameAssetUrl('assets/rings/Ring_1.GIF')}
             alt="Animated Ring 1"
             style={getFirstRingStyle()}
           />
@@ -513,7 +514,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         {/* Animated ring moving from slot 3 to slot 2 */}
         {shouldShowThirdRing && !allRingsHidden && (
           <img 
-            src="assets/rings/Ring_3.GIF"
+            src={gameAssetUrl('assets/rings/Ring_3.GIF')}
             alt="Animated Ring 3"
             style={getThirdRingStyle()}
           />
@@ -522,7 +523,7 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
         {/* Borromean Knot that fades in after rings fade out */}
         {showBorromeanKnot && (
           <img 
-            src="assets/rings/Borromean_Knot.GIF"
+            src={gameAssetUrl('assets/rings/Borromean_Knot.GIF')}
             alt="Borromean Knot"
             style={getBorromeanKnotStyle()}
           />
@@ -532,4 +533,4 @@ const MainSceneInventory: React.FC<MainSceneInventoryProps> = ({ breakpoint = 'd
   );
 };
 
-export default MainSceneInventory; 
+export default MainSceneInventory;

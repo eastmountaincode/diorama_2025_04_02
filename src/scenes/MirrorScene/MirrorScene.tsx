@@ -11,6 +11,7 @@ import CameraVideoFeed from '../../components/CameraVideoFeed';
 import PhotoFrame from './PhotoFrame';
 import { capturePhotoTriggerAtom } from '../../components/HUDFrame/HUDFrame';
 import { useMirrorRingSound } from './useMirrorRingSound';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 const MirrorScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -165,7 +166,7 @@ const MirrorScene: React.FC = () => {
     
     // If camera permission is not granted, use the fallback image
     if (cameraPermissionStatus !== 'granted') {
-      setCapturedPhoto('assets/figure/Laila_sprite_cropped.png');
+      setCapturedPhoto(gameAssetUrl('assets/figure/Laila_sprite_cropped.png'));
       
       // Only mark task as completed and play sound if not already completed
       if (!mirrorTaskCompleted) {
@@ -280,7 +281,7 @@ const MirrorScene: React.FC = () => {
 
       {/* Water Ripple GIF - shown regardless of permission, but with different opacity/z-index */}
       <img
-        src="assets/bg/mirror/water_ripple.gif"
+        src={gameAssetUrl('assets/bg/mirror/water_ripple.gif')}
         alt="Water Ripple Effect"
         style={rippleStyles}
       />
@@ -289,7 +290,7 @@ const MirrorScene: React.FC = () => {
       <div
         className="absolute inset-0"
         style={{
-          backgroundImage: "url('assets/bg/mirror/mirror_close_up_cut_out.png')",
+          backgroundImage: `url("${gameAssetUrl('assets/bg/mirror/mirror_close_up_cut_out.png')}")`,
           backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -302,7 +303,7 @@ const MirrorScene: React.FC = () => {
       <div
         className="absolute inset-0 transition-opacity duration-1500 ease-in-out"
         style={{
-          backgroundImage: "url('assets/bg/mirror/mirror_close_up.png')",
+          backgroundImage: `url("${gameAssetUrl('assets/bg/mirror/mirror_close_up.png')}")`,
           backgroundSize: 'contain',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',

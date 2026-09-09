@@ -11,6 +11,7 @@ import {
 } from '../atoms/gameState';
 import { useCursor } from '../context/CursorContext';
 import { useDraggingSound } from '../hooks/useDraggingSound';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 
 // DEV ONLY: Set to true to disable dragging for development purposes
 const DEV_DISABLE_DRAGGING = false;
@@ -212,7 +213,9 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
       onPointerCancel={handlePointerUp}
     >
       <img 
-        src={isDragging ? "assets/figure/laila_grabbed_scaled-min.png" : "assets/figure/Laila_sprite_cropped.png"}
+        src={gameAssetUrl(isDragging
+          ? 'assets/figure/laila_grabbed_scaled-min.png'
+          : 'assets/figure/Laila_sprite_cropped.png')}
         alt="Laila Figurine"
         style={{
           width: isDragging ? '100%' : '111%',
@@ -226,4 +229,4 @@ const MainDraggableFigurine: React.FC<MainDraggableFigurineProps> = ({
   );
 };
 
-export default MainDraggableFigurine; 
+export default MainDraggableFigurine;

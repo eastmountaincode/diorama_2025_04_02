@@ -19,6 +19,7 @@ import MainDraggableFigurine from '../../components/MainDraggableFigurine';
 import FloorBoundary from './FloorBoundary';
 import MainSceneProximityManager from './MainSceneProximityManager';
 import { useCursor } from '../../context/CursorContext';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 const MainScene: React.FC = () => {
     const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
@@ -238,7 +239,9 @@ const MainScene: React.FC = () => {
             ref={containerRef}
             className="w-full h-full flex items-center justify-center z-10 cursor-default"
             style={{
-                backgroundImage: isEndScene ? "none" : "url('assets/bg/bg_compressed_pngquant/Diorama_BG-fs8.png')",
+                backgroundImage: isEndScene
+                    ? 'none'
+                    : `url("${gameAssetUrl('assets/bg/bg_compressed_pngquant/Diorama_BG-fs8.png')}")`,
                 backgroundColor: isEndScene ? "black" : "transparent",
                 backgroundSize: 'contain',
                 backgroundPosition: 'center',
@@ -266,7 +269,7 @@ const MainScene: React.FC = () => {
 
             {/* TV and Boxes */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_tv_and_boxes-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_tv_and_boxes-fs8.png')}
                 alt="TV and Boxes"
                 style={{
                     position: 'absolute',
@@ -282,7 +285,7 @@ const MainScene: React.FC = () => {
 
             {/* Mirror */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_mirror-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_mirror-fs8.png')}
                 alt="Mirror"
                 onClick={handleMirrorClick}
                 onMouseEnter={() => isNearMirror && !isEndScene && setCursorType('pointing')}
@@ -305,7 +308,7 @@ const MainScene: React.FC = () => {
 
             {/* Hydrant */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_hydrant-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_hydrant-fs8.png')}
                 alt="Hydrant"
                 onClick={handleHydrantClick}
                 onMouseEnter={() => isNearHydrant && !isEndScene && setCursorType('pointing')}
@@ -329,7 +332,7 @@ const MainScene: React.FC = () => {
             {/* Water Leaking Animation - only shows when hydrant task is not completed */}
             {!hydrantTaskCompleted && !isEndScene && (
                 <img
-                    src="assets/bg/hydrant/far/hydrant_ON.GIF"
+                    src={gameAssetUrl('assets/bg/hydrant/far/hydrant_ON.GIF')}
                     alt="Water Leaking"
                     style={{
                         position: 'absolute',
@@ -348,7 +351,7 @@ const MainScene: React.FC = () => {
             {/* Sparks animation - only shows when hydrant task is not completed */}
             {!hydrantTaskCompleted && !isEndScene && (
                 <img
-                    src="assets/bg/hydrant/far/hydrant_sparks_ON.GIF"
+                    src={gameAssetUrl('assets/bg/hydrant/far/hydrant_sparks_ON.GIF')}
                     alt="Sparks"
                     style={{
                         position: 'absolute',
@@ -366,7 +369,7 @@ const MainScene: React.FC = () => {
 
             {/* Stairs */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_stairs-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_stairs-fs8.png')}
                 alt="Stairs"
                 style={{
                     position: 'absolute',
@@ -384,7 +387,7 @@ const MainScene: React.FC = () => {
 
             {/* Phone */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_phone-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_phone-fs8.png')}
                 alt="Phone"
                 onClick={handlePhoneClick}
                 onMouseEnter={() => isNearPhone && isEndScene && setCursorType('pointing')}
@@ -409,7 +412,7 @@ const MainScene: React.FC = () => {
 
             {/* Stuff in front of computer */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_stuff_in_front_of_computer-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_stuff_in_front_of_computer-fs8.png')}
                 alt="Stuff In Front of Computer"
                 style={{
                     position: 'absolute',
@@ -427,7 +430,7 @@ const MainScene: React.FC = () => {
 
             {/* Computer */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_computer-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_computer-fs8.png')}
                 alt="Computer"
                 onClick={handleComputerClick}
                 onMouseEnter={() => isNearComputer && !isEndScene && setCursorType('pointing')}
@@ -450,7 +453,7 @@ const MainScene: React.FC = () => {
 
             {/* Radio */}
             <img
-                src="assets/bg/bg_compressed_pngquant/just_radio-fs8.png"
+                src={gameAssetUrl('assets/bg/bg_compressed_pngquant/just_radio-fs8.png')}
                 alt="Radio"
                 onClick={handleRadioClick}
                 onMouseEnter={() => isNearRadio && !isEndScene && setCursorType('pointing')}
@@ -503,4 +506,4 @@ const MainScene: React.FC = () => {
     );
 };
 
-export default MainScene; 
+export default MainScene;

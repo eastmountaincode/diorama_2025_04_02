@@ -4,6 +4,7 @@ import { breakpointAtom, isPhotoDisplayedAtom } from '../../atoms/gameState';
 import { createFramedPhotoDownload } from '../../util/photoUtils';
 import { useCursor } from '../../context/CursorContext';
 import { AiOutlineClose, AiOutlineSave, AiOutlineShareAlt } from 'react-icons/ai';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 interface PhotoFrameProps {
   imageData: string | null;
@@ -150,7 +151,7 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
           {/* Frame overlay */}
           <img 
             ref={frameRef}
-            src={`assets/bg/mirror/photo_frames/${frameNumber}.png`}
+            src={gameAssetUrl(`assets/bg/mirror/photo_frames/${frameNumber}.png`)}
             alt="Photo frame" 
             className="w-full relative z-20" 
             onLoad={handleFrameLoad}
@@ -226,4 +227,4 @@ const PhotoFrame: React.FC<PhotoFrameProps> = ({ imageData, onClose }) => {
   );
 };
 
-export default PhotoFrame; 
+export default PhotoFrame;

@@ -110,7 +110,7 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         />
       ) : (
         <img
-          src="assets/end_video/dioendscreenloop_new.gif"
+          src={gameAssetUrl('assets/end_video/dioendscreenloop_new.gif')}
           alt="End Scene Loop"
           style={gifStyles}
         />

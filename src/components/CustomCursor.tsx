@@ -3,6 +3,7 @@ import { useCursor } from '../context/CursorContext';
 import { useAtom } from 'jotai';
 import { hideCustomCursorAtom } from '../scenes/ComputerScene/ComputerScene';
 import { currentSceneAtom } from '../atoms/gameState';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 
 const CustomCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -27,11 +28,11 @@ const CustomCursor: React.FC = () => {
 
   // Map cursor types to image paths
   const cursorImages = {
-    neutral: 'assets/cursor/cursor_compressed/neutral_hand.png',
-    open: 'assets/cursor/cursor_compressed/open_hand.png',
-    pinching: 'assets/cursor/cursor_compressed/grabbing_pinching_hand.png',
-    grasping: 'assets/cursor/cursor_compressed/grasping_hand.png',
-    pointing: 'assets/cursor/cursor_compressed/pointing_hand-min.PNG'
+    neutral: gameAssetUrl('assets/cursor/cursor_compressed/neutral_hand.png'),
+    open: gameAssetUrl('assets/cursor/cursor_compressed/open_hand.png'),
+    pinching: gameAssetUrl('assets/cursor/cursor_compressed/grabbing_pinching_hand.png'),
+    grasping: gameAssetUrl('assets/cursor/cursor_compressed/grasping_hand.png'),
+    pointing: gameAssetUrl('assets/cursor/cursor_compressed/pointing_hand-min.PNG')
   };
 
   // Define specific offsets for each cursor type
@@ -148,4 +149,4 @@ const CustomCursor: React.FC = () => {
   );
 };
 
-export default CustomCursor; 
+export default CustomCursor;

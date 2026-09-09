@@ -3,6 +3,7 @@ import { useAtom } from 'jotai';
 import { breakpointAtom, currentSceneAtom, hydrantTaskCompletedAtom } from '../../atoms/gameState';
 import { useWaterSound } from './useWaterSound';
 import HydrantWheel from './HydrantWheel';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 const HydrantScene: React.FC = () => {
   const [currentScene] = useAtom(currentSceneAtom);
@@ -42,7 +43,7 @@ const HydrantScene: React.FC = () => {
     <div
       className="w-full h-full flex items-center justify-center z-20"
       style={{
-        backgroundImage: "url('assets/bg/hydrant/hydrant_close_up.JPG')",
+        backgroundImage: `url("${gameAssetUrl('assets/bg/hydrant/hydrant_close_up.JPG')}")`,
         backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -52,7 +53,7 @@ const HydrantScene: React.FC = () => {
       }}
     >
       <img
-        src="assets/bg/hydrant/hydrant_no_wheel_object.png"
+        src={gameAssetUrl('assets/bg/hydrant/hydrant_no_wheel_object.png')}
         alt="Hydrant Base"
         style={{ ...styles.base, ...styles.noWheelHydrant }}
         draggable={false}
@@ -61,7 +62,7 @@ const HydrantScene: React.FC = () => {
       {/* Water Gushing Animation - only shows when hydrant task is not completed */}
       {!hydrantTaskCompleted && (
         <img
-          src="assets/bg/hydrant/close/closeup_Hydrant_On.GIF"
+          src={gameAssetUrl('assets/bg/hydrant/close/closeup_Hydrant_On.GIF')}
           alt="Water Leaking"
           style={{
             ...styles.base,
@@ -79,7 +80,7 @@ const HydrantScene: React.FC = () => {
       {/* Water Leaking Animation - shows once hydrant task is completed */}
       {hydrantTaskCompleted && (
         <img
-          src="assets/bg/hydrant/close/closeup_Hydrant_Off.GIF"
+          src={gameAssetUrl('assets/bg/hydrant/close/closeup_Hydrant_Off.GIF')}
           alt="Water Leaking"
           style={{
             ...styles.base,
@@ -97,7 +98,7 @@ const HydrantScene: React.FC = () => {
       {/* Sparks animation - only shows when hydrant task is not completed */}
       {!hydrantTaskCompleted && (
         <img
-          src="assets/bg/hydrant/close/closeup_Hydrant_sparks.GIF"
+          src={gameAssetUrl('assets/bg/hydrant/close/closeup_Hydrant_sparks.GIF')}
           alt="Sparks"
           style={{
             ...styles.base,

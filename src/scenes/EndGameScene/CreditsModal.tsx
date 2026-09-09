@@ -5,6 +5,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { FaInstagram, FaGlobe } from 'react-icons/fa';
 import { useCursor } from '../../context/CursorContext';
 import { playMouseClickSound } from '../../util/sound';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 interface CreditsModalProps {
   isOpen: boolean;
@@ -313,7 +314,7 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
             {breakpoint !== 'mobile' && (
               <div style={styles.rightColumn}>
                 <img 
-                  src="assets/credits/team_dio.png" 
+                  src={gameAssetUrl('assets/credits/team_dio.png')}
                   alt="Team Dio" 
                   style={styles.teamLogo}
                 />
@@ -330,4 +331,4 @@ const CreditsModal: React.FC<CreditsModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default CreditsModal; 
+export default CreditsModal;

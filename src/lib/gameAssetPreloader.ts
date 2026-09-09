@@ -14,7 +14,7 @@ const MAX_CONCURRENT_LOADS = 6;
 
 const loadedAssets = new Set<string>();
 const retainedImages: HTMLImageElement[] = [];
-const mediaObjectUrls = new Map<string, string>();
+const assetObjectUrls = new Map<string, string>();
 const progressListeners = new Set<ProgressListener>();
 
 let preloadPromise: Promise<void> | null = null;
@@ -36,7 +36,7 @@ const emitProgress = (currentAsset: string | null) => {
   progressListeners.forEach((listener) => listener(latestProgress));
 };
 
-const preloadImage = (src: string) => new Promise<void>((resolve, reject) => {
+const preloadImage = (src: string, objectUrl: string) => new Promise<void>((resolve, reject) => {
   const image = new Image();
   image.decoding = 'async';
 
@@ -57,32 +57,31 @@ const preloadImage = (src: string) => new Promise<void>((resolve, reject) => {
     reject(new Error(`Could not load image: ${src}`));
   }, { once: true });
 
-  image.src = src;
+  image.src = objectUrl;
 });
 
-const preloadMedia = async (src: string) => {
+const preloadAsset = async (src: string) => {
   const response = await fetch(src, { cache: 'force-cache' });
 
   if (!response.ok) {
-    throw new Error(`Could not load media (${response.status}): ${src}`);
+    throw new Error(`Could not load asset (${response.status}): ${src}`);
   }
 
   const blob = await response.blob();
-  mediaObjectUrls.set(src, URL.createObjectURL(blob));
-};
+  const objectUrl = URL.createObjectURL(blob);
 
-const preloadAsset = async (src: string) => {
-  if (IMAGE_EXTENSION.test(src)) {
-    await preloadImage(src);
-    return;
+  try {
+    if (IMAGE_EXTENSION.test(src)) {
+      await preloadImage(src, objectUrl);
+    } else if (!MEDIA_EXTENSION.test(src)) {
+      throw new Error(`Unsupported game asset type: ${src}`);
+    }
+
+    assetObjectUrls.set(src, objectUrl);
+  } catch (error) {
+    URL.revokeObjectURL(objectUrl);
+    throw error;
   }
-
-  if (MEDIA_EXTENSION.test(src)) {
-    await preloadMedia(src);
-    return;
-  }
-
-  throw new Error(`Unsupported game asset type: ${src}`);
 };
 
 const runPreload = async () => {
@@ -136,5 +135,5 @@ export const preloadGameAssets = (onProgress: ProgressListener) => {
 
 export const gameAssetUrl = (src: string) => {
   const normalizedSrc = normalizeAssetPath(src);
-  return mediaObjectUrls.get(normalizedSrc) ?? src;
+  return assetObjectUrls.get(normalizedSrc) ?? src;
 };

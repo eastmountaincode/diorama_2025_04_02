@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import DraggableInventoryFigurine from '../DraggableInventoryFigurine';
 import { useCursor } from '../../context/CursorContext';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 type OpeningSceneInventoryProps = {
   breakpoint?: 'mobile' | 'desktop';
@@ -99,7 +100,7 @@ const OpeningSceneInventory: React.FC<OpeningSceneInventoryProps> = ({ breakpoin
       <div style={boxStyle}>
         <DraggableInventoryFigurine anchorDependency={breakpoint}>
           <img
-            src="assets/figure/Laila_sprite_cropped.png"
+            src={gameAssetUrl('assets/figure/Laila_sprite_cropped.png')}
             alt="Laila Figurine"
             draggable={false} // Disable default HTML5 dragging.
             style={breakpoint === 'mobile' ? imageStyleMobile : imageStyleDesktop}

@@ -22,6 +22,7 @@ import BackButton from './BackButton';
 import ReaffirmButton from './ReaffirmButton';
 import { atom } from 'jotai';
 import { isBrowserOpenAtom, isPhotoOpenAtom } from '../../scenes/ComputerScene/ComputerScene';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // Create a new atom for triggering photo capture
 export const capturePhotoTriggerAtom = atom<boolean>(false);
@@ -356,7 +357,7 @@ export function HUDFrame() {
           </div>
           {/* HUD Frame Image overlay */}
           <img
-            src={src}
+            src={gameAssetUrl(src)}
             alt="HUD Frame"
             className="relative z-10 block pointer-events-none select-none object-contain max-h-[90vh]"
             style={{ 

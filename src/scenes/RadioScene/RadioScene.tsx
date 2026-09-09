@@ -11,6 +11,7 @@ import {
 } from '../../atoms/gameState';
 import { playButtonClickSound } from '../../util/sound';
 import { useCursor } from '../../context/CursorContext';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 const RadioScene: React.FC = () => {
   const [currentScene, setCurrentScene] = useAtom(currentSceneAtom);
@@ -95,7 +96,7 @@ const RadioScene: React.FC = () => {
     <div
       className="w-full h-full flex items-center justify-center z-20"
       style={{
-        backgroundImage: "url('assets/bg/radio/radio_close_up.JPG')", // You'll need to add this asset
+        backgroundImage: `url("${gameAssetUrl('assets/bg/radio/radio_close_up.JPG')}")`,
         backgroundSize: 'contain',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
@@ -127,7 +128,7 @@ const RadioScene: React.FC = () => {
           onMouseUp={handleRadioButtonMouseUp}
         >
           <img
-            src="assets/bg/radio/radio_button_object.PNG"
+            src={gameAssetUrl('assets/bg/radio/radio_button_object.PNG')}
             alt="Radio Button"
             style={{
               width: '100%',
@@ -142,4 +143,4 @@ const RadioScene: React.FC = () => {
   );
 };
 
-export default RadioScene; 
+export default RadioScene;

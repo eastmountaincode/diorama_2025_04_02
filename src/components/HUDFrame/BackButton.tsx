@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useCursor } from '../../context/CursorContext';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 interface BackButtonProps {
   onClick: () => void;
@@ -35,7 +36,7 @@ const BackButton: React.FC<BackButtonProps> = ({
       aria-label="Back Button"
     >
       <img
-        src="assets/hud/back_button.png"  // Update path as necessary
+        src={gameAssetUrl('assets/hud/back_button.png')}
         alt="Back Button"
         style={{ 
           width: '64px', 

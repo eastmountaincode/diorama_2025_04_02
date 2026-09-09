@@ -1,4 +1,5 @@
 import React from 'react';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 
 interface OpeningSceneGrassProps {
   isFigurineTouchingDropZone: boolean;
@@ -85,7 +86,7 @@ const OpeningSceneGrass: React.FC<OpeningSceneGrassProps> = ({
   return (
     <>
       <img 
-        src="assets/bg/bg_compressed_pngquant/grass_alone_final-fs8.png" 
+        src={gameAssetUrl('assets/bg/bg_compressed_pngquant/grass_alone_final-fs8.png')}
         alt="Grass"
         style={getGrassImageStyle()}
         className="absolute top-0 left-0"
@@ -95,7 +96,7 @@ const OpeningSceneGrass: React.FC<OpeningSceneGrassProps> = ({
       {/* Only show the figurine if it has been placed */}
       {isFigurinePlaced && (
         <img
-          src="assets/figure/Laila_sprite_cropped.png" 
+          src={gameAssetUrl('assets/figure/Laila_sprite_cropped.png')}
           alt="Figurine"
           style={getFigurineStyle()}
           draggable={false}
@@ -105,4 +106,4 @@ const OpeningSceneGrass: React.FC<OpeningSceneGrassProps> = ({
   );
 };
 
-export default OpeningSceneGrass; 
+export default OpeningSceneGrass;

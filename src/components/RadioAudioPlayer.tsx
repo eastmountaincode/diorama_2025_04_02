@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 import { useAtom } from 'jotai';
 import { 
   breakpointAtom, 
@@ -83,7 +84,7 @@ const RadioAudioPlayer: React.FC<RadioAudioPlayerProps> = ({ audioSrc }) => {
   // Initialize audio player
   useEffect(() => {
     if (!audioRef.current) {
-      audioRef.current = new Audio(audioSrc);
+      audioRef.current = new Audio(gameAssetUrl(audioSrc));
       audioRef.current.loop = true;
       
       // Set up event handlers
@@ -170,4 +171,4 @@ const RadioAudioPlayer: React.FC<RadioAudioPlayerProps> = ({ audioSrc }) => {
   return null;
 };
 
-export default RadioAudioPlayer; 
+export default RadioAudioPlayer;

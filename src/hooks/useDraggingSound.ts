@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 
 // AudioContext singleton
 let draggingAudioContext: AudioContext | null = null;
@@ -40,7 +41,7 @@ export const useDraggingSound = () => {
         
         try {
           // Fetch the audio file
-          const response = await fetch(soundFile);
+          const response = await fetch(gameAssetUrl(soundFile));
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await context.decodeAudioData(arrayBuffer);
           
@@ -73,7 +74,7 @@ export const useDraggingSound = () => {
           
           // Fallback to regular Audio API if Web Audio fails
           try {
-            const audio = new Audio(soundFile);
+            const audio = new Audio(gameAssetUrl(soundFile));
             audio.volume = Math.pow(volume, 3);
             audio.play().catch(err => console.error("Fallback audio play failed:", err));
           } catch (audioError) {
@@ -91,4 +92,4 @@ export const useDraggingSound = () => {
   }, []);
   
   return { playRandomDraggingSound };
-}; 
+};

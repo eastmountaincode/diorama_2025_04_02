@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useAtom } from 'jotai';
-import { 
+import {
   breakpointAtom,
   currentSceneAtom,
   isEndSceneAtom,
@@ -8,6 +8,7 @@ import {
   isAudioEnabledAtom,
   isBackgroundMusicDisabledAtom
 } from '../atoms/gameState';
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
 
 interface GlobalAudioPlayerProps {
   audioSrc: string;
@@ -88,7 +89,7 @@ const GlobalAudioPlayer: React.FC<GlobalAudioPlayerProps> = ({ audioSrc }) => {
   // Initialize audio player
   useEffect(() => {
     if (!audioRef.current) {
-      audioRef.current = new Audio(audioSrc);
+      audioRef.current = new Audio(gameAssetUrl(audioSrc));
       audioRef.current.loop = true;
       
       // Set up event handlers
@@ -186,4 +187,4 @@ const GlobalAudioPlayer: React.FC<GlobalAudioPlayerProps> = ({ audioSrc }) => {
   return null;
 };
 
-export default GlobalAudioPlayer; 
+export default GlobalAudioPlayer;

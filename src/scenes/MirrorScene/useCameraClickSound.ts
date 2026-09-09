@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // AudioContext singleton
 let cameraAudioContext: AudioContext | null = null;
@@ -37,7 +38,7 @@ export const useCameraClickSound = () => {
         // Create a buffered source for more reliable playback
         try {
           // Fetch the audio file
-          const response = await fetch('assets/audio/camera_click.mp3');
+          const response = await fetch(gameAssetUrl('assets/audio/camera_click.mp3'));
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await context.decodeAudioData(arrayBuffer);
           
@@ -75,7 +76,7 @@ export const useCameraClickSound = () => {
           console.warn("Buffer source failed for camera, falling back to MediaElement:", fetchError);
           
           // Create new audio element for each play
-          const audio = new Audio('assets/audio/camera_click.mp3');
+          const audio = new Audio(gameAssetUrl('assets/audio/camera_click.mp3'));
           
           // Create Web Audio nodes
           const source = context.createMediaElementSource(audio);
@@ -115,4 +116,4 @@ export const useCameraClickSound = () => {
   }, []);
   
   return { playSound };
-}; 
+};

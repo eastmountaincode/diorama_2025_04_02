@@ -1,4 +1,5 @@
 import { useRef, useCallback } from 'react';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // AudioContext singleton
 let wheelAudioContext: AudioContext | null = null;
@@ -31,7 +32,7 @@ export const useWheelSound = () => {
       const context = getAudioContext();
       
       // Create and prepare the audio element
-      const audio = new Audio('assets/audio/wheel_squeaking.wav');
+      const audio = new Audio(gameAssetUrl('assets/audio/wheel_squeaking.wav'));
       audio.loop = true;
       
       // Create Web Audio nodes
@@ -148,4 +149,4 @@ export const useWheelSound = () => {
     setVolume,
     fadeOut
   };
-}; 
+};

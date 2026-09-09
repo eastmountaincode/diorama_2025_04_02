@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // AudioContext singleton
 let mirrorAudioContext: AudioContext | null = null;
@@ -37,7 +38,7 @@ export const useMirrorRingSound = () => {
         // Create a buffered source for more reliable playback
         try {
           // Fetch the audio file
-          const response = await fetch('assets/audio/get_ring.wav');
+          const response = await fetch(gameAssetUrl('assets/audio/get_ring.wav'));
           const arrayBuffer = await response.arrayBuffer();
           const audioBuffer = await context.decodeAudioData(arrayBuffer);
           
@@ -77,7 +78,7 @@ export const useMirrorRingSound = () => {
           console.warn("Buffer source failed for mirror, falling back to MediaElement:", fetchError);
           
           // Create new audio element for each play
-          const audio = new Audio('assets/audio/get_ring.wav');
+          const audio = new Audio(gameAssetUrl('assets/audio/get_ring.wav'));
           
           // Create Web Audio nodes
           const source = context.createMediaElementSource(audio);
@@ -119,4 +120,4 @@ export const useMirrorRingSound = () => {
   }, []);
   
   return { playSound };
-}; 
+};

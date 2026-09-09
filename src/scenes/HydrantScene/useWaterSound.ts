@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 
 // AudioContext singleton
 let audioContext: AudioContext | null = null;
@@ -30,7 +31,7 @@ export const useWaterSound = (isActive: boolean, volume: number = 0.5) => {
         const context = getAudioContext();
         
         // Create and prepare the audio element
-        const audio = new Audio('assets/audio/water_flowing.mp3');
+        const audio = new Audio(gameAssetUrl('assets/audio/water_flowing.mp3'));
         audio.loop = true;
         
         // Create Web Audio nodes
@@ -115,4 +116,4 @@ export const useWaterSound = (isActive: boolean, volume: number = 0.5) => {
     stopSound,
     fadeOutSound
   };
-}; 
+};

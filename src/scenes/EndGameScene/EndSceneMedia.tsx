@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAtom } from 'jotai';
 import { breakpointAtom, endSceneVideoEndedAtom } from '../../atoms/gameState';
+import { gameAssetUrl } from '../../lib/gameAssetPreloader';
 import { useEndSceneAudio } from './useEndSceneAudio';
 
 interface EndSceneMediaProps {
@@ -100,7 +101,7 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
         <video
           ref={videoRef}
           style={videoStyles}
-          src="assets/end_video/dio_end_scene_update_min.mp4"
+          src={gameAssetUrl('assets/end_video/dio_end_scene_update_min.mp4')}
           playsInline
           muted={false}
           controls={false}
@@ -118,4 +119,4 @@ const EndSceneMedia: React.FC<EndSceneMediaProps> = ({
   );
 };
 
-export default EndSceneMedia; 
+export default EndSceneMedia;

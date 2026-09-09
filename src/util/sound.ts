@@ -1,5 +1,7 @@
 // Sound utility functions
 
+import { gameAssetUrl } from '../lib/gameAssetPreloader';
+
 /**
  * Plays a sound effect
  * @param soundPath Path to the sound file
@@ -8,7 +10,7 @@
  * @returns The Audio element that was created and played
  */
 export const playSound = (soundPath: string, volume: number, delay: number): HTMLAudioElement => {
-  const audio = new Audio(soundPath);
+  const audio = new Audio(gameAssetUrl(soundPath));
   
   // Apply exponential scaling to make volume control more natural at low levels
   // This makes small volume values like 0.1 much quieter than linear scaling
@@ -85,4 +87,4 @@ export const playWaterFlowingSound = (volume: number = 0.4, delay: number = 0): 
  */
 export const playWheelSqueakingSound = (volume: number = 0.4, delay: number = 0): HTMLAudioElement => {
   return playSound("assets/audio/wheel_squeaking.wav", volume, delay);
-}; 
+};
